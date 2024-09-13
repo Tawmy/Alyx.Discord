@@ -1,0 +1,5 @@
+services:
+  main:
+    container_name: alyx-discord
+    labels:
+      - dev.orbstack.domains=alyx.discord.local

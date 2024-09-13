@@ -1,0 +1,8 @@
+﻿services:
+  main:
+    image: alyx.discord
+    build:
+      context: .
+      dockerfile: Alyx.Discord.Api/Dockerfile
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
