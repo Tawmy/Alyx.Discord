@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alyx.Discord.Api", "Alyx.Discord.Api\Alyx.Discord.Api.csproj", "{835AC544-3590-4F81-A04D-7281A1E5E5BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{835AC544-3590-4F81-A04D-7281A1E5E5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{835AC544-3590-4F81-A04D-7281A1E5E5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{835AC544-3590-4F81-A04D-7281A1E5E5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{835AC544-3590-4F81-A04D-7281A1E5E5BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
