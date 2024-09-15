@@ -1,0 +1,8 @@
+services:
+  main:
+    container_name: alyx-discord
+    restart: unless-stopped
+    environment:
+      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
+      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
+      NETSTONE_API_SCOPES: netstone.api
