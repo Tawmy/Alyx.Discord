@@ -1,11 +1,24 @@
 using MediatR;
+using NetStone.Api.Client;
+using NetStone.Common.DTOs.Character;
+using NetStone.Common.Exceptions;
+using NetStone.Common.Queries;
 
 namespace Alyx.Discord.Core.Requests.Character.Search;
 
-public class CharacterSearchRequestHandler : IRequestHandler<CharacterSearchRequest, string>
+public class CharacterSearchRequestHandler(NetStoneApiClient client)
+    : IRequestHandler<CharacterSearchRequest, ICollection<CharacterSearchPageResultDto>>
 {
-    public Task<string> Handle(CharacterSearchRequest request, CancellationToken cancellationToken)
+    public async Task<ICollection<CharacterSearchPageResultDto>> Handle(CharacterSearchRequest request,
+        CancellationToken cancellationToken)
     {
-        return Task.FromResult($"{request.Name} from {request.World}");
+        var query = new CharacterSearchQuery(request.Name, request.World);
+        var searchPage = await client.Character.SearchAsync(query);
+        if (!searchPage.HasResults)
+        {
+            throw new NotFoundException();
+        }
+
+        return searchPage.Results.ToArray();
     }
 }

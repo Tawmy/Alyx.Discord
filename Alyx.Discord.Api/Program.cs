@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot;
+using Alyx.Discord.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddBotServices(builder.Configuration);
 
 var app = builder.Build();
