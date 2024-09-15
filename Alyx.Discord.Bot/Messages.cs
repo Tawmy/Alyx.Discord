@@ -34,8 +34,6 @@ internal static class Messages
                         sb.Append($" Showing all {total} results.");
                     }
 
-                    sb.Append("Please select a character.");
-
                     return sb.ToString();
                 }
             }
