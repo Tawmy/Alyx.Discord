@@ -228,27 +228,27 @@ internal class CharacterSheetService
         var avgItemLevel = character.Gear.GetAvarageItemLevel();
         _image.Mutate(x => x.DrawText(optionsLvl, avgItemLevel.ToString(), Color.White));
 
-        var optionsMi = new RichTextOptions(optionsLvl)
+        var optionsMo = new RichTextOptions(optionsLvl)
         {
             HorizontalAlignment = HorizontalAlignment.Right,
-            Origin = CharacterSheetCoordinates.Other.Minions
+            Origin = CharacterSheetCoordinates.Other.Mounts
         };
-
-        if (minions is not null)
-        {
-            var text = Math.Round(minions.CollectedPercentage);
-            _image.Mutate(x => x.DrawText(optionsMi, $"{text}%", Color.White));
-        }
 
         if (mounts is not null)
         {
-            var optionsMo = new RichTextOptions(optionsMi)
-            {
-                Origin = CharacterSheetCoordinates.Other.Mounts
-            };
-
             var text = Math.Round(mounts.CollectedPercentage);
             _image.Mutate(x => x.DrawText(optionsMo, $"{text}%", Color.White));
+        }
+
+        if (minions is not null)
+        {
+            var optionsMi = new RichTextOptions(optionsMo)
+            {
+                Origin = CharacterSheetCoordinates.Other.Minions
+            };
+
+            var text = Math.Round(minions.CollectedPercentage);
+            _image.Mutate(x => x.DrawText(optionsMi, $"{text}%", Color.White));
         }
     }
 

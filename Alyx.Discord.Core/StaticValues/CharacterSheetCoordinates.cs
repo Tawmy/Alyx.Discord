@@ -80,8 +80,8 @@ internal static class CharacterSheetCoordinates
         public static Point ActiveJobLevelText => new(72, 124);
         public static Point HomeWorld => new(1114, 344);
         public static Point ItemLevel => new(613, 340);
-        public static Point Minions => new(772, ItemLevel.Y);
-        public static Point Mounts => new(874, ItemLevel.Y);
+        public static Point Mounts => new(772, ItemLevel.Y);
+        public static Point Minions => new(874, ItemLevel.Y);
         public static Point TextTop => new(854, 243);
 
         public static Point FcOrGcTop => new(TextTop.X + (int)decimal.Divide(
