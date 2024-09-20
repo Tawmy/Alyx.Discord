@@ -1,4 +1,4 @@
-namespace Alyx.Discord.Bot;
+namespace Alyx.Discord.Bot.StaticValues;
 
 internal static class ComponentIds
 {

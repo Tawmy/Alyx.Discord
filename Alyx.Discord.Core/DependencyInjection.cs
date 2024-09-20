@@ -1,3 +1,4 @@
+using Alyx.Discord.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetStone.Api.Client;
@@ -9,6 +10,9 @@ public static class DependencyInjection
 {
     public static void AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHttpClient();
+        services.AddSingleton<ExternalResourceService>();
+        services.AddScoped<CharacterSheetService>();
         services.AddNetStoneApiClient(configuration);
     }
 

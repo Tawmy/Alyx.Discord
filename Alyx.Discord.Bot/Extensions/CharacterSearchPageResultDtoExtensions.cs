@@ -1,3 +1,4 @@
+using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Entities;
 using NetStone.Common.DTOs.Character;
 

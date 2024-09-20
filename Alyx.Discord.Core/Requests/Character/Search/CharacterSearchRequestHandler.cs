@@ -13,7 +13,7 @@ public class CharacterSearchRequestHandler(NetStoneApiClient client)
         CancellationToken cancellationToken)
     {
         var query = new CharacterSearchQuery(request.Name, request.World);
-        var searchPage = await client.Character.SearchAsync(query);
+        var searchPage = await client.Character.SearchAsync(query, cancellationToken: cancellationToken);
         if (!searchPage.HasResults)
         {
             throw new NotFoundException();

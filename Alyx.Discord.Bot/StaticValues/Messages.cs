@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Alyx.Discord.Bot;
+namespace Alyx.Discord.Bot.StaticValues;
 
 internal static class Messages
 {

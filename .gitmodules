@@ -1,3 +1,6 @@
 [submodule "NetStone.Api.Client"]
 	path = NetStone.Api.Client
 	url = https://github.com/Tawmy/NetStone.Api.Client.git
+[submodule "Alyx.Discord.External"]
+	path = Alyx.Discord.External
+	url = https://github.com/Tawmy/Alyx.Discord.External

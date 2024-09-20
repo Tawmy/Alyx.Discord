@@ -2,7 +2,9 @@ using Alyx.Discord.Bot.Commands;
 using Alyx.Discord.Bot.ComponentInteractionHandler;
 using Alyx.Discord.Bot.EventHandlers;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using Alyx.Discord.Extensions;
 using DSharpPlus;
@@ -17,7 +19,11 @@ public static class DependencyInjection
 {
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(typeof(CharacterSearchRequest).Assembly); });
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblies(typeof(CharacterSearchRequest).Assembly,
+                typeof(CharacterGetRequest).Assembly);
+        });
 
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
         services.AddDiscordClient(token, DiscordIntents.AllUnprivileged);

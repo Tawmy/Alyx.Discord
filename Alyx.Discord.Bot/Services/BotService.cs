@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Alyx.Discord.Bot.Services;
 
-public class BotService(DiscordClient client) : IHostedService
+internal class BotService(DiscordClient client) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
