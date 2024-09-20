@@ -10,4 +10,7 @@ public static class CharacterSheetValues
     public static int ActiveJobLevelFontSize => 30;
     public static int FontSizeHomeWorld => 28;
     public static int FontSizeMiMo => 32;
+    public static int FontSizeGrandCompany => 28;
+    public static int DimensionsGcFcCrest => 52;
+    public static int GcCrestPadding => 12;
 }

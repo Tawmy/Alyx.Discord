@@ -82,5 +82,11 @@ internal static class CharacterSheetCoordinates
         public static Point ItemLevel => new(613, 338);
         public static Point Minions => new(772, ItemLevel.Y);
         public static Point Mounts => new(874, ItemLevel.Y);
+        public static Point TextTop => new(854, 243);
+
+        public static Point FcOrGcTop => new(TextTop.X + (int)decimal.Divide(
+            CharacterSheetValues.DimensionsGcFcCrest + CharacterSheetValues.GcCrestPadding, 2), TextTop.Y);
+
+        public static Point GcBottom => new(540, 320);
     }
 }

@@ -37,6 +37,20 @@ internal class ExternalResourceService
         return _jobIcons[job];
     }
 
+    public async Task<Image> GetGrandCompanyCrestAsync(GrandCompany grandCompany)
+    {
+        await _initializeTask.Value;
+
+        return grandCompany switch
+        {
+            GrandCompany.NoAffiliation => throw new InvalidOperationException("No affiliation, no crest."),
+            GrandCompany.Maelstrom => await GetImageAsync(CharacterSheetImage.GcMaelstrom),
+            GrandCompany.OrderOfTheTwinAdder => await GetImageAsync(CharacterSheetImage.GcTwinAdder),
+            GrandCompany.ImmortalFlames => await GetImageAsync(CharacterSheetImage.GcImmortalFlames),
+            _ => throw new ArgumentOutOfRangeException(nameof(grandCompany), grandCompany, null)
+        };
+    }
+
     public async Task<FontFamily> GetFontFamilyAsync(CharacterSheetFont font)
     {
         await _initializeTask.Value;

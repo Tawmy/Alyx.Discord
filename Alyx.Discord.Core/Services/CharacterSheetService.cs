@@ -55,6 +55,8 @@ internal class CharacterSheetService
             await AddJobLevelsAsync(classJobs);
         }
 
+        await AddGrandCompanyAsync(character);
+
         // TODO grand company, free company, attributes, and new adventurer
 
         return _image;
@@ -272,5 +274,66 @@ internal class CharacterSheetService
 
             _image.Mutate(x => x.DrawText(options, levelString, Color.White));
         }
+    }
+
+    private async Task<bool> AddGrandCompanyAsync(CharacterDto character)
+    {
+        _image = await _imageTask.Value;
+
+        if (character.GrandCompany == GrandCompany.NoAffiliation)
+        {
+            return false;
+        }
+
+        var crest = await _externalResourceService.GetGrandCompanyCrestAsync(character.GrandCompany);
+
+        if (character.FreeCompany is null)
+        {
+            // if player not in any free company, use the fc space to show the gc logo and name
+            var gcName = character.GrandCompany.GetDisplayName();
+            await PrintInTopValueAreaAsync(gcName, crest);
+        }
+        else
+        {
+            // if player is in a free company, print gc crest
+            _image.Mutate(x => x.DrawImage(crest, CharacterSheetCoordinates.Other.GcBottom, 1));
+        }
+
+        return true;
+    }
+
+    private async Task PrintInTopValueAreaAsync(string text, Image? crest = null)
+    {
+        _image = await _imageTask.Value;
+
+        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var font = family.CreateFont(CharacterSheetValues.FontSizeGrandCompany, FontStyle.Regular);
+
+        // if no crest, get coordinates without offset
+        var coords = crest is null
+            ? CharacterSheetCoordinates.Other.TextTop
+            : CharacterSheetCoordinates.Other.FcOrGcTop;
+
+        var textOptions = new RichTextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = new Vector2(coords.X, coords.Y - 2) // arbitrarily move text up 2px, looks better
+        };
+
+        _image.Mutate(x => x.DrawText(textOptions, text, Color.White));
+
+        if (crest is null)
+        {
+            return;
+        }
+
+        // get text width and calculate position of crest
+        var textWidth = TextMeasurer.MeasureSize(text, textOptions);
+        coords.X -= (int)decimal.Divide((int)textWidth.Width, 2) +
+                    CharacterSheetValues.DimensionsGcFcCrest + CharacterSheetValues.GcCrestPadding;
+        coords.Y -= (int)decimal.Divide(CharacterSheetValues.DimensionsGcFcCrest, 2);
+
+        _image.Mutate(x => x.DrawImage(crest, coords, 1));
     }
 }
