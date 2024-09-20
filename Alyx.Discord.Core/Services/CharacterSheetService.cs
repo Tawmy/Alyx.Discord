@@ -401,7 +401,7 @@ internal class CharacterSheetService
         };
 
         var result = attributes.Select(x =>
-            $"{GetAttributeName(x, primary)}:{CharacterSheetValues.AttributeGapSmall}{character.AttributesDictionary[x]}");
+            $"{GetAttributeName(x, primary)}:{CharacterSheetValues.AttributeGapSmall}{character.Attributes[x]}");
 
         var text = string.Join(CharacterSheetValues.AttributeGapBig, result);
 
