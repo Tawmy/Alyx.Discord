@@ -88,5 +88,7 @@ internal static class CharacterSheetCoordinates
             CharacterSheetValues.DimensionsGcFcCrest + CharacterSheetValues.GcCrestPadding, 2), TextTop.Y);
 
         public static Point GcBottom => new(540, 320);
+        public static Point AttributesPrimary => new(853, 443);
+        public static Point AttributesSecondary => new(853, 503);
     }
 }

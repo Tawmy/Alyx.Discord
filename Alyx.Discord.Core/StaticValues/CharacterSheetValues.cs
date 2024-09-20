@@ -13,4 +13,7 @@ public static class CharacterSheetValues
     public static int FontSizeGrandCompany => 28;
     public static int DimensionsGcFcCrest => 52;
     public static int GcCrestPadding => 12;
+    public static int FontSizeAttributes => 28;
+    public static string AttributeGapSmall => "   ";
+    public static string AttributeGapBig => "          ";
 }

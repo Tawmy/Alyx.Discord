@@ -60,6 +60,7 @@ internal class CharacterSheetService
 
         await AddGrandCompanyAsync(character);
         await AddFreeCompanyAsync(freeCompany);
+        await AddAttributesAsync(character);
 
         // TODO grand company, free company, attributes, and new adventurer
 
@@ -372,5 +373,45 @@ internal class CharacterSheetService
         bottomLayer.Mutate(x => x.DrawImage(topLayer, 1));
 
         return bottomLayer;
+    }
+
+    private async Task AddAttributesAsync(CharacterDto character)
+    {
+        var attributes = character.ActiveClassJob.GetDisplayAttributes();
+
+        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var font = family.CreateFont(CharacterSheetValues.FontSizeAttributes, FontStyle.Regular);
+
+        await PrintAttributesAsync(character, font, attributes.Take(2),
+            CharacterSheetCoordinates.Other.AttributesPrimary, true);
+        await PrintAttributesAsync(character, font, attributes.Skip(2),
+            CharacterSheetCoordinates.Other.AttributesSecondary, false);
+    }
+
+    private async Task PrintAttributesAsync(CharacterDto character, Font font,
+        IEnumerable<CharacterAttribute> attributes, Point origin, bool primary)
+    {
+        _image = await _imageTask.Value;
+
+        var options = new RichTextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = origin
+        };
+
+        var result = attributes.Select(x =>
+            $"{GetAttributeName(x, primary)}:{CharacterSheetValues.AttributeGapSmall}{character.AttributesDictionary[x]}");
+
+        var text = string.Join(CharacterSheetValues.AttributeGapBig, result);
+
+        _image.Mutate(x => x.DrawText(options, text, Color.White));
+    }
+
+    private static string GetAttributeName(CharacterAttribute a, bool showFullName)
+    {
+        var name = a.GetDisplayName();
+        a.TryGetShortName(out var shortName);
+        return showFullName ? name : shortName ?? name;
     }
 }
