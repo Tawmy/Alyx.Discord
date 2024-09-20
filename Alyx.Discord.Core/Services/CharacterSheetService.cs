@@ -3,6 +3,7 @@ using Alyx.Discord.Core.Enums;
 using Alyx.Discord.Core.StaticValues;
 using Alyx.Discord.Core.Structs;
 using NetStone.Common.DTOs.Character;
+using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
 using NetStone.Common.Extensions;
 using SixLabors.Fonts;
@@ -34,7 +35,9 @@ internal class CharacterSheetService
 
     public async Task<Image> CreateCharacterSheetAsync(CharacterDto character,
         CharacterClassJobOuterDto? classJobs = null,
-        CollectionDto<CharacterMinionDto>? minions = null, CollectionDto<CharacterMountDto>? mounts = null)
+        CollectionDto<CharacterMinionDto>? minions = null,
+        CollectionDto<CharacterMountDto>? mounts = null,
+        FreeCompanyDto? freeCompany = null)
     {
         _image = await _imageTask.Value;
 
@@ -56,6 +59,7 @@ internal class CharacterSheetService
         }
 
         await AddGrandCompanyAsync(character);
+        await AddFreeCompanyAsync(freeCompany);
 
         // TODO grand company, free company, attributes, and new adventurer
 
@@ -335,5 +339,38 @@ internal class CharacterSheetService
         coords.Y -= (int)decimal.Divide(CharacterSheetValues.DimensionsGcFcCrest, 2);
 
         _image.Mutate(x => x.DrawImage(crest, coords, 1));
+    }
+
+    private async Task<bool> AddFreeCompanyAsync(FreeCompanyDto? freeCompany)
+    {
+        if (freeCompany is null)
+        {
+            return false;
+        }
+
+        var crest = await DownloadFreeCompanyCrest(freeCompany);
+        crest.Mutate(x => x.Resize(CharacterSheetValues.DimensionsGcFcCrest, CharacterSheetValues.DimensionsGcFcCrest,
+            KnownResamplers.Lanczos3));
+        var fullName = $"{freeCompany.Name} {freeCompany.Tag}";
+        await PrintInTopValueAreaAsync(fullName, crest);
+        return true;
+    }
+
+    private async Task<Image> DownloadFreeCompanyCrest(FreeCompanyDto freeCompany)
+    {
+        // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
+
+        var dataTopLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.TopLayer);
+        var dataMiddleLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.MiddleLayer);
+        var dataBottomLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.BottomLayer);
+
+        var topLayer = Image.Load<Rgba32>(dataTopLayer);
+        var middleLayer = Image.Load<Rgba32>(dataMiddleLayer);
+        var bottomLayer = Image.Load<Rgba32>(dataBottomLayer);
+
+        bottomLayer.Mutate(x => x.DrawImage(middleLayer, 1));
+        bottomLayer.Mutate(x => x.DrawImage(topLayer, 1));
+
+        return bottomLayer;
     }
 }

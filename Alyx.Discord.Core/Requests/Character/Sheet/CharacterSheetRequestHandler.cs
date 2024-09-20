@@ -1,6 +1,7 @@
 using Alyx.Discord.Core.Services;
 using MediatR;
 using NetStone.Api.Client;
+using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
 using SixLabors.ImageSharp;
 
@@ -32,9 +33,26 @@ internal class CharacterSheetRequestHandler(NetStoneApiClient client, CharacterS
             }
         }
 
+        FreeCompanyDto? freeCompany = null;
+        if (taskCharacter.Result.FreeCompany is not null)
+        {
+            try
+            {
+                // TODO check if parser can be modified to return FC tag from character profile
+                // It'd be nice if we could skip this step just to retrieve the FC tag
+                freeCompany = await client.FreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
+                    cancellationToken: cancellationToken);
+            }
+            catch (NotFoundException)
+            {
+                // do nothing
+            }
+        }
+
         return await characterSheetService.CreateCharacterSheetAsync(taskCharacter.Result,
             !taskClassJobs.IsFaulted ? taskClassJobs.Result : null,
             !taskMinions.IsFaulted ? taskMinions.Result : null,
-            !taskMounts.IsFaulted ? taskMounts.Result : null);
+            !taskMounts.IsFaulted ? taskMounts.Result : null,
+            freeCompany);
     }
 }
