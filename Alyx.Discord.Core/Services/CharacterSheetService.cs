@@ -58,11 +58,14 @@ internal class CharacterSheetService
             await AddJobLevelsAsync(classJobs);
         }
 
-        await AddGrandCompanyAsync(character);
-        await AddFreeCompanyAsync(freeCompany);
+        var gc = await AddGrandCompanyAsync(character);
+        var fc = await AddFreeCompanyAsync(freeCompany);
         await AddAttributesAsync(character);
 
-        // TODO grand company, free company, attributes, and new adventurer
+        if (!gc && !fc)
+        {
+            await AddNewAdventurerAsync();
+        }
 
         return _image;
     }
@@ -413,5 +416,10 @@ internal class CharacterSheetService
         var name = a.GetDisplayName();
         a.TryGetShortName(out var shortName);
         return showFullName ? name : shortName ?? name;
+    }
+
+    private Task AddNewAdventurerAsync()
+    {
+        return PrintInTopValueAreaAsync("New Adventurer");
     }
 }
