@@ -6,12 +6,12 @@ using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
-using Alyx.Discord.Extensions;
 using DSharpPlus;
 using DSharpPlus.Commands;
 using DSharpPlus.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
 

@@ -13,7 +13,7 @@ public class SelectCharacterHandler(NetStoneApiClient client) : IComponentIntera
         await args.Interaction.DeferAsync(true);
         var selected = args.Values.First();
         var dto = await client.Character.GetAsync(selected);
-        var builder = new DiscordFollowupMessageBuilder().WithContent($"{dto.Name} ({dto.Server}).");
+        var builder = new DiscordFollowupMessageBuilder().WithContent($"{dto.Name} ({dto.Server})."); // TODO
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }
 }

@@ -17,7 +17,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Alyx.Discord.Core\Alyx.Discord.Core.csproj"/>
-        <ProjectReference Include="..\Alyx.Discord.Extensions\Alyx.Discord.Extensions.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,8 @@ public static class DependencyInjection
 {
     public static void AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton(AlyxConfiguration.FromEnvironment(configuration));
+
         services.AddHttpClient();
         services.AddSingleton<ExternalResourceService>();
         services.AddScoped<CharacterSheetService>();
@@ -18,14 +21,13 @@ public static class DependencyInjection
 
     private static void AddNetStoneApiClient(this IServiceCollection services, IConfiguration configuration)
     {
-        var apiRootUri = configuration.GetGuardedConfiguration<Uri>(EnvironmentVariables.NetStoneApiRootUri);
-        var authAuthority = configuration.GetGuardedConfiguration<Uri>(EnvironmentVariables.NetStoneApiAuthority);
+        var apiRootUri = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiRootUri));
+        var authAuthority = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiAuthority));
         var authClientId = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientId);
         var authClientSecret = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientSecret);
         var authScopes = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiScopes);
         var authScopesArray =
             authScopes.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
 
         var netStoneApiClientConfiguration = new NetStoneApiClientConfiguration(apiRootUri, authAuthority, authClientId,
             authClientSecret, authScopesArray);
