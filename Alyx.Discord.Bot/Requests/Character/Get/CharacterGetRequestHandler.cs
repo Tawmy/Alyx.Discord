@@ -49,8 +49,16 @@ public class CharacterGetRequestHandler(ISender sender) : IRequestHandler<Charac
 
             var fileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {first.Name}.webp";
 
-            builder = new DiscordInteractionResponseBuilder().AddFile(fileName, stream, true);
+            var button = GetLodestoneLinkButton(first.Id);
+
+            builder = new DiscordInteractionResponseBuilder().AddFile(fileName, stream, true).AddComponents(button);
             await request.Ctx.FollowupAsync(builder);
         }
+    }
+
+    private static DiscordLinkButtonComponent GetLodestoneLinkButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
+        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
     }
 }
