@@ -9,7 +9,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Alyx.Discord.Api/Alyx.Discord.Api.csproj", "Alyx.Discord.Api/"]
 COPY ["Alyx.Discord.Bot/Alyx.Discord.Bot.csproj", "Alyx.Discord.Bot/"]
-COPY ["Alyx.Discord.Extensions/Alyx.Discord.Extensions.csproj", "Alyx.Discord.Extensions/"]
 RUN dotnet restore "Alyx.Discord.Api/Alyx.Discord.Api.csproj"
 COPY . .
 WORKDIR "/src/Alyx.Discord.Api"
