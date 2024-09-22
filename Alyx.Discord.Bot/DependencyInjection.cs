@@ -28,7 +28,7 @@ public static class DependencyInjection
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
         services.AddDiscordClient(token, DiscordIntents.AllUnprivileged);
 
-        var debugGuildId = configuration.GetGuardedConfiguration<ulong>(EnvironmentVariables.DebugGuildId);
+        var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
         services.AddCommandsExtension(x => x.AddCommands<CharacterCommands>(),
             new CommandsConfiguration { DebugGuildId = debugGuildId });
 

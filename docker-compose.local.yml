@@ -2,6 +2,7 @@ services:
   main:
     container_name: alyx-discord
     environment:
+      DEBUG_GUILD_ID: 1284800895967559711
       NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
       NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
       NETSTONE_API_SCOPES: netstone.api
