@@ -45,9 +45,11 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
 
             if (existingClaim.CharacterId != request.LodestoneId)
             {
-                // user's existing claim is for a different character
-                return new CharacterClaimRequestResponse(CharacterClaimRequestStatus
-                    .ClaimAlreadyExistsForDifferentCharacter);
+                // user's existing claim is for a different character -> delete existing and create new
+                await DeleteExistingClaim(request.DiscordId, cancellationToken);
+                var newClaim =
+                    await CreateAndSaveNewCharacter(request.LodestoneId, request.DiscordId, cancellationToken);
+                return new CharacterClaimRequestResponse(CharacterClaimRequestStatus.NewClaimCreated, newClaim.Code);
             }
 
             // existing claim is for this character -> check if user has added code to profile
@@ -63,10 +65,12 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
             return new CharacterClaimRequestResponse(CharacterClaimRequestStatus.ClaimConfirmed, existingClaim.Code);
         }
 
-        // claim does not exist yet, create
-        var newClaim = await CreateAndSaveNewCharacter(request.LodestoneId, request.DiscordId, cancellationToken);
+        {
+            // claim does not exist yet, create
+            var newClaim = await CreateAndSaveNewCharacter(request.LodestoneId, request.DiscordId, cancellationToken);
 
-        return new CharacterClaimRequestResponse(CharacterClaimRequestStatus.NewClaimCreated, newClaim.Code);
+            return new CharacterClaimRequestResponse(CharacterClaimRequestStatus.NewClaimCreated, newClaim.Code);
+        }
     }
 
     private static string GenerateNewCode()
@@ -116,5 +120,22 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
     {
         claim.Confirmed = true;
         return context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task DeleteExistingClaim(ulong discordId, CancellationToken cancellationToken)
+    {
+        var claim = await context.CharacterClaims.FirstOrDefaultAsync(x => x.DiscordId == discordId, cancellationToken);
+        if (claim is null)
+        {
+            throw new InvalidOperationException("No claim exists for given Discord user ID");
+        }
+
+        if (claim.Confirmed)
+        {
+            throw new InvalidOperationException("Claim was confirmed before. It must be manually deleted.");
+        }
+
+        context.CharacterClaims.Remove(claim);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

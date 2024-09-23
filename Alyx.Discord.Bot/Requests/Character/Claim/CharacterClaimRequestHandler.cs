@@ -53,10 +53,6 @@ internal class CharacterClaimRequestHandler(ISender sender)
             case CharacterClaimRequestStatus.ClaimAlreadyExistsForThisCharacter:
                 CreateClaimInstructions(builder, response.Code!);
                 break;
-            case CharacterClaimRequestStatus.ClaimAlreadyExistsForDifferentCharacter:
-                builder.WithContent("You've already created a claim for a different character.");
-                // TODO add button to delete claim
-                break;
             case CharacterClaimRequestStatus.NewClaimCreated:
                 CreateClaimInstructions(builder, response.Code!);
                 break;
@@ -65,7 +61,6 @@ internal class CharacterClaimRequestHandler(ISender sender)
                 break;
             case CharacterClaimRequestStatus.UserAlreadyHasMainCharacter:
                 builder.WithContent("You've already claimed a different character.");
-                // TODO add button to delete claim
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(response), response, null);

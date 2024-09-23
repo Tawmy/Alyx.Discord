@@ -25,11 +25,6 @@ public enum CharacterClaimRequestStatus
     ClaimAlreadyExistsForThisCharacter,
 
     /// <summary>
-    ///     Claim for another character already exists for this user, but it has not been confirmed with code yet.
-    /// </summary>
-    ClaimAlreadyExistsForDifferentCharacter,
-
-    /// <summary>
     ///     Claim for this character already exists, and code was found on Lodestone profile.
     /// </summary>
     ClaimConfirmed,
