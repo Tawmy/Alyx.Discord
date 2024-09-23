@@ -1,6 +1,6 @@
 # This is a generated file. Not intended for manual editing.
 services:
-  main:
+  bot:
     build:
       context: "/Users/tawmy/Git/Alyx.Discord"
       dockerfile: "Alyx.Discord.Api/Dockerfile"
