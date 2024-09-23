@@ -3,6 +3,8 @@ namespace Alyx.Discord.Core;
 // TODO docs
 public static class EnvironmentVariables
 {
+    public const string StatusMessage = "STATUS_MESSAGE";
+
     public const string NetStoneApiRootUri = "NETSTONE_API_ROOT_URI";
     public const string NetStoneApiAuthority = "NETSTONE_API_AUTHORITY";
     public const string NetStoneApiClientId = "NETSTONE_API_CLIENT_ID";

@@ -33,7 +33,11 @@ public static class DependencyInjection
             new CommandsConfiguration { DebugGuildId = debugGuildId });
 
         services.AddComponentInteractionHandlers();
-        services.ConfigureEventHandlers(x => x.AddEventHandlers<ComponentInteractionCreatedEventHandler>());
+        services.ConfigureEventHandlers(x =>
+        {
+            x.AddEventHandlers<GuildDownloadCompletedEventHandler>();
+            x.AddEventHandlers<ComponentInteractionCreatedEventHandler>();
+        });
 
         services.AddHostedService<BotService>();
     }
