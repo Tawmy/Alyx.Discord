@@ -6,7 +6,7 @@ public class MainCharacter
 
     public required ulong DiscordId { get; set; }
 
-    public required int CharacterId { get; set; }
+    public required string CharacterId { get; set; }
 
     public required string Code { get; set; }
 

@@ -37,6 +37,11 @@ internal static class Messages
                     return sb.ToString();
                 }
             }
+
+            public static class Claim
+            {
+                public const string Description = "Claim a character as your main character.";
+            }
         }
     }
 }

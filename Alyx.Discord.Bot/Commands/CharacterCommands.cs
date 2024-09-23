@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Alyx.Discord.Bot.AutoCompleteProviders;
+using Alyx.Discord.Bot.Requests.Character.Claim;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Commands;
@@ -24,5 +25,17 @@ internal class CharacterCommands(ISender sender)
         bool isPrivate = false)
     {
         return sender.Send(new CharacterGetRequest(ctx, name, world, isPrivate));
+    }
+
+    [Command("claim")]
+    [Description(Messages.Commands.Character.Claim.Description)]
+    public Task ClaimAsync(SlashCommandContext ctx,
+        [Description(Messages.Commands.Parameters.CharacterName)]
+        string name,
+        [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
+        [Description(Messages.Commands.Parameters.CharacterWorld)]
+        string world)
+    {
+        return sender.Send(new CharacterClaimRequest(ctx, name, world));
     }
 }
