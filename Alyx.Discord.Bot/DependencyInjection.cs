@@ -51,5 +51,7 @@ public static class DependencyInjection
 
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
             .ConfirmClaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
+            .ConfirmUnclaim);
     }
 }

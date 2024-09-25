@@ -93,10 +93,21 @@ internal static class Messages
                 public const string NoMainCharacterDescription =
                     "You do not have a main character to unclaim. You can claim one using `/character claim`";
 
+                public const string ConfirmDescription = """
+                                                         Are you sure you want to unclaim this character?
+
+                                                         This action cannot be undone, you will have to verify this or another character by adding a code to the Lodestone again.
+                                                         """;
+
                 public const string SuccessTitle = "Main Character Unclaimed";
 
                 public const string SuccessDescription =
                     "You've unclaimed your main chracter. You can claim a different one using `/character claim`.";
+
+                public static string ConfirmTitle(string name, string world)
+                {
+                    return $"Unclaim {name} ({world})";
+                }
             }
         }
     }

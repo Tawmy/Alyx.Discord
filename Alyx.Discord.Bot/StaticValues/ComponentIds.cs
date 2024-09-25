@@ -10,5 +10,6 @@ internal static class ComponentIds
     public static class Button
     {
         public const string ConfirmClaim = "BUTTON_CONFIRM_CLAIM";
+        public const string ConfirmUnclaim = "BUTTON_CONFIRM_UNCLAIM";
     }
 }

@@ -1,9 +1,10 @@
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
+using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
+using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
-using CoreRequest = Alyx.Discord.Core.Requests.Character.Unclaim.CharacterUnclaimRequest;
 
 namespace Alyx.Discord.Bot.Requests.Character.Unclaim;
 
@@ -12,10 +13,10 @@ internal class CharacterUnclaimRequestHandler(ISender sender, DiscordEmbedServic
 {
     public async Task Handle(CharacterUnclaimRequest request, CancellationToken cancellationToken)
     {
+        string lodestoneId;
         try
         {
-            // throws exception when not found, we do not need return value
-            await sender.Send(new GetMainCharacterIdRequest(request.Ctx.User.Id), cancellationToken);
+            lodestoneId = await sender.Send(new GetMainCharacterIdRequest(request.Ctx.User.Id), cancellationToken);
         }
         catch (NotFoundException)
         {
@@ -25,10 +26,25 @@ internal class CharacterUnclaimRequestHandler(ISender sender, DiscordEmbedServic
             return;
         }
 
-        await sender.Send(new CoreRequest(request.Ctx.User.Id), cancellationToken);
+        await request.Ctx.DeferResponseAsync(true);
 
-        var embed = embedService.Create(Messages.Commands.Character.Unclaim.SuccessDescription,
-            Messages.Commands.Character.Unclaim.SuccessTitle);
-        await request.Ctx.RespondAsync(embed, true);
+        var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId), cancellationToken);
+
+        var embed = CreateConfirmationEmbed(character.Name, character.Server);
+        var button = CreateConfirmationButton();
+
+        await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed).AddComponents(button));
+    }
+
+    private DiscordEmbed CreateConfirmationEmbed(string name, string world)
+    {
+        var title = Messages.Commands.Character.Unclaim.ConfirmTitle(name, world);
+        return embedService.Create(Messages.Commands.Character.Unclaim.ConfirmDescription, title);
+    }
+
+    private DiscordButtonComponent CreateConfirmationButton()
+    {
+        return new DiscordButtonComponent(DiscordButtonStyle.Danger, ComponentIds.Button.ConfirmUnclaim,
+            "Confirm Unclaim");
     }
 }
