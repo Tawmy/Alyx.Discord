@@ -38,6 +38,16 @@ internal static class Messages
                 }
             }
 
+            public static class Me
+            {
+                public const string Description = "Get information about your character.";
+
+                public const string NotFoundTitle = "Main Character Not Found";
+
+                public const string NotFoundDescription =
+                    "You have not claimed a character yet. You can do so using `/character claim`.";
+            }
+
             public static class Claim
             {
                 public const string Description = "Claim a character as your main character.";
@@ -73,14 +83,20 @@ internal static class Messages
                 }
             }
 
-            public static class Me
+            public static class Unclaim
             {
-                public const string Description = "Get information about your character.";
+                public const string Description =
+                    "Unclaim your main character. Use this if you want to switch main characters.";
 
-                public const string NotFoundTitle = "Main Character Not Found";
+                public const string NoMainCharacterTitle = "No Main Character";
 
-                public const string NotFoundDescription =
-                    "You have not claimed a character yet. You can do so using `/character claim`.";
+                public const string NoMainCharacterDescription =
+                    "You do not have a main character to unclaim. You can claim one using `/character claim`";
+
+                public const string SuccessTitle = "Main Character Unclaimed";
+
+                public const string SuccessDescription =
+                    "You've unclaimed your main chracter. You can claim a different one using `/character claim`.";
             }
         }
     }

@@ -3,6 +3,7 @@ using Alyx.Discord.Bot.AutoCompleteProviders;
 using Alyx.Discord.Bot.Requests.Character.Claim;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Requests.Character.Me;
+using Alyx.Discord.Bot.Requests.Character.Unclaim;
 using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Commands;
 using DSharpPlus.Commands.Processors.SlashCommands;
@@ -28,6 +29,13 @@ internal class CharacterCommands(ISender sender)
         return sender.Send(new CharacterGetRequest(ctx, name, world, isPrivate));
     }
 
+    [Command("me")]
+    [Description(Messages.Commands.Character.Me.Description)]
+    public Task MeAsync(SlashCommandContext ctx)
+    {
+        return sender.Send(new CharacterMeRequest(ctx));
+    }
+
     [Command("claim")]
     [Description(Messages.Commands.Character.Claim.Description)]
     public Task ClaimAsync(SlashCommandContext ctx,
@@ -40,10 +48,10 @@ internal class CharacterCommands(ISender sender)
         return sender.Send(new CharacterClaimRequest(ctx, name, world));
     }
 
-    [Command("me")]
-    [Description(Messages.Commands.Character.Me.Description)]
-    public Task MeAsync(SlashCommandContext ctx)
+    [Command("unclaim")]
+    [Description(Messages.Commands.Character.Unclaim.Description)]
+    public Task UnclaimAsync(SlashCommandContext ctx)
     {
-        return sender.Send(new CharacterMeRequest(ctx));
+        return sender.Send(new CharacterUnclaimRequest(ctx));
     }
 }
