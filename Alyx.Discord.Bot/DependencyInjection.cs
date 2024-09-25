@@ -20,6 +20,7 @@ public static class DependencyInjection
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IDataPersistenceService, DataPersistenceService>();
+        services.AddSingleton<DiscordEmbedService>();
 
         services.AddMediatR(cfg =>
         {

@@ -1,5 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -8,8 +9,10 @@ using CoreRequest = Alyx.Discord.Core.Requests.Character.Claim.CharacterClaimReq
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonConfirmClaimHandler(ISender sender, IDataPersistenceService dataPersistenceService)
-    : IComponentInteractionHandler
+internal class ButtonConfirmClaimHandler(
+    ISender sender,
+    IDataPersistenceService dataPersistenceService,
+    DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId)
@@ -22,7 +25,7 @@ internal class ButtonConfirmClaimHandler(ISender sender, IDataPersistenceService
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 
         var builder = new DiscordFollowupMessageBuilder();
-        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, lodestoneId);
+        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, embedService, lodestoneId);
 
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

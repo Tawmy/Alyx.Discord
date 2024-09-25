@@ -41,6 +41,36 @@ internal static class Messages
             public static class Claim
             {
                 public const string Description = "Claim a character as your main character.";
+
+                public const string AlreadyClaimed =
+                    "You've already claimed this character. To unclaim this character, use `/character unclaim`.";
+
+                public const string ClaimedBySomeoneElse = "This character has already been claimed by someone else.";
+
+                public const string ConfirmedTitle = "Claim Confirmed";
+
+                public const string ConfirmedDescription =
+                    """
+                    You can now request your character sheet using `/character me`.
+
+                    Feel free to remove the code from your Lodestone profile.
+                    """;
+
+                public const string AlreadyClaimedDifferent =
+                    "You've already claimed a different character. To unclaim your main character, use `/character unclaim`.";
+
+                public const string ClaimInstructionsTitle = "Claim Character";
+
+                public static string ClaimInstructionsDescription(string code)
+                {
+                    return $"""
+                            To validate your character, please add the following code to your Lodestone profile: `{code}`.
+
+                            If you already have a bio on your profile, it's enough to add the code to it, you do not have to delete anything.
+
+                            Afterwards, press the button to validate the code.
+                            """;
+                }
             }
         }
     }

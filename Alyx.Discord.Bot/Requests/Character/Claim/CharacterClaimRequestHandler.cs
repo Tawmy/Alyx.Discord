@@ -1,5 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus.Entities;
 using MediatR;
@@ -9,8 +10,10 @@ using CoreRequest = Alyx.Discord.Core.Requests.Character.Claim.CharacterClaimReq
 
 namespace Alyx.Discord.Bot.Requests.Character.Claim;
 
-internal class CharacterClaimRequestHandler(ISender sender, IDataPersistenceService dataPersistenceService)
-    : IRequestHandler<CharacterClaimRequest>
+internal class CharacterClaimRequestHandler(
+    ISender sender,
+    IDataPersistenceService dataPersistenceService,
+    DiscordEmbedService embedService) : IRequestHandler<CharacterClaimRequest>
 {
     public async Task Handle(CharacterClaimRequest request, CancellationToken cancellationToken)
     {
@@ -45,7 +48,7 @@ internal class CharacterClaimRequestHandler(ISender sender, IDataPersistenceServ
         var coreRequest = new CoreRequest(request.Ctx.Interaction.User.Id, lodestoneId);
         var characterClaimRequestResponse = await sender.Send(coreRequest, cancellationToken);
 
-        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, lodestoneId);
+        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, embedService, lodestoneId);
 
         await request.Ctx.FollowupAsync(builder);
     }
