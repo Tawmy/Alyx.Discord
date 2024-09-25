@@ -125,6 +125,17 @@ internal static class Messages
         }
     }
 
+    public static class Events
+    {
+        public static class SheetMetadata
+        {
+            public const string Title = "Sheet Metadata";
+
+            public const string Description =
+                "A character sheet consists of data from different parts of the Lodestone. These parts are cached to ease the burden on the Lodestone. Here you can see how long ago each was updated.";
+        }
+    }
+
     public static class DataPersistence
     {
         public const string NotPersisted =

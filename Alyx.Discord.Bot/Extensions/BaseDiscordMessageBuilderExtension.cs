@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.PersistentData;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Claim;
@@ -60,10 +61,11 @@ internal static class BaseDiscordMessageBuilderExtension
         await sheet.SaveAsync(stream, new WebpEncoder(), cancellationToken);
         stream.Seek(0, SeekOrigin.Begin);
 
-        var fileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
+        var timestamp = DateTime.UtcNow;
+        var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
         var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
-        var buttonMetadata = CreateMetadataButton(dataPersistenceService, lodestoneId);
+        var buttonMetadata = CreateMetadataButton(dataPersistenceService, lodestoneId, timestamp);
 
         builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
 
@@ -116,9 +118,10 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     private static DiscordButtonComponent CreateMetadataButton(IDataPersistenceService dataPersistenceService,
-        string lodestoneId)
+        string lodestoneId, DateTime timestamp)
     {
-        var componentId = dataPersistenceService.AddData(lodestoneId, ComponentIds.Button.CharacterSheetMetadata);
+        var data = new SheetMetadata(lodestoneId, timestamp);
+        var componentId = dataPersistenceService.AddData(data, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
     }
