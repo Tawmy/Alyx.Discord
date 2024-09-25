@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Alyx.Discord.Db.Configurations;
 
-public class MainCharacterConfiguration : IEntityTypeConfiguration<MainCharacter>
+public class CharacterConfiguration : IEntityTypeConfiguration<Character>
 {
-    public void Configure(EntityTypeBuilder<MainCharacter> builder)
+    public void Configure(EntityTypeBuilder<Character> builder)
     {
         builder.HasKey(x => x.Id);
 

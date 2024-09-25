@@ -16,7 +16,7 @@ public class DatabaseContext : DbContext
 
     #region DbSets
 
-    public DbSet<MainCharacter> CharacterClaims { get; set; }
+    public DbSet<Character> Characters { get; set; }
 
     #endregion
 

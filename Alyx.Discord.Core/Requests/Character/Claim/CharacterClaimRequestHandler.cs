@@ -1,6 +1,5 @@
 using System.Text;
 using Alyx.Discord.Db;
-using Alyx.Discord.Db.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NetStone.Api.Client;
@@ -13,7 +12,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
     public async Task<CharacterClaimRequestResponse> Handle(CharacterClaimRequest request,
         CancellationToken cancellationToken)
     {
-        var claims = await context.CharacterClaims.Where(x =>
+        var claims = await context.Characters.Where(x =>
                 x.CharacterId == request.LodestoneId ||
                 x.DiscordId == request.DiscordId)
             .OrderByDescending(x => x.Confirmed)
@@ -87,17 +86,18 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
         return stringBuilder.ToString();
     }
 
-    private async Task<MainCharacter> CreateAndSaveNewCharacter(string lodestoneId, ulong discordId,
+    private async Task<Db.Models.Character> CreateAndSaveNewCharacter(string lodestoneId, ulong discordId,
         CancellationToken cancellationToken)
     {
-        var newClaim = new MainCharacter
+        var newClaim = new Db.Models.Character
         {
             CharacterId = lodestoneId,
             Code = GenerateNewCode(),
-            DiscordId = discordId
+            DiscordId = discordId,
+            IsMainCharacter = true // currently only one character can be claimed
         };
 
-        await context.CharacterClaims.AddAsync(newClaim, cancellationToken);
+        await context.Characters.AddAsync(newClaim, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
         return newClaim;
@@ -116,7 +116,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
         return character.Bio.Contains(code);
     }
 
-    private Task<int> ConfirmClaimAsync(MainCharacter claim, CancellationToken cancellationToken)
+    private Task<int> ConfirmClaimAsync(Db.Models.Character claim, CancellationToken cancellationToken)
     {
         claim.Confirmed = true;
         return context.SaveChangesAsync(cancellationToken);
@@ -124,7 +124,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
 
     private async Task DeleteExistingClaim(ulong discordId, CancellationToken cancellationToken)
     {
-        var claim = await context.CharacterClaims.FirstOrDefaultAsync(x => x.DiscordId == discordId, cancellationToken);
+        var claim = await context.Characters.FirstOrDefaultAsync(x => x.DiscordId == discordId, cancellationToken);
         if (claim is null)
         {
             throw new InvalidOperationException("No claim exists for given Discord user ID");
@@ -135,7 +135,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
             throw new InvalidOperationException("Claim was confirmed before. It must be manually deleted.");
         }
 
-        context.CharacterClaims.Remove(claim);
+        context.Characters.Remove(claim);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

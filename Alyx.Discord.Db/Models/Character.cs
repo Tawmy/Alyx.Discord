@@ -1,6 +1,6 @@
 namespace Alyx.Discord.Db.Models;
 
-public class MainCharacter
+public class Character
 {
     public int Id { get; set; } // PK
 
@@ -11,4 +11,6 @@ public class MainCharacter
     public required string Code { get; set; }
 
     public bool Confirmed { get; set; }
+    
+    public bool IsMainCharacter { get; set; }
 }
