@@ -71,6 +71,9 @@ internal static class Messages
 
                 public const string ClaimInstructionsTitle = "Claim Character";
 
+                public const string CodeNotFound =
+                    "Code was not found. Please make sure you have added the code to the correct character on the Lodestone.";
+
                 public static string ClaimInstructionsDescription(string code)
                 {
                     return $"""

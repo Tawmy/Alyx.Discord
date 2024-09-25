@@ -27,11 +27,11 @@ internal static class BaseDiscordMessageBuilderExtension
                 builder.AddEmbed(embedService.CreateError(Messages.Commands.Character.Claim.ClaimedBySomeoneElse));
                 break;
             case CharacterClaimRequestStatus.ClaimAlreadyExistsForThisCharacter:
-                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!));
+                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, true));
                 builder.AddComponents(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.NewClaimCreated:
-                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!));
+                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, false));
                 builder.AddComponents(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.ClaimConfirmed:
@@ -48,9 +48,23 @@ internal static class BaseDiscordMessageBuilderExtension
         return builder;
     }
 
-    private static DiscordEmbed CreateClaimInstructionsEmbed(DiscordEmbedService embedService, string code)
+    /// <summary>
+    ///     Create instructions for claiming character.
+    /// </summary>
+    /// <param name="embedService">Instance of embed service.</param>
+    /// <param name="code">Code that user needs needs to add to their Lodestone profile.</param>
+    /// <param name="isRetry">If this is not the first time user sees message, add additional note.</param>
+    /// <returns>Discord embed with instructions.</returns>
+    private static DiscordEmbed CreateClaimInstructionsEmbed(DiscordEmbedService embedService, string code,
+        bool isRetry)
     {
         var description = Messages.Commands.Character.Claim.ClaimInstructionsDescription(code);
+
+        if (isRetry)
+        {
+            description = $"**{Messages.Commands.Character.Claim.CodeNotFound}**\n\n{description}";
+        }
+
         return embedService.Create(description, Messages.Commands.Character.Claim.ClaimInstructionsTitle);
     }
 
