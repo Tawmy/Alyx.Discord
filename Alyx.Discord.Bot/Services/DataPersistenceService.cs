@@ -34,6 +34,7 @@ internal class DataPersistenceService : IDataPersistenceService
         if (_data.Count > CacheSize)
         {
             // keep dictionary size below CacheSize
+            // TODO test this
             var first = _data.First();
             _data.Remove(first.Key, out _);
         }
@@ -61,7 +62,6 @@ internal class DataPersistenceService : IDataPersistenceService
         }
 
         data = (T)Convert.ChangeType(result.Object, typeof(T));
-        _data.TryRemove(id, out _);
         return true;
     }
 
