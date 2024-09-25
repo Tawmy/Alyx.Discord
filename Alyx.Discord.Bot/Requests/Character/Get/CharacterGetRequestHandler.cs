@@ -1,17 +1,19 @@
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
-using Alyx.Discord.Core.Requests.Character.Sheet;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.Character.Get;
 
-internal class CharacterGetRequestHandler(ISender sender, DiscordEmbedService embedService)
+internal class CharacterGetRequestHandler(
+    ISender sender,
+    DiscordEmbedService embedService,
+    IDataPersistenceService dataPersistenceService)
     : IRequestHandler<CharacterGetRequest>
 {
     public async Task Handle(CharacterGetRequest request, CancellationToken cancellationToken)
@@ -43,24 +45,9 @@ internal class CharacterGetRequestHandler(ISender sender, DiscordEmbedService em
         {
             var first = searchDtos.First();
 
-            var sheet = await sender.Send(new CharacterSheetRequest(first.Id), cancellationToken);
-
-            await using var stream = new MemoryStream();
-            await sheet.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var fileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {first.Name}.webp";
-
-            var button = CreateLodestoneLinkButton(first.Id);
-
-            builder = new DiscordInteractionResponseBuilder().AddFile(fileName, stream, true).AddComponents(button);
-            await request.Ctx.FollowupAsync(builder);
+            builder = new DiscordInteractionResponseBuilder();
+            await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, first.Id,
+                async b => await request.Ctx.FollowupAsync(b), cancellationToken);
         }
-    }
-
-    private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
 }

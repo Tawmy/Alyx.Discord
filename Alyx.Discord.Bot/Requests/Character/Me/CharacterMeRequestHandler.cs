@@ -1,15 +1,18 @@
+using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
-using Alyx.Discord.Core.Requests.Character.Sheet;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.Character.Me;
 
-internal class CharacterMeRequestHandler(ISender sender, DiscordEmbedService embedService)
+internal class CharacterMeRequestHandler(
+    ISender sender,
+    DiscordEmbedService embedService,
+    IDataPersistenceService dataPersistenceService)
     : IRequestHandler<CharacterMeRequest>
 {
     public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
@@ -29,23 +32,8 @@ internal class CharacterMeRequestHandler(ISender sender, DiscordEmbedService emb
 
         await request.Ctx.DeferResponseAsync();
 
-        var sheet = await sender.Send(new CharacterSheetRequest(lodestoneId), cancellationToken);
-
-        await using var stream = new MemoryStream();
-        await sheet.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
-
-        var fileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
-
-        var button = CreateLodestoneLinkButton(lodestoneId);
-
-        var builder = new DiscordInteractionResponseBuilder().AddFile(fileName, stream, true).AddComponents(button);
-        await request.Ctx.FollowupAsync(builder);
-    }
-
-    private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
+        var builder = new DiscordInteractionResponseBuilder();
+        await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, lodestoneId,
+            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
     }
 }

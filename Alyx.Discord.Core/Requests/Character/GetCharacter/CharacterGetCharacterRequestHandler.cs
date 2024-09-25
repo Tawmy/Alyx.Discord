@@ -10,6 +10,6 @@ public class CharacterGetCharacterRequestHandler(NetStoneApiClient client)
     public Task<CharacterDto> Handle(CharacterGetCharacterRequest request, CancellationToken cancellationToken)
     {
         // never refresh cache here, not necessary
-        return client.Character.GetAsync(request.lodestoneId, cancellationToken: cancellationToken);
+        return client.Character.GetAsync(request.LodestoneId, cancellationToken: cancellationToken);
     }
 }

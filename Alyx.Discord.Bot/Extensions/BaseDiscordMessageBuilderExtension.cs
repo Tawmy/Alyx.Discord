@@ -2,13 +2,16 @@ using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Claim;
+using Alyx.Discord.Core.Requests.Character.Sheet;
 using DSharpPlus.Entities;
+using MediatR;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Extensions;
 
 internal static class BaseDiscordMessageBuilderExtension
 {
-    public static BaseDiscordMessageBuilder<T> AddClaimResponse<T>(this BaseDiscordMessageBuilder<T> builder,
+    public static void AddClaimResponse<T>(this BaseDiscordMessageBuilder<T> builder,
         CharacterClaimRequestResponse claimRequestResponse,
         IDataPersistenceService dataPersistenceService,
         DiscordEmbedService embedService,
@@ -44,9 +47,30 @@ internal static class BaseDiscordMessageBuilderExtension
             default:
                 throw new ArgumentOutOfRangeException(nameof(claimRequestResponse), claimRequestResponse, null);
         }
-
-        return builder;
     }
+
+    public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
+        ISender sender, IDataPersistenceService dataPersistenceService, string lodestoneId,
+        Func<BaseDiscordMessageBuilder<T>, Task> followupTask, CancellationToken cancellationToken = default)
+        where T : BaseDiscordMessageBuilder<T>
+    {
+        var sheet = await sender.Send(new CharacterSheetRequest(lodestoneId), cancellationToken);
+
+        await using var stream = new MemoryStream();
+        await sheet.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        var fileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
+
+        var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
+        var buttonMetadata = CreateMetadataButton(dataPersistenceService, lodestoneId);
+
+        builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
+
+        await followupTask(builder);
+    }
+
+    #region AddClaimResponse
 
     /// <summary>
     ///     Create instructions for claiming character.
@@ -78,6 +102,26 @@ internal static class BaseDiscordMessageBuilderExtension
     private static DiscordLinkButtonComponent CreateOpenLodestoneButton()
     {
         const string url = "https://eu.finalfantasyxiv.com/lodestone/my/setting/profile/";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.EditLodestoneProfile);
+    }
+
+    #endregion
+
+    #region CreateSheetAndSendFollowupAsync
+
+    private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
         return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
+
+    private static DiscordButtonComponent CreateMetadataButton(IDataPersistenceService dataPersistenceService,
+        string lodestoneId)
+    {
+        var componentId = dataPersistenceService.AddData(lodestoneId, ComponentIds.Button.CharacterSheetMetadata);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
+            Messages.Buttons.CharacterSheetMetadata);
+    }
+
+    #endregion
 }

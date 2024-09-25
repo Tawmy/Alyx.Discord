@@ -11,5 +11,6 @@ internal static class ComponentIds
     {
         public const string ConfirmClaim = "BUTTON_CONFIRM_CLAIM";
         public const string ConfirmUnclaim = "BUTTON_CONFIRM_UNCLAIM";
+        public const string CharacterSheetMetadata = "BUTTON_CHARACTER_SHEET_METADATA";
     }
 }
