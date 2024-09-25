@@ -11,6 +11,9 @@ internal static class BaseDiscordMessageBuilderExtension
         CharacterClaimRequestResponse claimRequestResponse, IDataPersistenceService dataPersistenceService,
         string lodestoneId) where T : BaseDiscordMessageBuilder<T>
     {
+        var buttonLodestone = CreateOpenLodestoneButton();
+        var buttonConfirm = CreateClaimConfirmButton(dataPersistenceService, lodestoneId);
+        
         switch (claimRequestResponse.Status)
         {
             case CharacterClaimRequestStatus.AlreadyClaimedByUser:
@@ -21,11 +24,11 @@ internal static class BaseDiscordMessageBuilderExtension
                 break;
             case CharacterClaimRequestStatus.ClaimAlreadyExistsForThisCharacter:
                 CreateClaimInstructions(builder, claimRequestResponse.Code!);
-                builder.AddComponents(CreateClaimConfirmButton(dataPersistenceService, lodestoneId));
+                builder.AddComponents(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.NewClaimCreated:
                 CreateClaimInstructions(builder, claimRequestResponse.Code!);
-                builder.AddComponents(CreateClaimConfirmButton(dataPersistenceService, lodestoneId));
+                builder.AddComponents(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.ClaimConfirmed:
                 builder.WithContent("Claim confirmed! You can now request your character sheet using /character me.");
@@ -47,10 +50,15 @@ internal static class BaseDiscordMessageBuilderExtension
         builder.WithContent($"Please put code `{code}` into your Lodestone profile description.");
     }
 
-    private static DiscordButtonComponent CreateClaimConfirmButton(IDataPersistenceService dataPersistenceService,
-        string lodestoneId)
+    private static DiscordButtonComponent CreateClaimConfirmButton(IDataPersistenceService dataPersistenceService, string lodestoneId)
     {
         var componentId = dataPersistenceService.AddData(lodestoneId, ComponentIds.Button.ConfirmClaim);
         return new DiscordButtonComponent(DiscordButtonStyle.Primary, componentId, "Confirm Claim");
+    }
+
+    private static DiscordLinkButtonComponent CreateOpenLodestoneButton() 
+    {
+        const string url = "https://eu.finalfantasyxiv.com/lodestone/my/setting/profile/";
+        return new DiscordLinkButtonComponent(url, "Edit Lodestone Profile");
     }
 }
