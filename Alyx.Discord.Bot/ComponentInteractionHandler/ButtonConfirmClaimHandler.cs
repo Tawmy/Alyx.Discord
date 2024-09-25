@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -19,9 +20,17 @@ internal class ButtonConfirmClaimHandler(
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
+        if (!dataPersistenceService.TryGetData<string>(dataId, out var lodestoneId))
+        {
+            // TODO potentially move this into dataPersistenceService or even discordEmbedService?
+            var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+            return;
+        }
+
         await args.Interaction.DeferAsync(true);
 
-        var lodestoneId = dataPersistenceService.GetData<string>(dataId);
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 
         var builder = new DiscordFollowupMessageBuilder();

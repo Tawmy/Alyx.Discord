@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Alyx.Discord.Bot.Interfaces;
 
 internal interface IDataPersistenceService
@@ -24,17 +26,19 @@ internal interface IDataPersistenceService
     ///     Get data for given ID and remove from cache.
     /// </summary>
     /// <param name="id">Data it previously returned by <see cref="AddData{T}(T)" />.</param>
+    /// <param name="data">Data from cache, if found.</param>
     /// <typeparam name="T">Data type. Collection is generic and saved as object.</typeparam>
-    /// <returns>Persisted data for given ID.</returns>
+    /// <returns>True if data was found in cache, false if not.</returns>
     /// <exception cref="ArgumentException">Thrown if type does not match object.</exception>
-    T GetData<T>(string id);
+    bool TryGetData<T>(string id, [MaybeNullWhen(false)] out T data);
 
     /// <summary>
     ///     Parse component string and return data.
     /// </summary>
     /// <param name="componentString">Component string with Component ID and Data ID. Format: ComponentId/CacheId</param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
+    /// <param name="data"></param>
+    /// <typeparam name="T">Data from cache, if found.</typeparam>
+    /// <returns>True if data was found in cache, false if not.</returns>
     /// <exception cref="InvalidOperationException"></exception>
-    T ParseStringAndGetData<T>(string componentString);
+    bool TryParseStringAndGetData<T>(string componentString, [MaybeNullWhen(false)] out T data);
 }

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Alyx.Discord.Bot.Interfaces;
 
@@ -8,7 +9,7 @@ internal class DataPersistenceService : IDataPersistenceService
 {
     private const int CacheSize = 10000;
 
-    private readonly ConcurrentDictionary<string, (Type, object)> _data = [];
+    private readonly ConcurrentDictionary<string, (Type Type, object Object)> _data = [];
 
     public string AddData<T>(T data)
     {
@@ -46,21 +47,25 @@ internal class DataPersistenceService : IDataPersistenceService
         return $"{componentId}/{dataId}";
     }
 
-    public T GetData<T>(string id)
+    public bool TryGetData<T>(string id, [MaybeNullWhen(false)] out T data)
     {
-        var (type, data) = _data[id];
+        if (!_data.TryGetValue(id, out var result))
+        {
+            data = default;
+            return false;
+        }
 
-        if (type != typeof(T))
+        if (result.Type != typeof(T))
         {
             throw new ArgumentException("Type of data for given ID does not match.");
         }
 
-        var converted = (T)Convert.ChangeType(data, typeof(T));
+        data = (T)Convert.ChangeType(result.Object, typeof(T));
         _data.TryRemove(id, out _);
-        return converted;
+        return true;
     }
 
-    public T ParseStringAndGetData<T>(string componentString)
+    public bool TryParseStringAndGetData<T>(string componentString, [MaybeNullWhen(false)] out T value)
     {
         var split = componentString.Split('/');
         if (split.Length != 2)
@@ -68,7 +73,14 @@ internal class DataPersistenceService : IDataPersistenceService
             throw new ArgumentException("Format for given component string is not valid.");
         }
 
-        return GetData<T>(split[1]);
+        if (TryGetData<T>(split[1], out var data))
+        {
+            value = data;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 
     private static string GenerateNewId()
