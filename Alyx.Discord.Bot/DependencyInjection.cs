@@ -19,6 +19,8 @@ public static class DependencyInjection
 {
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IDataPersistenceService, DataPersistenceService>();
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblies(typeof(CharacterSearchRequest).Assembly,
@@ -45,5 +47,8 @@ public static class DependencyInjection
     private static void AddComponentInteractionHandlers(this IServiceCollection services)
     {
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterHandler>(ComponentIds.Select.Character);
+
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
+            .ConfirmClaim);
     }
 }

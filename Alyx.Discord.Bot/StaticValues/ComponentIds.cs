@@ -6,4 +6,9 @@ internal static class ComponentIds
     {
         public const string Character = "SELECT_CHARACTER";
     }
+
+    public static class Button
+    {
+        public const string ConfirmClaim = "BUTTON_CONFIRM_CLAIM";
+    }
 }

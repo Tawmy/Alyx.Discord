@@ -11,6 +11,6 @@ public class Character
     public required string Code { get; set; }
 
     public bool Confirmed { get; set; }
-    
+
     public bool IsMainCharacter { get; set; }
 }

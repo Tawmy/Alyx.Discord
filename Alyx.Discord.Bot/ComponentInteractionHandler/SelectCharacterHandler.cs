@@ -10,7 +10,8 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 public class SelectCharacterHandler(ISender sender) : IComponentInteractionHandler
 {
-    public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args)
+    public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
+        string? dataId)
     {
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
