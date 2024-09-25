@@ -36,6 +36,11 @@ internal static class Messages
 
                     return sb.ToString();
                 }
+
+                public static string CharacterNotFound(string name, string world)
+                {
+                    return $"Could not find {name} on {world}.";
+                }
             }
 
             public static class Me
@@ -73,6 +78,11 @@ internal static class Messages
 
                 public const string CodeNotFound =
                     "Code was not found. Please make sure you have added the code to the correct character on the Lodestone.";
+
+                public static string MultipleResults(string name, string world)
+                {
+                    return $"Multiple results found for {name} on {world}. Please enter an exact name.";
+                }
 
                 public static string ClaimInstructionsDescription(string code)
                 {
@@ -119,5 +129,12 @@ internal static class Messages
     {
         public const string NotPersisted =
             "Data for this interaction has already been cleared. Please start over and run the command again.";
+    }
+
+    public static class Buttons
+    {
+        public const string OpenLodestoneProfile = "Open Lodestone Profile";
+        public const string ValidateCode = "Validate Code";
+        public const string ConfirmUnclaim = "Confirm Unclaim";
     }
 }

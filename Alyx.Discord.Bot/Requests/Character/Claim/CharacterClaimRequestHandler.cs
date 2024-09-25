@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus.Entities;
 using MediatR;
@@ -28,17 +29,16 @@ internal class CharacterClaimRequestHandler(
         }
         catch (NotFoundException)
         {
-            var content = $"Could not find {request.Name} on {request.World}.";
-            builder.WithContent(content);
+            var description = Messages.Commands.Character.Get.CharacterNotFound(request.Name, request.World);
+            builder.AddEmbed(embedService.CreateError(description));
             await request.Ctx.FollowupAsync(builder);
             return;
         }
 
         if (searchDtos.Count > 1)
         {
-            // TODO move into extension method that replies with standardised error message
-            var content = $"Multiple results found for {request.Name} on {request.World}. Please enter an exact name.";
-            builder.WithContent(content);
+            var description = Messages.Commands.Character.Claim.MultipleResults(request.Name, request.World);
+            builder.AddEmbed(embedService.Create(description));
             await request.Ctx.FollowupAsync(builder);
             return;
         }

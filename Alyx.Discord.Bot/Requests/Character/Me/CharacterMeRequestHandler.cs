@@ -46,6 +46,6 @@ internal class CharacterMeRequestHandler(ISender sender, DiscordEmbedService emb
     private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
-        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
 }

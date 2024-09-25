@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Sheet;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -34,6 +35,6 @@ public class SelectCharacterHandler(ISender sender) : IComponentInteractionHandl
     private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
-        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
 }

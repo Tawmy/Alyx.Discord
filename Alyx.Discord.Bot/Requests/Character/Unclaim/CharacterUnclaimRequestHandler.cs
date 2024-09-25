@@ -42,9 +42,9 @@ internal class CharacterUnclaimRequestHandler(ISender sender, DiscordEmbedServic
         return embedService.Create(Messages.Commands.Character.Unclaim.ConfirmDescription, title);
     }
 
-    private DiscordButtonComponent CreateConfirmationButton()
+    private static DiscordButtonComponent CreateConfirmationButton()
     {
         return new DiscordButtonComponent(DiscordButtonStyle.Danger, ComponentIds.Button.ConfirmUnclaim,
-            "Confirm Unclaim");
+            Messages.Buttons.ConfirmUnclaim);
     }
 }

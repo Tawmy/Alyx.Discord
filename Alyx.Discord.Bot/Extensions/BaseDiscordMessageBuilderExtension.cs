@@ -72,12 +72,12 @@ internal static class BaseDiscordMessageBuilderExtension
         string lodestoneId)
     {
         var componentId = dataPersistenceService.AddData(lodestoneId, ComponentIds.Button.ConfirmClaim);
-        return new DiscordButtonComponent(DiscordButtonStyle.Primary, componentId, "Validate Code");
+        return new DiscordButtonComponent(DiscordButtonStyle.Primary, componentId, Messages.Buttons.ValidateCode);
     }
 
     private static DiscordLinkButtonComponent CreateOpenLodestoneButton()
     {
         const string url = "https://eu.finalfantasyxiv.com/lodestone/my/setting/profile/";
-        return new DiscordLinkButtonComponent(url, "Edit Lodestone Profile");
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
 }
