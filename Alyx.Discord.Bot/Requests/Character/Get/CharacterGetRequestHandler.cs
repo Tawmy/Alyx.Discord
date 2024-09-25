@@ -10,7 +10,7 @@ using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.Character.Get;
 
-public class CharacterGetRequestHandler(ISender sender) : IRequestHandler<CharacterGetRequest>
+internal class CharacterGetRequestHandler(ISender sender) : IRequestHandler<CharacterGetRequest>
 {
     public async Task Handle(CharacterGetRequest request, CancellationToken cancellationToken)
     {

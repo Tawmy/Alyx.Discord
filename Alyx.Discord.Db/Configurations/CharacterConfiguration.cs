@@ -12,7 +12,7 @@ public class CharacterConfiguration : IEntityTypeConfiguration<Character>
 
         builder.HasIndex(x => x.DiscordId).IsUnique(); // one main character per discord id
 
-        builder.Property(x => x.CharacterId).HasMaxLength(10);
+        builder.Property(x => x.LodestoneId).HasMaxLength(10);
 
         builder.HasIndex(x => x.Code).IsUnique();
 

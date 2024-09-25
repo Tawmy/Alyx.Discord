@@ -72,6 +72,16 @@ internal static class Messages
                             """;
                 }
             }
+
+            public static class Me
+            {
+                public const string Description = "Get information about your character.";
+
+                public const string NotFoundTitle = "Main Character Not Found";
+
+                public const string NotFoundDescription =
+                    "You have not claimed a character yet. You can do so using `/character claim`.";
+            }
         }
     }
 }

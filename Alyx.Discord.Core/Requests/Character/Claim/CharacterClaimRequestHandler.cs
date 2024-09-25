@@ -13,7 +13,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
         CancellationToken cancellationToken)
     {
         var claims = await context.Characters.Where(x =>
-                x.CharacterId == request.LodestoneId ||
+                x.LodestoneId == request.LodestoneId ||
                 x.DiscordId == request.DiscordId)
             .OrderByDescending(x => x.Confirmed)
             .ToListAsync(cancellationToken);
@@ -21,13 +21,13 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
         if (claims.FirstOrDefault(x =>
                 x.Confirmed &&
                 x.DiscordId == request.DiscordId &&
-                x.CharacterId != request.LodestoneId) is not null)
+                x.LodestoneId != request.LodestoneId) is not null)
         {
             // user has already claimed a different character
             return new CharacterClaimRequestResponse(CharacterClaimRequestStatus.UserAlreadyHasMainCharacter);
         }
 
-        if (claims.FirstOrDefault(x => x.CharacterId == request.LodestoneId && x.Confirmed) is { } confirmedClaim)
+        if (claims.FirstOrDefault(x => x.LodestoneId == request.LodestoneId && x.Confirmed) is { } confirmedClaim)
         {
             // check whether existing confirmed claim is user's or someone else's
             // !! never return another user's code !!
@@ -42,7 +42,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
         {
             // if existing claim is for this character
 
-            if (existingClaim.CharacterId != request.LodestoneId)
+            if (existingClaim.LodestoneId != request.LodestoneId)
             {
                 // user's existing claim is for a different character -> delete existing and create new
                 await DeleteExistingClaim(request.DiscordId, cancellationToken);
@@ -91,7 +91,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
     {
         var newClaim = new Db.Models.Character
         {
-            CharacterId = lodestoneId,
+            LodestoneId = lodestoneId,
             Code = GenerateNewCode(),
             DiscordId = discordId,
             IsMainCharacter = true // currently only one character can be claimed
