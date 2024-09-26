@@ -23,7 +23,7 @@ internal class CharacterCommands(ISender sender)
         [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
         [Description(Messages.Commands.Parameters.CharacterWorld)]
         string world,
-        [Description(Messages.Commands.Parameters.Private)]
+        [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
         bool isPrivate = false)
     {
         return sender.Send(new CharacterGetRequest(ctx, name, world, isPrivate));
@@ -31,9 +31,11 @@ internal class CharacterCommands(ISender sender)
 
     [Command("me")]
     [Description(Messages.Commands.Character.Me.Description)]
-    public Task MeAsync(SlashCommandContext ctx)
+    public Task MeAsync(SlashCommandContext ctx,
+        [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+        bool isPrivate = false)
     {
-        return sender.Send(new CharacterMeRequest(ctx));
+        return sender.Send(new CharacterMeRequest(ctx, isPrivate));
     }
 
     [Command("claim")]

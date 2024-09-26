@@ -30,7 +30,7 @@ internal class CharacterMeRequestHandler(
             return;
         }
 
-        await request.Ctx.DeferResponseAsync();
+        await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
         var builder = new DiscordInteractionResponseBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, lodestoneId,
