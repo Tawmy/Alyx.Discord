@@ -1,17 +1,14 @@
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
-using Alyx.Discord.Core.Requests.Character.SheetMetadata;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using MediatR;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class ButtonSheetMetadataHandler(
-    ISender sender,
     DiscordEmbedService embedService,
     IDataPersistenceService dataPersistenceService) : IComponentInteractionHandler
 {
@@ -20,7 +17,7 @@ internal class ButtonSheetMetadataHandler(
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        if (!dataPersistenceService.TryGetData<PersistentData.SheetMetadata>(dataId, out var sheetMetadata))
+        if (!dataPersistenceService.TryGetData<IEnumerable<SheetMetadata>>(dataId, out var sheetMetadata))
         {
             // TODO potentially move this into dataPersistenceService or even discordEmbedService?
             var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
@@ -29,19 +26,13 @@ internal class ButtonSheetMetadataHandler(
             return;
         }
 
-        await args.Interaction.DeferAsync(true);
+        var builder = new DiscordInteractionResponseBuilder().AsEphemeral();
+        builder.AddEmbed(CreateMetadataEmbed(sheetMetadata));
 
-        var cacheMetadata =
-            await sender.Send(
-                new CharacterSheetMetadataRequest(sheetMetadata.LodestoneId, sheetMetadata.OriginalTimestamp));
-
-        var builder = new DiscordFollowupMessageBuilder();
-        builder.AddEmbed(CreateMetadataEmbed(cacheMetadata));
-
-        await args.Interaction.CreateFollowupMessageAsync(builder);
+        await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, builder);
     }
 
-    private static DiscordEmbed CreateMetadataEmbed(ICollection<SheetMetadata> metadata)
+    private static DiscordEmbed CreateMetadataEmbed(IEnumerable<SheetMetadata> metadata)
     {
         var builder = new DiscordEmbedBuilder();
 
