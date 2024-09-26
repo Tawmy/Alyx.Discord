@@ -6,7 +6,6 @@ using Alyx.Discord.Core.Structs;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Humanizer;
 using MediatR;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
@@ -51,7 +50,7 @@ internal class ButtonSheetMetadataHandler(
 
         foreach (var entry in metadata)
         {
-            builder.AddField(entry.Title, entry.LastUpdated.Humanize(), true);
+            builder.AddField(entry.Title, Formatter.Timestamp(entry.LastUpdated), true);
         }
 
         return builder.Build();
