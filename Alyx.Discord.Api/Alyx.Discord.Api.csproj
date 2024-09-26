@@ -5,10 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <AssemblyVersion>1.1.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
     </ItemGroup>
 
     <ItemGroup>
