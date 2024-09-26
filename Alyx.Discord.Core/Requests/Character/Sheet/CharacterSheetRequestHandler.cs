@@ -1,10 +1,10 @@
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
+using Alyx.Discord.Core.Structs;
 using MediatR;
 using NetStone.Api.Client;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp;
 
 namespace Alyx.Discord.Core.Requests.Character.Sheet;
 
@@ -12,9 +12,9 @@ internal class CharacterSheetRequestHandler(
     AlyxConfiguration config,
     NetStoneApiClient client,
     CharacterSheetService characterSheetService)
-    : IRequestHandler<CharacterSheetRequest, Image>
+    : IRequestHandler<CharacterSheetRequest, CharacterSheet>
 {
-    public async Task<Image> Handle(CharacterSheetRequest request,
+    public async Task<CharacterSheet> Handle(CharacterSheetRequest request,
         CancellationToken cancellationToken)
     {
         var id = request.LodestoneId;
@@ -54,10 +54,35 @@ internal class CharacterSheetRequestHandler(
             }
         }
 
-        return await characterSheetService.CreateCharacterSheetAsync(taskCharacter.Result,
+        var image = await characterSheetService.CreateCharacterSheetAsync(taskCharacter.Result,
             !taskClassJobs.IsFaulted ? taskClassJobs.Result : null,
             !taskMinions.IsFaulted ? taskMinions.Result : null,
             !taskMounts.IsFaulted ? taskMounts.Result : null,
             freeCompany);
+
+        var now = DateTime.UtcNow;
+
+        var metadata = new List<SheetMetadata> { new("Character", taskCharacter.Result.LastUpdated) };
+        if (!taskClassJobs.IsFaulted)
+        {
+            metadata.Add(new SheetMetadata("Jobs", taskClassJobs.Result.LastUpdated ?? now));
+        }
+
+        if (!taskMinions.IsFaulted)
+        {
+            metadata.Add(new SheetMetadata("Minions", taskMinions.Result.LastUpdated ?? now));
+        }
+
+        if (!taskMounts.IsFaulted)
+        {
+            metadata.Add(new SheetMetadata("Mounts", taskMounts.Result.LastUpdated ?? now));
+        }
+
+        if (freeCompany is not null)
+        {
+            metadata.Add(new SheetMetadata("Free Company", freeCompany.LastUpdated));
+        }
+
+        return new CharacterSheet(image, metadata);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json;
 using Alyx.Discord.Bot.Interfaces;
 
 namespace Alyx.Discord.Bot.Services;
@@ -9,7 +10,7 @@ internal class DataPersistenceService : IDataPersistenceService
 {
     private const int CacheSize = 10000;
 
-    private readonly ConcurrentDictionary<string, (Type Type, object Object)> _data = [];
+    private readonly ConcurrentDictionary<string, (Type Type, string SerializedObject)> _data = [];
 
     public string AddData<T>(T data)
     {
@@ -25,7 +26,7 @@ internal class DataPersistenceService : IDataPersistenceService
             id = GenerateNewId();
         } while (_data.ContainsKey(id));
 
-        if (!_data.TryAdd(id, (typeof(T), data)))
+        if (!_data.TryAdd(id, (typeof(T), JsonSerializer.Serialize(data))))
         {
             // should never happen because of loop right beforehand
             throw new InvalidOperationException("Data for the given ID already exists.");
@@ -61,8 +62,8 @@ internal class DataPersistenceService : IDataPersistenceService
             throw new ArgumentException("Type of data for given ID does not match.");
         }
 
-        data = (T)Convert.ChangeType(result.Object, typeof(T));
-        return true;
+        data = JsonSerializer.Deserialize<T>(result.SerializedObject);
+        return data is not null;
     }
 
     public bool TryParseStringAndGetData<T>(string componentString, [MaybeNullWhen(false)] out T value)
