@@ -19,6 +19,9 @@ public static class DependencyInjection
 {
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IDataPersistenceService, DataPersistenceService>();
+        services.AddSingleton<DiscordEmbedService>();
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblies(typeof(CharacterSearchRequest).Assembly,
@@ -33,7 +36,11 @@ public static class DependencyInjection
             new CommandsConfiguration { DebugGuildId = debugGuildId });
 
         services.AddComponentInteractionHandlers();
-        services.ConfigureEventHandlers(x => x.AddEventHandlers<ComponentInteractionCreatedEventHandler>());
+        services.ConfigureEventHandlers(x =>
+        {
+            x.AddEventHandlers<GuildDownloadCompletedEventHandler>();
+            x.AddEventHandlers<ComponentInteractionCreatedEventHandler>();
+        });
 
         services.AddHostedService<BotService>();
     }
@@ -41,5 +48,12 @@ public static class DependencyInjection
     private static void AddComponentInteractionHandlers(this IServiceCollection services)
     {
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterHandler>(ComponentIds.Select.Character);
+
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
+            .ConfirmClaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
+            .ConfirmUnclaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button
+            .CharacterSheetMetadata);
     }
 }

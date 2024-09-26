@@ -1,10 +1,25 @@
 ﻿services:
-  main:
+  db:
+    image: postgres:16.4-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=alyx
+      - POSTGRES_USER=alyx
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d alyx -U alyx" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  bot:
     image: alyx.discord
     build:
       context: .
       dockerfile: Alyx.Discord.Api/Dockerfile
     environment:
+      DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
       BOT_TOKEN: ${BOT_TOKEN}
       NETSTONE_API_CLIENT_ID: ${NETSTONE_API_CLIENT_ID}
       NETSTONE_API_CLIENT_SECRET: ${NETSTONE_API_CLIENT_SECRET}

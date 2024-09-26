@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Alyx.Discord.Db\Alyx.Discord.Db.csproj"/>
         <ProjectReference Include="..\NetStone.Api.Client\NetStone.Api.Client\NetStone.Api.Client.csproj"/>
     </ItemGroup>
 

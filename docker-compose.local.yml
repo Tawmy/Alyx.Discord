@@ -1,10 +1,19 @@
 services:
-  main:
-    container_name: alyx-discord
+  db:
+    restart: on-failure
+    labels:
+      - dev.orbstack.domains=db.alyx.discord.local
+
+  bot:
     environment:
       DEBUG_GUILD_ID: 1284800895967559711
+      STATUS_MESSAGE: "I'm in development!"
       NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
       NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
       NETSTONE_API_SCOPES: netstone.api
     labels:
       - dev.orbstack.domains=alyx.discord.local
+
+volumes:
+  postgres_data:
+    name: alyx-postgres
