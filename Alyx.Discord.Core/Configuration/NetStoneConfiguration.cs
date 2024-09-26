@@ -12,18 +12,19 @@ public record NetStoneConfiguration(
 {
     internal static NetStoneConfiguration FromEnvironment(IConfiguration configuration)
     {
-        const int hour = 60;
+        const int day = 60 * 24;
+        const int week = day * 7;
 
         var maxAgeCharacter = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeCharacter)
-                              ?? hour;
+                              ?? day;
         var maxAgeClassJobs = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeClassJobs)
-                              ?? hour * 2;
+                              ?? day;
         var maxAgeMinions = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeMinions)
-                            ?? hour * 4;
+                            ?? day;
         var maxAgeMounts = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeMounts)
-                           ?? hour * 4;
+                           ?? day;
         var maxAgeFc = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeFreeCompany)
-                       ?? hour * 4;
+                       ?? week;
 
         return new NetStoneConfiguration(maxAgeCharacter, maxAgeClassJobs, maxAgeMinions, maxAgeMounts, maxAgeFc);
     }

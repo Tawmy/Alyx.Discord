@@ -10,10 +10,15 @@ services:
       db:
         condition: service_healthy
     environment:
-      STATUS_MESSAGE: "v1.0.0: Character Sheets!"
+      STATUS_MESSAGE: "New: Character Sheets!"
       NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
       NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
       NETSTONE_API_SCOPES: netstone.api
+      NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
+      NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
+      NETSTONE_MAX_AGE_MINIONS: "1080" # 18 hours
+      NETSTONE_MAX_AGE_MOUNTS: "1080" # 18 hours
+      NETSTONE_MAX_FREE_COMPANY: "10080" # one week
 
 volumes:
   postgres_data:
