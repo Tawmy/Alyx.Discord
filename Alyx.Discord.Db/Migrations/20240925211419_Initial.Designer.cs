@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Alyx.Discord.Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240925125825_RenameCharacterIdToLodestoneId")]
-    partial class RenameCharacterIdToLodestoneId
+    [Migration("20240925211419_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
