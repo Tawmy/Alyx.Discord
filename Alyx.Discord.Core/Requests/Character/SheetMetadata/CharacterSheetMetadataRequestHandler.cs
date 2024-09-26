@@ -22,7 +22,7 @@ public class CharacterSheetMetadataRequestHandler(AlyxConfiguration config, NetS
         var list = new List<Structs.SheetMetadata>
         {
             new("Character", taskCharacter.Result.LastUpdated),
-            new("ClassJobs", request.SheetTimestamp),
+            new("ClassJobs", taskClassJobs.Result.LastUpdated ?? request.SheetTimestamp),
             new("Mounts", taskMounts.Result.LastUpdated ?? request.SheetTimestamp),
             new("Minions", taskMinions.Result.LastUpdated ?? request.SheetTimestamp)
         };
