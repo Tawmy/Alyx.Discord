@@ -8,11 +8,14 @@ using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Commands;
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.SlashCommands.ArgumentModifiers;
+using DSharpPlus.Commands.Processors.SlashCommands.Metadata;
+using DSharpPlus.Entities;
 using MediatR;
 
 namespace Alyx.Discord.Bot.Commands;
 
 [Command("character")]
+[InteractionInstallType(DiscordApplicationIntegrationType.GuildInstall, DiscordApplicationIntegrationType.UserInstall)]
 internal class CharacterCommands(ISender sender)
 {
     [Command("get")]
