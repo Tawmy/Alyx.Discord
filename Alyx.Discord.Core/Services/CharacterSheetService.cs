@@ -121,6 +121,12 @@ internal class CharacterSheetService
         _image = await _imageTask.Value;
 
         var imgJob = await _externalResourceService.GetJobIconAsync(character.ActiveClassJob);
+        if (imgJob.Width > 64)
+        {
+            // icons must be 64x64
+            imgJob.Mutate(x => x.Resize(new Size(64, 64)));
+        }
+
         _image.Mutate(x => x.DrawImage(imgJob, CharacterSheetCoordinates.Other.JobIcon, 1));
     }
 
