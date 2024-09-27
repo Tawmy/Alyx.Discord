@@ -10,7 +10,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      STATUS_MESSAGE: "New: Character Sheets!"
+      STATUS_MESSAGE: "New: User Installation!"
       NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
       NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
       NETSTONE_API_SCOPES: netstone.api
