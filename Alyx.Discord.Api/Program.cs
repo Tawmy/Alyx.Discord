@@ -1,6 +1,9 @@
+using Alyx.Discord.Api.Extensions;
 using Alyx.Discord.Bot;
+using Alyx.Discord.Bot.HealthChecks;
 using Alyx.Discord.Core;
 using Alyx.Discord.Core.Extensions;
+using Alyx.Discord.Core.HealthChecks;
 using Alyx.Discord.Db;
 using NetStone.Common.Extensions;
 
@@ -16,6 +19,10 @@ builder.Services.AddSingleton(version);
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddDbServices();
 builder.Services.AddBotServices(builder.Configuration);
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<DatabaseContext>()
+    .AddCheck<BotHealthCheck>("bot")
+    .AddCheck<NetStoneApiHealthCheck>("netstone");
 
 var app = builder.Build();
 
@@ -29,6 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+app.UseHealthChecks();
 
 app.MapControllers();
 
