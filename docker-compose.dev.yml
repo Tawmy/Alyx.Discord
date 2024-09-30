@@ -11,9 +11,6 @@ services:
         condition: service_healthy
     environment:
       STATUS_MESSAGE: "New: User Installation!"
-      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
-      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      NETSTONE_API_SCOPES: netstone.api
       NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
       NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
       NETSTONE_MAX_AGE_MINIONS: "1080" # 18 hours

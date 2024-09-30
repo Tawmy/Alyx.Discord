@@ -24,6 +24,8 @@ builder.Services.AddHealthChecks()
     .AddCheck<BotHealthCheck>("bot")
     .AddCheck<NetStoneApiHealthCheck>("netstone");
 
+builder.AddAuthentication();
+
 var app = builder.Build();
 
 await app.Services.MigrateDatabaseAsync();
