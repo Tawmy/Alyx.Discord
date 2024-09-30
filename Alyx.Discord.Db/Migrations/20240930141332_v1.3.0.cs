@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Alyx.Discord.Db.Migrations
 {
     /// <inheritdoc />
-    public partial class AddInteractionData : Migration
+    public partial class v130 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

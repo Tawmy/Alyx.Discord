@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Alyx.Discord.Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240930090636_AddInteractionData")]
-    partial class AddInteractionData
+    [Migration("20240930141332_v1.3.0")]
+    partial class v130
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
