@@ -15,8 +15,10 @@ public class FfxivCommands(ISender sender)
 {
     [Command("copypasta")]
     [Description(Messages.Commands.Ffxiv.Copypasta.Description)]
-    public Task CopypastaAsync(SlashCommandContext ctx)
+    public Task CopypastaAsync(SlashCommandContext ctx,
+        [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+        bool isPrivate = false)
     {
-        return sender.Send(new FfxivCopypastaRequest(ctx));
+        return sender.Send(new FfxivCopypastaRequest(ctx, isPrivate));
     }
 }
