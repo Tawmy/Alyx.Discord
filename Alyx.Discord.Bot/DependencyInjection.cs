@@ -32,7 +32,11 @@ public static class DependencyInjection
         });
 
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
-        services.AddDiscordClient(token, DiscordIntents.AllUnprivileged);
+        services.AddDiscordClient(token, DiscordIntents.AllUnprivileged).Configure<DiscordConfiguration>(x =>
+        {
+            x.LogUnknownAuditlogs = false;
+            x.LogUnknownEvents = false;
+        });
 
         var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
         services.AddCommandsExtension(x => x.AddCommands<CharacterCommands>(),
