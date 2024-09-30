@@ -28,3 +28,8 @@
       NETSTONE_API_SCOPES: netstone.api
       AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
       AUTH_AUDIENCE: alyx.discord
+      
+      LOGGING__LOGLEVEL__DEFAULT: Information
+      LOGGING__LOGLEVEL__ASPNETCORE: Warning
+      LOGGING__LOGLEVEL__MICROSOFT.ENTITYFRAMEWORKCORE: Warning
+      LOGGING__LOGLEVEL__SYSTEM.NET.HTTP.HTTPCLIENT: Warning
