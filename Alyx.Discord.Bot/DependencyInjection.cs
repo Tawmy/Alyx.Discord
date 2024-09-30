@@ -8,6 +8,9 @@ using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus;
 using DSharpPlus.Commands;
+using DSharpPlus.Commands.Processors.MessageCommands;
+using DSharpPlus.Commands.Processors.SlashCommands;
+using DSharpPlus.Commands.Processors.UserCommands;
 using DSharpPlus.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,8 +42,15 @@ public static class DependencyInjection
         });
 
         var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
-        services.AddCommandsExtension(x => x.AddCommands<CharacterCommands>(),
-            new CommandsConfiguration { DebugGuildId = debugGuildId });
+        services.AddCommandsExtension(x =>
+            {
+                x.AddProcessor<SlashCommandProcessor>();
+                x.AddProcessor<UserCommandProcessor>();
+                x.AddProcessor<MessageCommandProcessor>();
+
+                x.AddCommands<CharacterCommands>();
+            },
+            new CommandsConfiguration { DebugGuildId = debugGuildId, RegisterDefaultCommandProcessors = false });
 
         services.AddComponentInteractionHandlers();
         services.ConfigureEventHandlers(x =>
