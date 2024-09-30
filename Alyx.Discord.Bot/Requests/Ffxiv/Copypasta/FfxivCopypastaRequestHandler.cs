@@ -9,7 +9,7 @@ internal class FfxivCopypastaRequestHandler(ISender sender) : IRequestHandler<Ff
 {
     public async Task Handle(FfxivCopypastaRequest request, CancellationToken cancellationToken)
     {
-        await request.Ctx.DeferResponseAsync();
+        await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
         var response = await sender.Send(new CoreRequest(), cancellationToken);
 

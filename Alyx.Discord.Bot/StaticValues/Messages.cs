@@ -10,7 +10,7 @@ internal static class Messages
         {
             public const string CharacterName = "Character name";
             public const string CharacterWorld = "Character's home world.";
-            public const string Private = "Whether response is private.";
+            public const string Private = "Whether response is visible only to you.";
         }
 
         public static class Character
