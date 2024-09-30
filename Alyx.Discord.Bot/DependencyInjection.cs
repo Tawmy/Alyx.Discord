@@ -49,6 +49,9 @@ public static class DependencyInjection
                 x.AddProcessor<MessageCommandProcessor>();
 
                 x.AddCommands<CharacterCommands>();
+
+                // using generic type does not work if class isn't a command
+                x.AddCommands(typeof(UserContextMenuCommands));
             },
             new CommandsConfiguration { DebugGuildId = debugGuildId, RegisterDefaultCommandProcessors = false });
 

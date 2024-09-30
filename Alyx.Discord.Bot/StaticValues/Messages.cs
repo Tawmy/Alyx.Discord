@@ -125,6 +125,17 @@ internal static class Messages
         }
     }
 
+    public static class UserContextMenus
+    {
+        public static class CharacterSheet
+        {
+            public const string NotFoundTitle = "No Claimed Character";
+
+            public const string NotFoundDescription =
+                "This user has not claimed their character yet. Tell them to do so using `/character claim`!";
+        }
+    }
+
     public static class Events
     {
         public static class SheetMetadata
