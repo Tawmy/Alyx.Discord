@@ -11,6 +11,8 @@ namespace Alyx.Discord.Bot.Commands;
 
 [Command("ffxiv")]
 [InteractionInstallType(DiscordApplicationIntegrationType.GuildInstall, DiscordApplicationIntegrationType.UserInstall)]
+[InteractionAllowedContexts(DiscordInteractionContextType.Guild, DiscordInteractionContextType.BotDM,
+    DiscordInteractionContextType.PrivateChannel)]
 public class FfxivCommands(ISender sender)
 {
     [Command("copypasta")]

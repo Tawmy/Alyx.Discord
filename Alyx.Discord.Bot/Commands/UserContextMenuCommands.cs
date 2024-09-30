@@ -13,6 +13,8 @@ public class UserContextMenuCommands(ISender sender)
     [SlashCommandTypes(DiscordApplicationCommandType.UserContextMenu)]
     [InteractionInstallType(DiscordApplicationIntegrationType.GuildInstall,
         DiscordApplicationIntegrationType.UserInstall)]
+    [InteractionAllowedContexts(DiscordInteractionContextType.Guild, DiscordInteractionContextType.BotDM,
+        DiscordInteractionContextType.PrivateChannel)]
     public Task ShowSheetAsync(SlashCommandContext ctx, DiscordUser user)
     {
         return sender.Send(new UserContextMenuCharacterSheetRequest(ctx, user));

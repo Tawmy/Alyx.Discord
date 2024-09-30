@@ -16,6 +16,8 @@ namespace Alyx.Discord.Bot.Commands;
 
 [Command("character")]
 [InteractionInstallType(DiscordApplicationIntegrationType.GuildInstall, DiscordApplicationIntegrationType.UserInstall)]
+[InteractionAllowedContexts(DiscordInteractionContextType.Guild, DiscordInteractionContextType.BotDM,
+    DiscordInteractionContextType.PrivateChannel)]
 internal class CharacterCommands(ISender sender)
 {
     [Command("get")]
