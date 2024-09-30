@@ -49,6 +49,7 @@ public static class DependencyInjection
                 x.AddProcessor<MessageCommandProcessor>();
 
                 x.AddCommands<CharacterCommands>();
+                x.AddCommands<FfxivCommands>();
 
                 // using generic type does not work if class isn't a command
                 x.AddCommands(typeof(UserContextMenuCommands));

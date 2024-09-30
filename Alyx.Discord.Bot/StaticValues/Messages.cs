@@ -123,6 +123,14 @@ internal static class Messages
                 }
             }
         }
+
+        public static class Ffxiv
+        {
+            public static class Copypasta
+            {
+                public const string Description = "You know what this is.";
+            }
+        }
     }
 
     public static class UserContextMenus
@@ -132,7 +140,11 @@ internal static class Messages
             public const string NotFoundTitle = "No Claimed Character";
 
             public const string NotFoundDescription =
-                "This user has not claimed their character yet. Tell them to do so using `/character claim`!";
+                """
+                This user has not claimed their character yet. Tell them to do so using `/character claim`!
+
+                And if they don't have a character at all... there's always `/ffxiv copypasta`.
+                """;
         }
     }
 
