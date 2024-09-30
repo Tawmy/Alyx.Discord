@@ -136,6 +136,15 @@ internal static class Messages
         }
     }
 
+    public static class InteractionData
+    {
+        public const string NotPersisted = """
+                                           Data for this interaction has already been cleared. Please start over and run the command again.
+
+                                           This error should never show up for commands run from version 1.3.0 onwards.
+                                           """;
+    }
+
     public static class Buttons
     {
         public const string OpenLodestoneProfile = "Open Lodestone Profile";

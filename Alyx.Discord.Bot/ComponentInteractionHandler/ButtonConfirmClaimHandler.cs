@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -21,7 +22,19 @@ internal class ButtonConfirmClaimHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        var lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+        string? lodestoneId;
+        try
+        {
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+        }
+        catch (InvalidOperationException)
+        {
+            // this can be removed long-term, only here to not break functionality from before data was persisted to db 
+            var embed = embedService.CreateError(Messages.InteractionData.NotPersisted);
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+            return;
+        }
 
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 

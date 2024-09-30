@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus;
@@ -7,14 +8,28 @@ using DSharpPlus.EventArgs;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDataService) : IComponentInteractionHandler
+internal class ButtonSheetMetadataHandler(
+    IInteractionDataService interactionDataService,
+    DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        var sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
+        IEnumerable<SheetMetadata> sheetMetadata;
+        try
+        {
+            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
+        }
+        catch (InvalidOperationException)
+        {
+            // this can be removed long-term, only here to not break functionality from before data was persisted to db 
+            var embed = embedService.CreateError(Messages.InteractionData.NotPersisted);
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+            return;
+        }
 
         var builder = new DiscordInteractionResponseBuilder().AsEphemeral();
         builder.AddEmbed(CreateMetadataEmbed(sheetMetadata));
