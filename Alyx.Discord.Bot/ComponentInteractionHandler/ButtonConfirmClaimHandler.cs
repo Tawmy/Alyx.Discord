@@ -12,7 +12,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class ButtonConfirmClaimHandler(
     ISender sender,
-    IDataPersistenceService dataPersistenceService,
+    IInteractionDataService interactionDataService,
     DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
@@ -20,21 +20,27 @@ internal class ButtonConfirmClaimHandler(
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        if (!dataPersistenceService.TryGetData<string>(dataId, out var lodestoneId))
+        await args.Interaction.DeferAsync(true);
+
+        string? lodestoneId;
+        try
         {
-            // TODO potentially move this into dataPersistenceService or even discordEmbedService?
-            var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+        }
+        catch (InvalidOperationException)
+        {
+            // this can be removed long-term, only here to not break functionality from before data was persisted to db 
+            var embed = embedService.CreateError(Messages.InteractionData.NotPersisted);
             await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
             return;
         }
 
-        await args.Interaction.DeferAsync(true);
-
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 
         var builder = new DiscordFollowupMessageBuilder();
-        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, embedService, lodestoneId);
+        await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
+            lodestoneId);
 
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

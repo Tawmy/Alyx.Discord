@@ -83,7 +83,7 @@ internal class CharacterSheetService
 
     private Task<Image> InitializeAsync()
     {
-        return _externalResourceService.GetImageAsync(CharacterSheetImage.TemplateBase);
+        return _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateBase);
     }
 
     private async Task AddCharacterPortraitAsync(CharacterDto character)
@@ -112,7 +112,7 @@ internal class CharacterSheetService
     {
         _image = await _imageTask.Value;
 
-        var imgFrame = await _externalResourceService.GetImageAsync(CharacterSheetImage.TemplateFrame);
+        var imgFrame = await _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateFrame);
         _image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
@@ -134,7 +134,7 @@ internal class CharacterSheetService
     {
         _image = await _imageTask.Value;
 
-        var imgJob = await _externalResourceService.GetImageAsync(CharacterSheetImage.TemplateJobCircle);
+        var imgJob = await _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateJobCircle);
         _image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 

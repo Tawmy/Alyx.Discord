@@ -8,6 +8,9 @@ using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus;
 using DSharpPlus.Commands;
+using DSharpPlus.Commands.Processors.MessageCommands;
+using DSharpPlus.Commands.Processors.SlashCommands;
+using DSharpPlus.Commands.Processors.UserCommands;
 using DSharpPlus.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,25 +18,43 @@ using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
 
+using CoreRequest = CharacterSearchRequest;
+using BotRequest = CharacterGetRequest;
+
 public static class DependencyInjection
 {
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IDataPersistenceService, DataPersistenceService>();
+        services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<DiscordEmbedService>();
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssemblies(typeof(CharacterSearchRequest).Assembly,
-                typeof(CharacterGetRequest).Assembly);
+            cfg.RegisterServicesFromAssemblies(typeof(CoreRequest).Assembly, typeof(BotRequest).Assembly);
+            // Generic handlers are registered in Alyx.Discord.Api.Extensions.ConfigureHostBuilderExtension
         });
 
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
-        services.AddDiscordClient(token, DiscordIntents.AllUnprivileged);
+        services.AddDiscordClient(token, DiscordIntents.AllUnprivileged).Configure<DiscordConfiguration>(x =>
+        {
+            x.LogUnknownAuditlogs = false;
+            x.LogUnknownEvents = false;
+        });
 
         var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
-        services.AddCommandsExtension(x => x.AddCommands<CharacterCommands>(),
-            new CommandsConfiguration { DebugGuildId = debugGuildId });
+        services.AddCommandsExtension(x =>
+            {
+                x.AddProcessor<SlashCommandProcessor>();
+                x.AddProcessor<UserCommandProcessor>();
+                x.AddProcessor<MessageCommandProcessor>();
+
+                x.AddCommands<CharacterCommands>();
+                x.AddCommands<FfxivCommands>();
+
+                // using generic type does not work if class isn't a command
+                x.AddCommands(typeof(UserContextMenuCommands));
+            },
+            new CommandsConfiguration { DebugGuildId = debugGuildId, RegisterDefaultCommandProcessors = false });
 
         services.AddComponentInteractionHandlers();
         services.ConfigureEventHandlers(x =>

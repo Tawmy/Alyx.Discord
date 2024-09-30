@@ -13,7 +13,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Get;
 internal class CharacterGetRequestHandler(
     ISender sender,
     DiscordEmbedService embedService,
-    IDataPersistenceService dataPersistenceService)
+    IInteractionDataService interactionDataService)
     : IRequestHandler<CharacterGetRequest>
 {
     public async Task Handle(CharacterGetRequest request, CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ internal class CharacterGetRequestHandler(
             var first = searchDtos.First();
 
             builder = new DiscordInteractionResponseBuilder();
-            await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, first.Id,
+            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id,
                 async b => await request.Ctx.FollowupAsync(b), cancellationToken);
         }
     }

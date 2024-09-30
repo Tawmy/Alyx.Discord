@@ -7,30 +7,29 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Me;
+namespace Alyx.Discord.Bot.Requests.UserContextMenu.CharacterSheet;
 
-internal class CharacterMeRequestHandler(
+internal class UserContextMenuCharacterSheetRequestHandler(
     ISender sender,
     DiscordEmbedService embedService,
-    IInteractionDataService interactionDataService)
-    : IRequestHandler<CharacterMeRequest>
+    IInteractionDataService interactionDataService) : IRequestHandler<UserContextMenuCharacterSheetRequest>
 {
-    public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
+    public async Task Handle(UserContextMenuCharacterSheetRequest request, CancellationToken cancellationToken)
     {
         string lodestoneId;
         try
         {
-            lodestoneId = await sender.Send(new GetMainCharacterIdRequest(request.Ctx.User.Id), cancellationToken);
+            lodestoneId = await sender.Send(new GetMainCharacterIdRequest(request.User.Id), cancellationToken);
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(Messages.Commands.Character.Me.NotFoundDescription,
-                Messages.Commands.Character.Me.NotFoundTitle);
+            var embed = embedService.CreateError(Messages.UserContextMenus.CharacterSheet.NotFoundDescription,
+                Messages.UserContextMenus.CharacterSheet.NotFoundTitle);
             await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
             return;
         }
 
-        await request.Ctx.DeferResponseAsync(request.IsPrivate);
+        await request.Ctx.DeferResponseAsync();
 
         var builder = new DiscordInteractionResponseBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId,

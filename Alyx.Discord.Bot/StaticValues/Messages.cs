@@ -123,6 +123,29 @@ internal static class Messages
                 }
             }
         }
+
+        public static class Ffxiv
+        {
+            public static class Copypasta
+            {
+                public const string Description = "You know what this is.";
+            }
+        }
+    }
+
+    public static class UserContextMenus
+    {
+        public static class CharacterSheet
+        {
+            public const string NotFoundTitle = "No Claimed Character";
+
+            public const string NotFoundDescription =
+                """
+                This user has not claimed their character yet. Tell them to do so using `/character claim`!
+
+                And if they don't have a character at all... there's always `/ffxiv copypasta`.
+                """;
+        }
     }
 
     public static class Events
@@ -136,10 +159,13 @@ internal static class Messages
         }
     }
 
-    public static class DataPersistence
+    public static class InteractionData
     {
-        public const string NotPersisted =
-            "Data for this interaction has already been cleared. Please start over and run the command again.";
+        public const string NotPersisted = """
+                                           Data for this interaction has already been cleared. Please start over and run the command again.
+
+                                           This error should never show up for commands run from version 1.3.0 onwards.
+                                           """;
     }
 
     public static class Buttons

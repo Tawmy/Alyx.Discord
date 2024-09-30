@@ -14,12 +14,6 @@ public class DatabaseContext : DbContext
     {
     }
 
-    #region DbSets
-
-    public DbSet<Character> Characters { get; set; }
-
-    #endregion
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -39,4 +33,11 @@ public class DatabaseContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
+    #region DbSets
+
+    public DbSet<Character> Characters { get; set; }
+    public DbSet<InteractionData> InteractionDatas { get; set; }
+
+    #endregion
 }

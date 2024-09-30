@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class SelectCharacterHandler(ISender sender, IDataPersistenceService dataPersistenceService)
+internal class SelectCharacterHandler(ISender sender, IInteractionDataService interactionDataService)
     : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
@@ -17,7 +17,7 @@ internal class SelectCharacterHandler(ISender sender, IDataPersistenceService da
         var selectedLodestoneId = args.Values.First();
 
         var builder = new DiscordFollowupMessageBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, selectedLodestoneId,
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, selectedLodestoneId,
             async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b));
     }
 }

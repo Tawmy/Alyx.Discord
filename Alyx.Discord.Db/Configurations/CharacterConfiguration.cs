@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Alyx.Discord.Db.Configurations;
 
-public class CharacterConfiguration : IEntityTypeConfiguration<Character>
+internal class CharacterConfiguration : IEntityTypeConfiguration<Character>
 {
     public void Configure(EntityTypeBuilder<Character> builder)
     {

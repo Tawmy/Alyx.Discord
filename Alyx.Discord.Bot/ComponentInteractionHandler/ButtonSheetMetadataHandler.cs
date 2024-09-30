@@ -9,18 +9,23 @@ using DSharpPlus.EventArgs;
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class ButtonSheetMetadataHandler(
-    DiscordEmbedService embedService,
-    IDataPersistenceService dataPersistenceService) : IComponentInteractionHandler
+    IInteractionDataService interactionDataService,
+    DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        if (!dataPersistenceService.TryGetData<IEnumerable<SheetMetadata>>(dataId, out var sheetMetadata))
+        IEnumerable<SheetMetadata> sheetMetadata;
+        try
         {
-            // TODO potentially move this into dataPersistenceService or even discordEmbedService?
-            var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
+            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
+        }
+        catch (InvalidOperationException)
+        {
+            // this can be removed long-term, only here to not break functionality from before data was persisted to db 
+            var embed = embedService.CreateError(Messages.InteractionData.NotPersisted);
             await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
             return;

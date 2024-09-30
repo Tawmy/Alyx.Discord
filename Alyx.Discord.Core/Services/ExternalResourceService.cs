@@ -13,9 +13,12 @@ internal class ExternalResourceService
     private readonly Lazy<Task> _initializeTask;
     private readonly ILogger<ExternalResourceService> _logger;
 
+    private FrozenDictionary<CharacterSheetImage, Image> _characterSheetImages =
+        FrozenDictionary<CharacterSheetImage, Image>.Empty;
+
     private FontCollection? _fontCollection = new();
-    private FrozenDictionary<CharacterSheetImage, Image> _images = FrozenDictionary<CharacterSheetImage, Image>.Empty;
     private FrozenDictionary<ClassJob, Image> _jobIcons = FrozenDictionary<ClassJob, Image>.Empty;
+    private FrozenDictionary<string, Image> _other = FrozenDictionary<string, Image>.Empty;
 
     public ExternalResourceService(ILogger<ExternalResourceService> logger)
     {
@@ -23,11 +26,11 @@ internal class ExternalResourceService
         _initializeTask = new Lazy<Task>(InitializeAsync);
     }
 
-    public async Task<Image> GetImageAsync(CharacterSheetImage image)
+    public async Task<Image> GetCharacterSheetImageAsync(CharacterSheetImage image)
     {
         await _initializeTask.Value;
 
-        return _images[image].CloneAs<Rgba32>();
+        return _characterSheetImages[image].CloneAs<Rgba32>();
     }
 
     public async Task<Image> GetJobIconAsync(ClassJob job)
@@ -44,11 +47,18 @@ internal class ExternalResourceService
         return grandCompany switch
         {
             GrandCompany.NoAffiliation => throw new InvalidOperationException("No affiliation, no crest."),
-            GrandCompany.Maelstrom => await GetImageAsync(CharacterSheetImage.GcMaelstrom),
-            GrandCompany.OrderOfTheTwinAdder => await GetImageAsync(CharacterSheetImage.GcTwinAdder),
-            GrandCompany.ImmortalFlames => await GetImageAsync(CharacterSheetImage.GcImmortalFlames),
+            GrandCompany.Maelstrom => await GetCharacterSheetImageAsync(CharacterSheetImage.GcMaelstrom),
+            GrandCompany.OrderOfTheTwinAdder => await GetCharacterSheetImageAsync(CharacterSheetImage.GcTwinAdder),
+            GrandCompany.ImmortalFlames => await GetCharacterSheetImageAsync(CharacterSheetImage.GcImmortalFlames),
             _ => throw new ArgumentOutOfRangeException(nameof(grandCompany), grandCompany, null)
         };
+    }
+
+    public async Task<Image> GetOtherImageAsync(string key)
+    {
+        await _initializeTask.Value;
+
+        return _other[key];
     }
 
     public async Task<FontFamily> GetFontFamilyAsync(CharacterSheetFont font)
@@ -66,14 +76,15 @@ internal class ExternalResourceService
 
     private async Task InitializeAsync()
     {
-        _images = await LoadImagesAsync();
+        _characterSheetImages = await LoadCharacterSheetImagesAsync();
         _jobIcons = await LoadJobIconsAsync();
+        _other = await LoadOtherImagesAsync();
         _fontCollection = LoadFonts();
 
         _logger.LogInformation("External sources loaded successfully.");
     }
 
-    private static async Task<FrozenDictionary<CharacterSheetImage, Image>> LoadImagesAsync()
+    private static async Task<FrozenDictionary<CharacterSheetImage, Image>> LoadCharacterSheetImagesAsync()
     {
         const string subdirectory = "Images/CharacterSheet";
 
@@ -106,6 +117,20 @@ internal class ExternalResourceService
         {
             var path = Path.Combine(AppContext.BaseDirectory, subdirectory, $"{job.ToString().ToLowerInvariant()}.png");
             dict.Add(job, await Image.LoadAsync(path));
+        }
+
+        return dict.ToFrozenDictionary();
+    }
+
+    private async Task<FrozenDictionary<string, Image>> LoadOtherImagesAsync()
+    {
+        const string subdirectory = "Images/Other";
+
+        var dict = new Dictionary<string, Image>();
+        foreach (var filePath in Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, subdirectory))
+                     .Where(x => !x.StartsWith('.')))
+        {
+            dict.Add(Path.GetFileNameWithoutExtension(filePath), await Image.LoadAsync(filePath));
         }
 
         return dict.ToFrozenDictionary();
