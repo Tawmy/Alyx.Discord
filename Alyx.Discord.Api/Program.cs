@@ -9,6 +9,8 @@ using NetStone.Common.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.AddGenericRequestHandlers();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -136,12 +136,6 @@ internal static class Messages
         }
     }
 
-    public static class DataPersistence
-    {
-        public const string NotPersisted =
-            "Data for this interaction has already been cleared. Please start over and run the command again.";
-    }
-
     public static class Buttons
     {
         public const string OpenLodestoneProfile = "Open Lodestone Profile";

@@ -15,17 +15,20 @@ using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
 
+using CoreRequest = CharacterSearchRequest;
+using BotRequest = CharacterGetRequest;
+
 public static class DependencyInjection
 {
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IDataPersistenceService, DataPersistenceService>();
+        services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<DiscordEmbedService>();
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssemblies(typeof(CharacterSearchRequest).Assembly,
-                typeof(CharacterGetRequest).Assembly);
+            cfg.RegisterServicesFromAssemblies(typeof(CoreRequest).Assembly, typeof(BotRequest).Assembly);
+            // Generic handlers are registered in Alyx.Discord.Api.Extensions.ConfigureHostBuilderExtension
         });
 
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);

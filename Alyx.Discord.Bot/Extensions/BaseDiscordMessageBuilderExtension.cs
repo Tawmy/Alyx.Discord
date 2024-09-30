@@ -12,15 +12,15 @@ namespace Alyx.Discord.Bot.Extensions;
 
 internal static class BaseDiscordMessageBuilderExtension
 {
-    public static void AddClaimResponse<T>(this BaseDiscordMessageBuilder<T> builder,
+    public static async Task AddClaimResponseAsync<T>(this BaseDiscordMessageBuilder<T> builder,
         CharacterClaimRequestResponse claimRequestResponse,
-        IDataPersistenceService dataPersistenceService,
+        IInteractionDataService interactionDataService,
         DiscordEmbedService embedService,
         string lodestoneId)
         where T : BaseDiscordMessageBuilder<T>
     {
         var buttonLodestone = CreateOpenLodestoneButton();
-        var buttonConfirm = CreateClaimConfirmButton(dataPersistenceService, lodestoneId);
+        var buttonConfirm = await CreateClaimConfirmButtonAsync(interactionDataService, lodestoneId);
 
         switch (claimRequestResponse.Status)
         {
@@ -51,7 +51,7 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        ISender sender, IDataPersistenceService dataPersistenceService, string lodestoneId,
+        ISender sender, IInteractionDataService interactionDataService, string lodestoneId,
         Func<BaseDiscordMessageBuilder<T>, Task> followupTask, CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
     {
@@ -65,7 +65,7 @@ internal static class BaseDiscordMessageBuilderExtension
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
         var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
-        var buttonMetadata = CreateMetadataButton(dataPersistenceService, sheet.SheetMetadata);
+        var buttonMetadata = await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata);
 
         builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
 
@@ -94,10 +94,10 @@ internal static class BaseDiscordMessageBuilderExtension
         return embedService.Create(description, Messages.Commands.Character.Claim.ClaimInstructionsTitle);
     }
 
-    private static DiscordButtonComponent CreateClaimConfirmButton(IDataPersistenceService dataPersistenceService,
-        string lodestoneId)
+    private static async Task<DiscordButtonComponent> CreateClaimConfirmButtonAsync(
+        IInteractionDataService interactionDataService, string lodestoneId)
     {
-        var componentId = dataPersistenceService.AddData(lodestoneId, ComponentIds.Button.ConfirmClaim);
+        var componentId = await interactionDataService.AddDataAsync(lodestoneId, ComponentIds.Button.ConfirmClaim);
         return new DiscordButtonComponent(DiscordButtonStyle.Primary, componentId, Messages.Buttons.ValidateCode);
     }
 
@@ -117,10 +117,11 @@ internal static class BaseDiscordMessageBuilderExtension
         return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
     }
 
-    private static DiscordButtonComponent CreateMetadataButton(IDataPersistenceService dataPersistenceService,
-        IEnumerable<SheetMetadata> metadata)
+    private static async Task<DiscordButtonComponent> CreateMetadataButtonAsync(
+        IInteractionDataService interactionDataService, IEnumerable<SheetMetadata> metadata)
     {
-        var componentId = dataPersistenceService.AddData(metadata, ComponentIds.Button.CharacterSheetMetadata);
+        var componentId =
+            await interactionDataService.AddDataAsync(metadata, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
     }

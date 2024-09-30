@@ -1,7 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
-using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -12,7 +11,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class ButtonConfirmClaimHandler(
     ISender sender,
-    IDataPersistenceService dataPersistenceService,
+    IInteractionDataService interactionDataService,
     DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
@@ -20,21 +19,15 @@ internal class ButtonConfirmClaimHandler(
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        if (!dataPersistenceService.TryGetData<string>(dataId, out var lodestoneId))
-        {
-            // TODO potentially move this into dataPersistenceService or even discordEmbedService?
-            var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
-            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
-            return;
-        }
-
         await args.Interaction.DeferAsync(true);
+
+        var lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
 
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 
         var builder = new DiscordFollowupMessageBuilder();
-        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, embedService, lodestoneId);
+        await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
+            lodestoneId);
 
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

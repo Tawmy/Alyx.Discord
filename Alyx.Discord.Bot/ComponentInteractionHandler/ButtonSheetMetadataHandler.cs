@@ -1,5 +1,4 @@
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus;
@@ -8,23 +7,14 @@ using DSharpPlus.EventArgs;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonSheetMetadataHandler(
-    DiscordEmbedService embedService,
-    IDataPersistenceService dataPersistenceService) : IComponentInteractionHandler
+internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDataService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
-        if (!dataPersistenceService.TryGetData<IEnumerable<SheetMetadata>>(dataId, out var sheetMetadata))
-        {
-            // TODO potentially move this into dataPersistenceService or even discordEmbedService?
-            var embed = embedService.CreateError(Messages.DataPersistence.NotPersisted);
-            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
-            return;
-        }
+        var sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
 
         var builder = new DiscordInteractionResponseBuilder().AsEphemeral();
         builder.AddEmbed(CreateMetadataEmbed(sheetMetadata));

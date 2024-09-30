@@ -13,7 +13,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Claim;
 
 internal class CharacterClaimRequestHandler(
     ISender sender,
-    IDataPersistenceService dataPersistenceService,
+    IInteractionDataService interactionDataService,
     DiscordEmbedService embedService) : IRequestHandler<CharacterClaimRequest>
 {
     public async Task Handle(CharacterClaimRequest request, CancellationToken cancellationToken)
@@ -48,7 +48,8 @@ internal class CharacterClaimRequestHandler(
         var coreRequest = new CoreRequest(request.Ctx.Interaction.User.Id, lodestoneId);
         var characterClaimRequestResponse = await sender.Send(coreRequest, cancellationToken);
 
-        builder.AddClaimResponse(characterClaimRequestResponse, dataPersistenceService, embedService, lodestoneId);
+        await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
+            lodestoneId);
 
         await request.Ctx.FollowupAsync(builder);
     }

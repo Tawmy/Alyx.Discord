@@ -12,7 +12,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 internal class CharacterMeRequestHandler(
     ISender sender,
     DiscordEmbedService embedService,
-    IDataPersistenceService dataPersistenceService)
+    IInteractionDataService interactionDataService)
     : IRequestHandler<CharacterMeRequest>
 {
     public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ internal class CharacterMeRequestHandler(
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
         var builder = new DiscordInteractionResponseBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, dataPersistenceService, lodestoneId,
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId,
             async b => await request.Ctx.FollowupAsync(b), cancellationToken);
     }
 }
