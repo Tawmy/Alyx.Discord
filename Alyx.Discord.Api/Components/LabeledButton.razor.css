@@ -29,18 +29,7 @@
         }
     }
 
-    button {
-        padding: 12px 16px;
-        border-radius: 12px;
-        cursor: pointer;
-
-        background: #304FFE;
-        border: 1px solid #162578;
-
-        &:hover {
-            background: #4b64fa;
-        }
-
+    a {
         &.top-left {
             grid-column-start: 1;
             grid-column-end: 3;
@@ -52,7 +41,23 @@
             grid-column-start: 1;
             grid-column-end: 3;
         }
+
+        button {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+
+            background: #304FFE;
+            border: 1px solid #162578;
+
+            &:hover {
+                background: #4b64fa;
+            }
+
+
+        }
     }
+
 
     .description {
         grid-row-start: 1;
@@ -89,7 +94,7 @@
             transform: initial;
         }
 
-        button.top-left {
+        a.top-left {
             grid-column-start: 5;
             grid-column-end: 7;
             grid-row-start: 1;

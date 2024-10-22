@@ -10,11 +10,16 @@
     </div>
 
     <div id="buttons">
-        <a href="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
-            <LabeledButton ArrowLabel="Available to everyone on your server.">Add to Server</LabeledButton>
-        </a>
-        <a href="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
-            <LabeledButton ArrowDirection="LabeledButton.Direction.Right" ArrowLabel="Available only to you in all your servers and DMs.">Add to Your Apps</LabeledButton>
-        </a>
+        <LabeledButton
+            ArrowLabel="Available to everyone on your server."
+            Url="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            Add to Server
+        </LabeledButton>
+        <LabeledButton
+            ArrowDirection="LabeledButton.Direction.Right"
+            ArrowLabel="Available only to you in all your servers and DMs."
+            Url="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            Add to Your Apps
+        </LabeledButton>
     </div>
 </div>
