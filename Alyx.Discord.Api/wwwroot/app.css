@@ -27,3 +27,22 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+* {
+    box-sizing: border-box;
+    font-family: system-ui;
+    color: white;
+}
+
+*:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+    font-size: 1em; /* ??? why is this necessary ??? */
+}
+
+body {
+    background: rgb(50, 51, 55);
+}
+
+@font-face {
+    font-family: 'Handwriting';
+    src: url(fonts/PermanentMarker-Regular.ttf) format('woff2');
+}

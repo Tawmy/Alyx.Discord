@@ -1,7 +1,20 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Alyx</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container">
+    <div id="intro">
+        <img src="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256" alt="Alyx Avatar"/>
+        <div class="name">Alyx</div>
+        <div class="subtitle">ffxiv discord app</div>
+    </div>
 
-Welcome to your new app.
+    <div id="buttons">
+        <a href="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            <LabeledButton ArrowLabel="Available to everyone on your server.">Add to Server</LabeledButton>
+        </a>
+        <a href="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            <LabeledButton ArrowDirection="LabeledButton.Direction.Right" ArrowLabel="Available only to you in all your servers and DMs.">Add to Your Apps</LabeledButton>
+        </a>
+    </div>
+</div>
