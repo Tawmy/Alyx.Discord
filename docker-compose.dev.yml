@@ -16,8 +16,18 @@ services:
       NETSTONE_MAX_AGE_MINIONS: "1080" # 18 hours
       NETSTONE_MAX_AGE_MOUNTS: "1080" # 18 hours
       NETSTONE_MAX_FREE_COMPANY: "10080" # one week
+    networks:
+      - default
+      - caddy
+    labels:
+      caddy: alyx.tawmy.dev
+      caddy.reverse_proxy: "{{upstreams 8080}}"
 
 volumes:
   postgres_data:
     name: alyx-discord-db
+    external: true
+
+networks:
+  caddy:
     external: true
