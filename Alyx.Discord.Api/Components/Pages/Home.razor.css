@@ -1,6 +1,7 @@
 .container {
     --gap: 100px;
 
+    width: 100%;
     margin-top: var(--gap);
 
     display: flex;
@@ -11,6 +12,7 @@
 
 #buttons {
     display: grid;
+    width: 100%;
     gap: 12px;
 
     a {

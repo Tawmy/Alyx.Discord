@@ -2,7 +2,7 @@
     position: relative;
 
     display: grid;
-    grid-template-columns: auto auto repeat(4, 1fr);
+    grid-template-columns: repeat(2, min(15%, 5em)) repeat(4, 1fr);
     grid-template-rows: auto 1fr 2em;
     gap: 8px;
 
@@ -12,37 +12,32 @@
 
     img {
         max-height: 80px;
+        grid-column-start: 1;
+        grid-column-end: 3;
+        justify-self: end;
 
         &.top-left {
-            grid-column-start: 2;
-            grid-column-end: 3;
             grid-row-start: 2;
             grid-row-end: 3;
             transform: scale(-1, -1);
         }
 
         &.bottom-right {
-            grid-column-start: 2;
-            grid-column-end: 3;
-            justify-self: end;
             transform: scale(-1, 1); /* flip on y axis */
         }
     }
 
     a {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        
         &.top-left {
-            grid-column-start: 1;
-            grid-column-end: 3;
             grid-row-start: 3;
             grid-row-end: 4;
         }
 
-        &.bottom-right {
-            grid-column-start: 1;
-            grid-column-end: 3;
-        }
-
         button {
+            width: 100%;
             padding: 12px 16px;
             border-radius: 12px;
             cursor: pointer;
@@ -53,12 +48,9 @@
             &:hover {
                 background: #4b64fa;
             }
-
-
         }
     }
-
-
+    
     .description {
         grid-row-start: 1;
         grid-row-end: 4;
@@ -66,16 +58,15 @@
         font-family: 'Handwriting', system-ui;
         font-size: 1.25em;
 
+        grid-column-start: 3;
+        grid-column-end: 7;
+
         &.top-left {
-            grid-column-start: 3;
-            grid-column-end: 7;
             grid-row-start: 1;
             grid-row-end: 4;
         }
 
         &.bottom-right {
-            grid-column-start: 3;
-            grid-column-end: 7;
             align-self: end;
         }
     }
@@ -83,15 +74,21 @@
 
 @media screen and (min-width: 768px) {
     .labeled-button.top-left {
-        grid-template-columns: repeat(4, 1fr) auto auto;
+        grid-template-columns: repeat(4, 1fr) repeat(2, min(15%, 5em));
         grid-template-rows: auto 1fr 2em;
 
         img.top-left {
             grid-column-start: 5;
-            grid-column-end: 6;
+            grid-column-end: 7;
             grid-row-start: initial;
             grid-row-end: initial;
             transform: initial;
+            justify-self: initial;
+        }
+        
+        img.bottom-right {
+            grid-column-start: 2;
+            grid-column-end: 4;
         }
 
         a.top-left {
