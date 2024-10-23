@@ -3,11 +3,11 @@
 <PageTitle>Alyx</PageTitle>
 
 <div class="container">
-    <div id="intro">
-        <img src="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256" alt="Alyx Avatar"/>
-        <div class="name">Alyx</div>
-        <div class="subtitle">ffxiv discord app</div>
-    </div>
+    <UserCard Username="Alyx#2224" DisplayName="Alyx" IsBot="true"
+              AvatarUrl="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256"
+              BannerUrl="https://cdn.discordapp.com/banners/1284807895246045234/3b87556224c6478b821bc4b6b75f7b0a.webp?size=1024">
+        @Bio
+    </UserCard>
 
     <div id="buttons">
         <LabeledButton
@@ -23,3 +23,10 @@
         </LabeledButton>
     </div>
 </div>
+
+@code
+{
+    private static readonly MarkupString Bio = new(@"My name's Alyx.<br/>I'm here to provide support.<br/><br/>
+        <a href=""https://wiki.tawmy.net/books/alyx/page/changelog"" target=""_blank"">Changelog</a> |
+        <a href=""https://alyx.status.tawmy.net"" target=""_blank"">Status</a>");
+}

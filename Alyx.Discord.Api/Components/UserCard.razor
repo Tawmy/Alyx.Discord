@@ -1,0 +1,21 @@
+<div class="user-card">
+    <div class="banner" alt="Banner for user @DisplayName" style="background-image: url('@BannerUrl')"></div>
+    <img class="avatar" src="@AvatarUrl" alt="Avatar for user @DisplayName"/>
+    <div class="text">
+        <div class="display-name @(IsBot ? "is-bot" : string.Empty)">@DisplayName</div>
+        <div class="username">@Username</div>
+        @if (ChildContent is not null)
+        {
+            <div class="bio">@ChildContent</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public required string BannerUrl { get; set; }
+    [Parameter] public required string AvatarUrl { get; set; }
+    [Parameter] public required string DisplayName { get; set; }
+    [Parameter] public required string Username { get; set; }
+    [Parameter] public bool IsBot { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

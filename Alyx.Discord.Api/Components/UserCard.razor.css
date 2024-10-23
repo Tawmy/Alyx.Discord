@@ -1,0 +1,68 @@
+.user-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding-bottom: 26px;
+    width: min(100%, 250px);
+
+    background: rgb(18, 18, 19);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.33);
+
+    border-radius: 10px;
+    overflow: hidden;
+
+    transition: 800ms;
+
+    @media (pointer: fine) {
+        &:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            transform: scale(1.05) rotate(1deg);
+            transition: 180ms;
+        }
+    }
+
+    .banner {
+        height: 100px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .avatar {
+        position: absolute;
+        top: 96px;
+        left: 8px;
+        width: 80px;
+        height: 80px;
+        transform: translateY(-50%);
+        border-radius: 100vmax;
+
+        border: 5px solid rgb(18, 18, 19);
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        padding: 0 13px;
+
+        font-size: 0.9em;
+
+        .display-name {
+            font-weight: bold;
+            font-size: 1.4em;
+        }
+
+        .is-bot::after {
+            display: inline-block;
+            content: 'APP';
+            margin-left: 8px;
+            background: rgb(114, 123, 215);
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 0.7rem;
+            transform: translateY(-0.2rem);
+        }
+    }
+}
