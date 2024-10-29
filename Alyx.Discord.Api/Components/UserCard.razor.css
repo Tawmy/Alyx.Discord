@@ -2,9 +2,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 60px;
     padding-bottom: 26px;
-    width: min(100%, 250px);
+    width: min(100%, 300px);
 
     background: rgb(18, 18, 19);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.33);
@@ -23,17 +23,17 @@
     }
 
     .banner {
-        height: 100px;
+        height: 130px;
         background-size: cover;
         background-position: center;
     }
 
     .avatar {
         position: absolute;
-        top: 96px;
-        left: 8px;
-        width: 80px;
-        height: 80px;
+        top: 126px;
+        left: 12px;
+        width: 95px;
+        height: 95px;
         transform: translateY(-50%);
         border-radius: 100vmax;
 
@@ -43,11 +43,10 @@
     .text {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
+        font-size: 1.1em;
 
         padding: 0 13px;
-
-        font-size: 0.9em;
 
         .display-name {
             font-weight: bold;
@@ -63,6 +62,10 @@
             padding: 2px 4px;
             font-size: 0.7rem;
             transform: translateY(-0.2rem);
+        }
+
+        .bio {
+            margin-top: 24px;
         }
     }
 }
