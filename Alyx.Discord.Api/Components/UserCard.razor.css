@@ -53,14 +53,7 @@
             font-size: 1.4em;
         }
 
-        .is-bot::after {
-            display: inline-block;
-            content: 'APP';
-            margin-left: 8px;
-            background: rgb(114, 123, 215);
-            border-radius: 4px;
-            padding: 2px 4px;
-            font-size: 0.7rem;
+        .is-app::after {
             transform: translateY(-0.2rem);
         }
 

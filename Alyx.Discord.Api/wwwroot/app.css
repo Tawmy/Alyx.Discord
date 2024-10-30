@@ -50,3 +50,13 @@ a, button {
     font-family: 'Handwriting';
     src: url(fonts/PermanentMarker-Regular.ttf) format('woff2');
 }
+
+.is-app::after {
+    display: inline-block;
+    content: 'APP';
+    margin-left: 8px;
+    background: rgb(114, 123, 215);
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.7rem;
+}

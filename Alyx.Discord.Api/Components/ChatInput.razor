@@ -1,17 +1,17 @@
 <button class="btn-input" disabled="@(!_enabled)" @onclick="PressButtonAsync">
     /character get
     <span>
-            <!-- only spans are valid inside buttons aaaa -->
-            <span>name</span>
-            <span>Alyx Bergen</span>
-        </span>
+        <!-- only spans are valid inside buttons aaaa -->
+        <span>name</span>
+        <span>Alyx Bergen</span>
+    </span>
     <span>
-            <span>world</span>
-            <span>Phoenix</span>
-        </span>
+        <span>world</span>
+        <span>Phoenix</span>
+    </span>
     <span>
-            ➤
-        </span>
+        ➤
+    </span>
 </button>
 
 @code {
@@ -24,4 +24,5 @@
         InvokeAsync(StateHasChanged);
         return OnButtonPressed.InvokeAsync();
     }
+
 }
