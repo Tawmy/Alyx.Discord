@@ -1,10 +1,10 @@
 .message {
     display: grid;
     grid-template-columns: 3em 1fr;
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: repeat(3, auto);
     column-gap: 1em;
     row-gap: 0.4em;
-    
+
     .connector {
         width: calc(50% + 0.75em);
         height: 66%;
@@ -13,12 +13,12 @@
         border-radius: 6px 0 0 0;
         transform: translate(calc(1.5em - 1px), calc(0.5em - 1px));
     }
-    
+
     .reply {
         display: flex;
         gap: 0.3em;
         color: rgb(184 186 190);
-        
+
         .command {
             background: rgb(71, 76, 110);
             color: rgb(45, 153, 208);
@@ -30,7 +30,7 @@
             }
         }
     }
-    
+
     > img {
         grid-row-start: 2;
         grid-row-end: 4;
@@ -38,11 +38,11 @@
         max-height: 100%;
         border-radius: 100vmax;
     }
-    
+
     .author {
         font-weight: 500;
     }
-    
+
     .message-content {
         img {
             max-width: 100%;

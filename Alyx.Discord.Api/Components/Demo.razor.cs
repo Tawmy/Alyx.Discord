@@ -9,16 +9,16 @@ namespace Alyx.Discord.Api.Components;
 public partial class Demo : ComponentBase
 {
     private const string LodestoneId = "28812634";
-    private bool _showMessage = false;
     private string? _imageSource;
-    
+    private bool _showMessage = false;
+
     [Inject] public required ISender Sender { get; set; }
 
     private async Task LoadCharacterSheetAsync()
     {
         _showMessage = true;
         await InvokeAsync(StateHasChanged);
-        
+
         var sheet = await Sender.Send(new CharacterSheetRequest(LodestoneId));
         var image = sheet.Image;
         _imageSource = image.ToBase64String(WebpFormat.Instance);

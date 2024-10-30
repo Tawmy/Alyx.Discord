@@ -30,7 +30,7 @@
     a {
         grid-column-start: 1;
         grid-column-end: 3;
-        
+
         &.top-left {
             grid-row-start: 3;
             grid-row-end: 4;
@@ -50,7 +50,7 @@
             }
         }
     }
-    
+
     .description {
         grid-row-start: 1;
         grid-row-end: 4;
@@ -85,7 +85,7 @@
             transform: initial;
             justify-self: initial;
         }
-        
+
         img.bottom-right {
             grid-column-start: 2;
             grid-column-end: 4;

@@ -1,0 +1,68 @@
+button {
+    all: unset;
+    box-sizing: border-box !important; /* i got no idea why this is necessary */
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+    padding: 8px 16px;
+
+    background: rgb(57, 59, 63);
+    border-radius: 4px;
+    transition: filter 600ms;
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &:hover {
+            filter: brightness(1.1);
+            transition: filter 150ms;
+        }
+
+        > span:last-of-type {
+            color: rgb(148 157 248);
+        }
+    }
+
+    > span:not(:last-of-type) {
+        display: inline-block;
+        margin: 0 0.3em;
+        background: rgb(35 36 40);
+        border: 1px solid rgb(30 31 34);
+        border-radius: 5px;
+        overflow: hidden;
+
+        > span {
+            display: inline-block;
+            padding: 4px;
+        }
+
+        > span:first-of-type {
+            background: rgb(17 18 20);
+        }
+    }
+
+    > span:last-of-type {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        font-size: 1.8em;
+        color: rgb(78 80 88);
+        padding: 0 0.33em;
+        transition: color 150ms;
+
+        &::before {
+            position: absolute;
+            content: '';
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 80%;
+            width: 1px;
+            background: rgb(67 68 75);
+        }
+    }
+}

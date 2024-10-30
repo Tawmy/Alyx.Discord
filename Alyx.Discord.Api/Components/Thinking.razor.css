@@ -3,24 +3,24 @@
     display: flex;
     gap: 8px;
     align-items: center;
-    
+
     .loading-indicator {
         display: flex;
         gap: 4px;
-        
+
         > div {
             width: 6px;
             height: 6px;
             border-radius: 100%;
             background-color: var(--color);
-            
+
             animation-name: pulse;
             animation-duration: 1.2s;
             animation-iteration-count: infinite;
             animation-fill-mode: backwards;
         }
     }
-    
+
     .text {
         color: var(--color);
     }
