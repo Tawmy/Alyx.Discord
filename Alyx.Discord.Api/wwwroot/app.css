@@ -31,7 +31,6 @@ h1:focus {
 * {
     box-sizing: border-box;
     font-family: system-ui;
-    color: white;
 }
 
 *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
@@ -40,6 +39,7 @@ h1:focus {
 
 body {
     background: rgb(50, 51, 55);
+    color: white;
 }
 
 @font-face {

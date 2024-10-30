@@ -1,0 +1,14 @@
+.demo {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    min-height: min(100vw, 520px);
+    
+    border: 1px solid rgba(0, 0, 0, 0.66);
+    border-radius: 16px;
+    
+    .input {
+        background: rgb(57, 59, 63);
+        border-radius: 4px;
+    }
+}

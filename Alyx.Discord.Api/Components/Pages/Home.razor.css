@@ -8,6 +8,10 @@
     flex-direction: column;
     gap: var(--gap);
     align-items: center;
+
+    #demo-container {
+        width: min(600px, 100%);
+    }
 }
 
 #buttons {
