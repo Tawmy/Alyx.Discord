@@ -42,6 +42,10 @@ body {
     color: white;
 }
 
+a, button {
+    color: inherit;
+}
+
 @font-face {
     font-family: 'Handwriting';
     src: url(fonts/PermanentMarker-Regular.ttf) format('woff2');
