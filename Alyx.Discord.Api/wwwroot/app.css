@@ -28,6 +28,22 @@ h1:focus {
     border-color: #929292;
 }
 
+:root {
+    --main-gap: 24px;
+}
+
+@media screen and (min-width: 768px) {
+    :root {
+        --main-gap: 50px;
+    }
+}
+
+@media screen and (min-width: 1350px) {
+    :root {
+        --main-gap: 75px;
+    }
+}
+
 * {
     box-sizing: border-box;
     font-family: system-ui;
@@ -40,6 +56,7 @@ h1:focus {
 body {
     background: rgb(50, 51, 55);
     color: white;
+    margin: calc(var(--main-gap) / 2);
 }
 
 a, button {

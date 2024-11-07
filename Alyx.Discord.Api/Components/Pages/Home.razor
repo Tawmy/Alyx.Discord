@@ -4,11 +4,19 @@
 <PageTitle>Alyx</PageTitle>
 
 <div class="container">
-    <UserCard Username="Alyx#2224" DisplayName="Alyx" IsApp="true"
-              AvatarUrl="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256"
-              BannerUrl="https://cdn.discordapp.com/banners/1284807895246045234/3b87556224c6478b821bc4b6b75f7b0a.webp?size=1024">
-        @Bio
-    </UserCard>
+    <div id="upper">
+        <div class="user-card">
+            <UserCard Username="Alyx#2224" DisplayName="Alyx" IsApp="true"
+                      AvatarUrl="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256"
+                      BannerUrl="https://cdn.discordapp.com/banners/1284807895246045234/3b87556224c6478b821bc4b6b75f7b0a.webp?size=1024">
+                @Bio
+            </UserCard>
+        </div>
+
+        <div id="demo-container">
+            <Demo/>
+        </div>
+    </div>
 
     <div id="buttons">
         <LabeledButton
@@ -22,11 +30,6 @@
             Url="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
             Add to Your Apps
         </LabeledButton>
-    </div>
-
-    <div id="demo-container">
-        <h3>Try it out!</h3>
-        <Demo/>
     </div>
 </div>
 
