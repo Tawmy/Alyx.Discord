@@ -57,6 +57,10 @@ body {
     background: rgb(50, 51, 55);
     color: white;
     margin: calc(var(--main-gap) / 2);
+
+    display: grid;
+    justify-items: center;
+    gap: var(--main-gap);
 }
 
 a, button {
