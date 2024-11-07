@@ -1,11 +1,11 @@
 @page "/LabeledButton"
 
 <div class="labeled-button @CreatePositionClass()">
-    <a href="@Url" class="@CreatePositionClass()">
+    <a href="@Url">
         <button>@ChildContent</button>
     </a>
     <img src="img/Arrow3.webp" alt="Arrow pointing towards button description label." class="@CreatePositionClass()"/>
-    <div class="description @CreatePositionClass()">@ArrowLabel</div>
+    <div class="description">@ArrowLabel</div>
 </div>
 
 @code {
@@ -26,8 +26,8 @@
     private string CreatePositionClass()
     {
         return ArrowDirection is Direction.Left
-            ? "top-left"
-            : "bottom-right";
+            ? "left"
+            : "right";
     }
 
 }

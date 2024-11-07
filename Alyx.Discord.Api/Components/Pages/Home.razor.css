@@ -1,5 +1,5 @@
 .container {
-    --gap: 100px;
+    --gap: 24px;
 
     width: 100%;
     margin-top: var(--gap);
@@ -16,8 +16,9 @@
 
 #buttons {
     display: grid;
-    width: 100%;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
+    width: min(100%, 875px);
 
     a {
         text-decoration: none;
@@ -25,7 +26,7 @@
 }
 
 @media screen and (min-width: 768px) {
-    #buttons {
-        grid-template-columns: 1fr 1fr;
+    .container {
+        --gap: 75px;
     }
 }
