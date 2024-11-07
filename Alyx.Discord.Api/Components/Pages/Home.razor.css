@@ -12,12 +12,14 @@
         gap: var(--main-gap);
         width: 100%;
 
-        .user-card {
-            justify-items: center;
+        > .user-card {
+            display: flex;
+            justify-content: center;
             height: fit-content;
         }
 
         #demo-container {
+            justify-self: center;
             width: min(600px, 100%);
         }
     }
@@ -44,7 +46,7 @@
             #demo-container {
                 grid-row-start: 1;
                 grid-column-start: 1;
-                justify-self: end;
+                justify-self: end !important; /* blazor css isolation again? */
             }
         }
     }
@@ -60,7 +62,7 @@
                 grid-column-start: 2;
             }
 
-            .user-card {
+            > .user-card {
                 grid-column-start: 3;
             }
         }
