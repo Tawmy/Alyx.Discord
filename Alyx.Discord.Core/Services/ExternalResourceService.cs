@@ -8,11 +8,8 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Alyx.Discord.Core.Services;
 
-internal class ExternalResourceService
+internal class ExternalResourceService(ILogger<ExternalResourceService> logger)
 {
-    private readonly Lazy<Task> _initializeTask;
-    private readonly ILogger<ExternalResourceService> _logger;
-
     private FrozenDictionary<CharacterSheetImage, Image> _characterSheetImages =
         FrozenDictionary<CharacterSheetImage, Image>.Empty;
 
@@ -20,51 +17,45 @@ internal class ExternalResourceService
     private FrozenDictionary<ClassJob, Image> _jobIcons = FrozenDictionary<ClassJob, Image>.Empty;
     private FrozenDictionary<string, Image> _other = FrozenDictionary<string, Image>.Empty;
 
-    public ExternalResourceService(ILogger<ExternalResourceService> logger)
+    public async Task InitializeAsync()
     {
-        _logger = logger;
-        _initializeTask = new Lazy<Task>(InitializeAsync);
+        _characterSheetImages = await LoadCharacterSheetImagesAsync();
+        _jobIcons = await LoadJobIconsAsync();
+        _other = await LoadOtherImagesAsync();
+        _fontCollection = LoadFonts();
+
+        logger.LogInformation("External resources loaded successfully.");
     }
 
-    public async Task<Image> GetCharacterSheetImageAsync(CharacterSheetImage image)
+    public Image GetCharacterSheetImage(CharacterSheetImage image)
     {
-        await _initializeTask.Value;
-
         return _characterSheetImages[image].CloneAs<Rgba32>();
     }
 
-    public async Task<Image> GetJobIconAsync(ClassJob job)
+    public Image GetJobIcon(ClassJob job)
     {
-        await _initializeTask.Value;
-
         return _jobIcons[job];
     }
 
-    public async Task<Image> GetGrandCompanyCrestAsync(GrandCompany grandCompany)
+    public Image GetGrandCompanyCrest(GrandCompany grandCompany)
     {
-        await _initializeTask.Value;
-
         return grandCompany switch
         {
             GrandCompany.NoAffiliation => throw new InvalidOperationException("No affiliation, no crest."),
-            GrandCompany.Maelstrom => await GetCharacterSheetImageAsync(CharacterSheetImage.GcMaelstrom),
-            GrandCompany.OrderOfTheTwinAdder => await GetCharacterSheetImageAsync(CharacterSheetImage.GcTwinAdder),
-            GrandCompany.ImmortalFlames => await GetCharacterSheetImageAsync(CharacterSheetImage.GcImmortalFlames),
+            GrandCompany.Maelstrom => GetCharacterSheetImage(CharacterSheetImage.GcMaelstrom),
+            GrandCompany.OrderOfTheTwinAdder => GetCharacterSheetImage(CharacterSheetImage.GcTwinAdder),
+            GrandCompany.ImmortalFlames => GetCharacterSheetImage(CharacterSheetImage.GcImmortalFlames),
             _ => throw new ArgumentOutOfRangeException(nameof(grandCompany), grandCompany, null)
         };
     }
 
-    public async Task<Image> GetOtherImageAsync(string key)
+    public Image GetOtherImage(string key)
     {
-        await _initializeTask.Value;
-
         return _other[key];
     }
 
-    public async Task<FontFamily> GetFontFamilyAsync(CharacterSheetFont font)
+    public FontFamily GetFontFamily(CharacterSheetFont font)
     {
-        await _initializeTask.Value;
-
         return font switch
         {
             CharacterSheetFont.OpenSans when _fontCollection is not null => _fontCollection.Get("Open Sans"),
@@ -72,16 +63,6 @@ internal class ExternalResourceService
             CharacterSheetFont.Antonio when _fontCollection is not null => _fontCollection.Get("Antonio ExtraLight"),
             _ => throw new ArgumentOutOfRangeException(nameof(font), font, "Font not in collection.")
         };
-    }
-
-    private async Task InitializeAsync()
-    {
-        _characterSheetImages = await LoadCharacterSheetImagesAsync();
-        _jobIcons = await LoadJobIconsAsync();
-        _other = await LoadOtherImagesAsync();
-        _fontCollection = LoadFonts();
-
-        _logger.LogInformation("External sources loaded successfully.");
     }
 
     private static async Task<FrozenDictionary<CharacterSheetImage, Image>> LoadCharacterSheetImagesAsync()

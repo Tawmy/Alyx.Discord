@@ -17,6 +17,8 @@ public static class DependencyInjection
         services.AddSingleton<ExternalResourceService>();
         services.AddScoped<CharacterSheetService>();
         services.AddNetStoneApiClient(configuration);
+
+        services.AddHostedService<PostStartupService>();
     }
 
     private static void AddNetStoneApiClient(this IServiceCollection services, IConfiguration configuration)

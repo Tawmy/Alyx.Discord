@@ -10,6 +10,8 @@ services:
       STATUS_MESSAGE: "I'm in development!"
     labels:
       - dev.orbstack.domains=alyx.discord.local
+    ports:
+      - "8086:8080"
 
 volumes:
   postgres_data:

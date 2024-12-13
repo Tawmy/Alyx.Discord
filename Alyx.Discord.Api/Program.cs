@@ -1,3 +1,4 @@
+using Alyx.Discord.Api.Components;
 using Alyx.Discord.Api.Extensions;
 using Alyx.Discord.Bot;
 using Alyx.Discord.Bot.HealthChecks;
@@ -26,6 +27,8 @@ builder.Services.AddHealthChecks()
     .AddCheck<BotHealthCheck>("bot")
     .AddCheck<NetStoneApiHealthCheck>("netstone");
 
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
 builder.AddAuthentication();
 
 var app = builder.Build();
@@ -38,11 +41,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Error", true);
+}
 
+app.UseStaticFiles();
+app.UseAntiforgery();
 app.UseAuthorization();
 app.UseHealthChecks();
 
 app.MapControllers();
+
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Logger.LogInformation("Alyx.Discord, Version {v}", version.ToVersionString());
 

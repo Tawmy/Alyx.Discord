@@ -1,0 +1,41 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Alyx</PageTitle>
+
+<div class="container">
+    <div id="upper">
+        <div class="user-card">
+            <UserCard Username="Alyx#2224" DisplayName="Alyx" IsApp="true"
+                      AvatarUrl="https://cdn.discordapp.com/avatars/1284807895246045234/52a249e36c3b4976390e55aceb85d6a3.webp?size=256"
+                      BannerUrl="https://cdn.discordapp.com/banners/1284807895246045234/3b87556224c6478b821bc4b6b75f7b0a.webp?size=1024">
+                @Bio
+            </UserCard>
+        </div>
+
+        <div id="demo-container">
+            <Demo/>
+        </div>
+    </div>
+
+    <div id="buttons">
+        <LabeledButton
+            ArrowLabel="Available to everyone on your server"
+            Url="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            Add to Server
+        </LabeledButton>
+        <LabeledButton
+            ArrowDirection="LabeledButton.Direction.Right"
+            ArrowLabel="Available only to you in all your servers and DMs"
+            Url="https://discord.com/oauth2/authorize?client_id=1284807895246045234">
+            Add to Your Apps
+        </LabeledButton>
+    </div>
+</div>
+
+@code
+{
+    private static readonly MarkupString Bio = new(@"My name's Alyx.<br/>I'm here to provide support.<br/><br/>
+        <a href=""https://wiki.tawmy.net/books/alyx/page/changelog"" target=""_blank"">Changelog</a> |
+        <a href=""https://alyx.status.tawmy.net"" target=""_blank"">Status</a>");
+}

@@ -1,0 +1,18 @@
+<div class="demo">
+    <div class="output">
+        @if (_showMessage)
+        {
+            @if (_imageSource is not null)
+            {
+                <Message>
+                    <img src="@_imageSource" alt="Character Sheet for Alyx Bergen on Phoenix"/>
+                </Message>
+            }
+            else
+            {
+                <Message/>
+            }
+        }
+    </div>
+    <ChatInput OnButtonPressed="LoadCharacterSheetAsync"></ChatInput>
+</div>

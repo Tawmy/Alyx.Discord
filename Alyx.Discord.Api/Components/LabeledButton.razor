@@ -1,0 +1,33 @@
+@page "/LabeledButton"
+
+<div class="labeled-button @CreatePositionClass()">
+    <a href="@Url">
+        <button>@ChildContent</button>
+    </a>
+    <img src="img/Arrow3.webp" alt="Arrow pointing towards button description label." class="@CreatePositionClass()"/>
+    <div class="description">@ArrowLabel</div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter] public Direction ArrowDirection { get; set; } = Direction.Left;
+
+    [Parameter] public required string ArrowLabel { get; set; }
+
+    [Parameter] public required string Url { get; set; }
+
+    public enum Direction
+    {
+        Left,
+        Right
+    }
+
+    private string CreatePositionClass()
+    {
+        return ArrowDirection is Direction.Left
+            ? "left"
+            : "right";
+    }
+
+}

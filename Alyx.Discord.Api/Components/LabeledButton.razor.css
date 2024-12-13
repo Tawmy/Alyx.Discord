@@ -1,0 +1,108 @@
+.labeled-button {
+    position: relative;
+    display: grid;
+    grid-template-rows: 3.3em 50px auto;
+    gap: 24px;
+
+    img {
+        height: 100%;
+        justify-self: center;
+    }
+
+    a {
+        display: grid;
+        justify-items: center;
+
+        button {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+
+            background: #304FFE;
+            border: 1px solid #162578;
+
+            &:hover {
+                background: #4b64fa;
+            }
+        }
+    }
+
+    .description {
+        font-family: 'Handwriting', system-ui;
+        font-size: 1.1em;
+    }
+
+    &.left {
+        img {
+            transform: rotate(45deg) scale(-1, 1);
+        }
+    }
+
+    &.right {
+        img {
+            transform: rotate(-45deg);
+        }
+
+        .description {
+            text-align: right;
+        }
+    }
+}
+
+@media screen and (min-width: 450px) and (max-width: 767px) {
+    .labeled-button {
+        a {
+            button {
+                width: 70% !important; /* broken blazor css isolation? */
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .labeled-button {
+        grid-template-rows: 3.3em 60px auto;
+
+        img {
+            grid-row-start: 2;
+            justify-self: unset;
+        }
+
+        .description {
+            grid-row-start: 3;
+            font-size: 1.25em;
+        }
+
+        &.left {
+            grid-template-columns: 1fr 150px;
+
+            a, img {
+                grid-column-start: 2;
+            }
+
+            img {
+                transform: unset;
+            }
+
+            .description {
+                text-align: right;
+            }
+        }
+
+        &.right {
+            grid-template-columns: 150px 1fr;
+
+            img {
+                transform: scale(-1, 1);
+                justify-self: end;
+            }
+
+            .description {
+                grid-column-start: 2;
+                text-align: unset !important;
+                /* css scoping seems broken here? idfk what blazor is doing here -> !important as a workaround */
+            }
+        }
+    }
+}

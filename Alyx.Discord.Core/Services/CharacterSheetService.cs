@@ -21,16 +21,13 @@ internal class CharacterSheetService
     private readonly ExternalResourceService _externalResourceService;
     private readonly HttpClient _httpClient;
 
-    private readonly Lazy<Task<Image>> _imageTask;
-
-    private Image? _image;
+    private readonly Image _image;
 
     public CharacterSheetService(ExternalResourceService externalResourceService, HttpClient httpClient)
     {
         _externalResourceService = externalResourceService;
         _httpClient = httpClient;
-
-        _imageTask = new Lazy<Task<Image>>(InitializeAsync);
+        _image = _externalResourceService.GetCharacterSheetImage(CharacterSheetImage.TemplateBase);
     }
 
     public async Task<Image> CreateCharacterSheetAsync(CharacterDto character,
@@ -39,32 +36,30 @@ internal class CharacterSheetService
         CollectionDto<CharacterMountDto>? mounts = null,
         FreeCompanyDto? freeCompany = null)
     {
-        _image = await _imageTask.Value;
-
         await AddCharacterPortraitAsync(character);
-        await AddPortraitFrameAsync();
+        AddPortraitFrame();
 
-        await AddJobIconAsync(character);
-        await AddJobFrameAsync();
-        await AddActiveJobLevelAsync(character);
+        AddJobIcon(character);
+        AddJobFrame();
+        AddActiveJobLevel(character);
 
-        await AddCharacterNameAsync(character);
-        await AddHomeWorldAsync(character);
+        AddCharacterName(character);
+        AddHomeWorld(character);
 
-        await AddILvlMinionsMountsAsync(character, minions, mounts);
+        AddILvlMinionsMounts(character, minions, mounts);
 
         if (classJobs is not null)
         {
-            await AddJobLevelsAsync(classJobs);
+            AddJobLevels(classJobs);
         }
 
-        var gc = await AddGrandCompanyAsync(character);
+        var gc = AddGrandCompany(character);
         var fc = await AddFreeCompanyAsync(freeCompany);
-        await AddAttributesAsync(character);
+        AddAttributes(character);
 
         if (!gc && !fc)
         {
-            await AddNewAdventurerAsync();
+            PrintInTopValueArea("New Adventurer");
         }
 
         return _image;
@@ -81,15 +76,8 @@ internal class CharacterSheetService
         return _image;
     }
 
-    private Task<Image> InitializeAsync()
-    {
-        return _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateBase);
-    }
-
     private async Task AddCharacterPortraitAsync(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
         // get portrait as byte[]
         var result = await _httpClient.GetByteArrayAsync(character.Portrait);
 
@@ -108,19 +96,15 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawImage(imgPortrait, new Point(16, 66), 1));
     }
 
-    private async Task AddPortraitFrameAsync()
+    private void AddPortraitFrame()
     {
-        _image = await _imageTask.Value;
-
-        var imgFrame = await _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateFrame);
+        var imgFrame = _externalResourceService.GetCharacterSheetImage(CharacterSheetImage.TemplateFrame);
         _image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
-    private async Task AddJobIconAsync(CharacterDto character)
+    private void AddJobIcon(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
-        var imgJob = await _externalResourceService.GetJobIconAsync(character.ActiveClassJob);
+        var imgJob = _externalResourceService.GetJobIcon(character.ActiveClassJob);
         if (imgJob.Width > 64)
         {
             // icons must be 64x64
@@ -130,24 +114,20 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawImage(imgJob, CharacterSheetCoordinates.Other.JobIcon, 1));
     }
 
-    private async Task AddJobFrameAsync()
+    private void AddJobFrame()
     {
-        _image = await _imageTask.Value;
-
-        var imgJob = await _externalResourceService.GetCharacterSheetImageAsync(CharacterSheetImage.TemplateJobCircle);
+        var imgJob = _externalResourceService.GetCharacterSheetImage(CharacterSheetImage.TemplateJobCircle);
         _image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
-    private async Task AddActiveJobLevelAsync(CharacterDto character)
+    private void AddActiveJobLevel(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
         var circle = new EllipsePolygon(CharacterSheetCoordinates.Other.ActiveJobLevelBackground,
             CharacterSheetValues.ActiveJobLevelRadius);
         _image.Mutate(x => x.Draw(new Color(CharacterSheetValues.ActiveJobLevelBackground),
             CharacterSheetValues.ActiveJobLevelThickness, circle));
 
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.Antonio);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.Antonio);
         var font = family.CreateFont(CharacterSheetValues.ActiveJobLevelFontSize, FontStyle.Regular);
         var text = $"Lv. {character.ActiveClassJobLevel}";
 
@@ -161,11 +141,9 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(textOptions, text, Color.White));
     }
 
-    private async Task AddCharacterNameAsync(CharacterDto character)
+    private void AddCharacterName(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.Vollkorn);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.Vollkorn);
         var nameProperties = new NameProperties(character.Title);
 
         var fontName = family.CreateFont(nameProperties.Name.Size, FontStyle.Regular);
@@ -199,11 +177,9 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(optionsTitle, character.Title!, Color.Black));
     }
 
-    private async Task AddHomeWorldAsync(CharacterDto character)
+    private void AddHomeWorld(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeHomeWorld, FontStyle.Regular);
 
         var options = new RichTextOptions(font)
@@ -216,12 +192,10 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(options, character.Server, Color.White));
     }
 
-    private async Task AddILvlMinionsMountsAsync(CharacterDto character, CollectionDto<CharacterMinionDto>? minions,
+    private void AddILvlMinionsMounts(CharacterDto character, CollectionDto<CharacterMinionDto>? minions,
         CollectionDto<CharacterMountDto>? mounts)
     {
-        _image = await _imageTask.Value;
-
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeMiMo, FontStyle.Regular);
 
         var optionsLvl = new RichTextOptions(font)
@@ -258,11 +232,9 @@ internal class CharacterSheetService
         }
     }
 
-    private async Task AddJobLevelsAsync(CharacterClassJobOuterDto classJobs)
+    private void AddJobLevels(CharacterClassJobOuterDto classJobs)
     {
-        _image = await _imageTask.Value;
-
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(28, FontStyle.Regular);
 
         foreach (var job in Enum.GetValues<ClassJob>().Where(x => !x.EvolvesIntoJob()))
@@ -276,7 +248,7 @@ internal class CharacterSheetService
             var levelString = jobLevel switch
             {
                 null or 0 => "-",
-                100 => "1X",
+                100 => "X",
                 _ => jobLevel.Value.ToString()
             };
 
@@ -290,22 +262,20 @@ internal class CharacterSheetService
         }
     }
 
-    private async Task<bool> AddGrandCompanyAsync(CharacterDto character)
+    private bool AddGrandCompany(CharacterDto character)
     {
-        _image = await _imageTask.Value;
-
         if (character.GrandCompany == GrandCompany.NoAffiliation)
         {
             return false;
         }
 
-        var crest = await _externalResourceService.GetGrandCompanyCrestAsync(character.GrandCompany);
+        var crest = _externalResourceService.GetGrandCompanyCrest(character.GrandCompany);
 
         if (character.FreeCompany is null)
         {
             // if player not in any free company, use the fc space to show the gc logo and name
             var gcName = character.GrandCompany.GetDisplayName();
-            await PrintInTopValueAreaAsync(gcName, crest);
+            PrintInTopValueArea(gcName, crest);
         }
         else
         {
@@ -316,11 +286,9 @@ internal class CharacterSheetService
         return true;
     }
 
-    private async Task PrintInTopValueAreaAsync(string text, Image? crest = null)
+    private void PrintInTopValueArea(string text, Image? crest = null)
     {
-        _image = await _imageTask.Value;
-
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeGrandCompany, FontStyle.Regular);
 
         // if no crest, get coordinates without offset
@@ -358,15 +326,15 @@ internal class CharacterSheetService
             return false;
         }
 
-        var crest = await DownloadFreeCompanyCrest(freeCompany);
+        var crest = await DownloadFreeCompanyCrestAsync(freeCompany);
         crest.Mutate(x => x.Resize(CharacterSheetValues.DimensionsGcFcCrest, CharacterSheetValues.DimensionsGcFcCrest,
             KnownResamplers.Lanczos3));
         var fullName = $"{freeCompany.Name} {freeCompany.Tag}";
-        await PrintInTopValueAreaAsync(fullName, crest);
+        PrintInTopValueArea(fullName, crest);
         return true;
     }
 
-    private async Task<Image> DownloadFreeCompanyCrest(FreeCompanyDto freeCompany)
+    private async Task<Image> DownloadFreeCompanyCrestAsync(FreeCompanyDto freeCompany)
     {
         // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
 
@@ -384,24 +352,21 @@ internal class CharacterSheetService
         return bottomLayer;
     }
 
-    private async Task AddAttributesAsync(CharacterDto character)
+    private void AddAttributes(CharacterDto character)
     {
         var attributes = character.ActiveClassJob.GetDisplayAttributes();
 
-        var family = await _externalResourceService.GetFontFamilyAsync(CharacterSheetFont.OpenSans);
+        var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeAttributes, FontStyle.Regular);
 
-        await PrintAttributesAsync(character, font, attributes.Take(2),
-            CharacterSheetCoordinates.Other.AttributesPrimary, true);
-        await PrintAttributesAsync(character, font, attributes.Skip(2),
-            CharacterSheetCoordinates.Other.AttributesSecondary, false);
+        PrintAttributes(character, font, attributes.Take(2), CharacterSheetCoordinates.Other.AttributesPrimary, true);
+        PrintAttributes(character, font, attributes.Skip(2), CharacterSheetCoordinates.Other.AttributesSecondary,
+            false);
     }
 
-    private async Task PrintAttributesAsync(CharacterDto character, Font font,
+    private void PrintAttributes(CharacterDto character, Font font,
         IEnumerable<CharacterAttribute> attributes, Point origin, bool primary)
     {
-        _image = await _imageTask.Value;
-
         var options = new RichTextOptions(font)
         {
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -422,10 +387,5 @@ internal class CharacterSheetService
         var name = a.GetDisplayName();
         a.TryGetShortName(out var shortName);
         return showFullName ? name : shortName ?? name;
-    }
-
-    private Task AddNewAdventurerAsync()
-    {
-        return PrintInTopValueAreaAsync("New Adventurer");
     }
 }
