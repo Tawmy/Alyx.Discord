@@ -248,7 +248,7 @@ internal class CharacterSheetService
             var levelString = jobLevel switch
             {
                 null or 0 => "-",
-                100 => "1X",
+                100 => "X",
                 _ => jobLevel.Value.ToString()
             };
 
