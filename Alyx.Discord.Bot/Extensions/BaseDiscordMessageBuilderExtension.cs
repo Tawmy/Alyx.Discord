@@ -67,6 +67,11 @@ internal static class BaseDiscordMessageBuilderExtension
         var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
         var buttonMetadata = await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata);
 
+        if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
+        {
+            builder.AddEmbed(embed);
+        }
+
         builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
 
         await followupTask(builder);
@@ -124,6 +129,24 @@ internal static class BaseDiscordMessageBuilderExtension
             await interactionDataService.AddDataAsync(metadata, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
+    }
+
+    private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
+    {
+        if (metadata.All(x => !x.FallbackUsed))
+        {
+            // no fallback used, do not create embed
+            return null;
+        }
+
+        return new DiscordEmbedBuilder
+        {
+            Color = DiscordColor.Red,
+            Description = """
+                          Updating some data from the Lodestone failed. Cached data was used instead.
+                          Sheet metadata will show which data failed to update.
+                          """
+        }.Build();
     }
 
     #endregion

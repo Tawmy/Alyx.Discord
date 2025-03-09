@@ -112,7 +112,8 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
     /// <param name="cancellationToken">Cancellation token.</param>
     private async Task<bool> ValidateCodeAsync(string lodestoneId, string code, CancellationToken cancellationToken)
     {
-        var character = await netStoneApiClient.Character.GetAsync(lodestoneId, 0, cancellationToken);
+        var character = await netStoneApiClient.Character.GetAsync(lodestoneId, 0,
+            cancellationToken: cancellationToken);
         return character.Bio.Contains(code);
     }
 
