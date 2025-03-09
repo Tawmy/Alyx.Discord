@@ -3,6 +3,7 @@ using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus;
+using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
@@ -13,7 +14,7 @@ internal class ButtonSheetMetadataHandler(
     DiscordEmbedService embedService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 

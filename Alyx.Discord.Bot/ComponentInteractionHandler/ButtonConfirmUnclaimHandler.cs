@@ -4,6 +4,7 @@ using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using Alyx.Discord.Core.Requests.Character.Unclaim;
 using DSharpPlus;
+using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using MediatR;
@@ -15,7 +16,7 @@ internal class ButtonConfirmUnclaimHandler(ISender sender, DiscordEmbedService e
     : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
     {
         try
         {
@@ -24,7 +25,8 @@ internal class ButtonConfirmUnclaimHandler(ISender sender, DiscordEmbedService e
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(Messages.Commands.Character.Unclaim.NoMainCharacterDescription,
+            var embed = embedService.CreateError(
+                Messages.Commands.Character.Unclaim.NoMainCharacterDescription(commands, "character claim"),
                 Messages.Commands.Character.Unclaim.NoMainCharacterTitle);
             var builder = new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral();
             await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
@@ -35,7 +37,8 @@ internal class ButtonConfirmUnclaimHandler(ISender sender, DiscordEmbedService e
         await sender.Send(new CharacterUnclaimRequest(args.Interaction.User.Id));
 
         {
-            var embed = embedService.Create(Messages.Commands.Character.Unclaim.SuccessDescription,
+            var embed = embedService.Create(
+                Messages.Commands.Character.Unclaim.SuccessDescription(commands, "character claim"),
                 Messages.Commands.Character.Unclaim.SuccessTitle);
             var builder = new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral();
 

@@ -1,3 +1,4 @@
+using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
@@ -20,7 +21,9 @@ internal class CharacterUnclaimRequestHandler(ISender sender, DiscordEmbedServic
         }
         catch (NotFoundException)
         {
-            var notFoundEmbed = embedService.CreateError(Messages.Commands.Character.Unclaim.NoMainCharacterDescription,
+            var notFoundEmbed = embedService.CreateError(
+                Messages.Commands.Character.Unclaim.NoMainCharacterDescription(request.GetSlashCommandMapping(),
+                    "character claim"),
                 Messages.Commands.Character.Unclaim.NoMainCharacterTitle);
             await request.Ctx.RespondAsync(notFoundEmbed, true);
             return;
