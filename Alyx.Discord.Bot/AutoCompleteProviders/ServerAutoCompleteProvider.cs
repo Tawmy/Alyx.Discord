@@ -1,12 +1,13 @@
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.SlashCommands.ArgumentModifiers;
+using DSharpPlus.Entities;
 using NetStone.Common.Enums;
 
 namespace Alyx.Discord.Bot.AutoCompleteProviders;
 
-public class ServerAutoCompleteProvider : IAutoCompleteProvider
+internal class ServerAutoCompleteProvider : IAutoCompleteProvider
 {
-    public ValueTask<IReadOnlyDictionary<string, object>> AutoCompleteAsync(AutoCompleteContext context)
+    public ValueTask<IEnumerable<DiscordAutoCompleteChoice>> AutoCompleteAsync(AutoCompleteContext context)
     {
         var servers = Enum.GetValues<Server>().Select(x => x.ToString());
 
@@ -17,7 +18,7 @@ public class ServerAutoCompleteProvider : IAutoCompleteProvider
 
         servers = servers.OrderBy(x => x).Take(25);
 
-        var dict = servers.Select((x, i) => (x, i)).ToDictionary(x => x.x, object (x) => x.x);
-        return ValueTask.FromResult<IReadOnlyDictionary<string, object>>(dict);
+        var choices = servers.Select(x => new DiscordAutoCompleteChoice(x, x));
+        return ValueTask.FromResult(choices);
     }
 }
