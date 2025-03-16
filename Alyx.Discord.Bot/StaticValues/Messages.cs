@@ -170,10 +170,12 @@ internal static class Messages
 
     public static class Buttons
     {
-        public const string OpenLodestoneProfile = "Open Lodestone Profile";
+        public const string OpenLodestoneProfile = "Lodestone Profile";
         public const string EditLodestoneProfile = "Edit Lodestone Profile";
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Show Sheet Metadata";
+        public const string Minions = "Minions";
+        public const string Mounts = "Mounts";
     }
 }

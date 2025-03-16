@@ -83,6 +83,6 @@ internal class CharacterSheetRequestHandler(
             metadata.Add(new SheetMetadata("Free Company", freeCompany.LastUpdated));
         }
 
-        return new CharacterSheet(image, metadata);
+        return new CharacterSheet(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted);
     }
 }
