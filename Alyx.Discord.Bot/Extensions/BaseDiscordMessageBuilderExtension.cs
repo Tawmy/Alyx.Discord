@@ -143,7 +143,7 @@ internal static class BaseDiscordMessageBuilderExtension
         {
             Color = DiscordColor.Red,
             Description = """
-                          Updating some data from the Lodestone failed. Cached data was used instead.
+                          Updating some data from the Lodestone failed. Cached data is shown instead.
                           Sheet metadata will show which data failed to update.
                           """
         }.Build();

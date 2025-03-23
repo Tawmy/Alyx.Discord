@@ -39,7 +39,7 @@ internal class CharacterSheetRequestHandler(
             }
         }
 
-        FreeCompanyDto? freeCompany = null;
+        FreeCompanyDtoV3? freeCompany = null;
         if (taskCharacter.Result.FreeCompany is not null)
         {
             try
