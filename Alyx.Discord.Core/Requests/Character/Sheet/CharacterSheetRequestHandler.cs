@@ -93,6 +93,6 @@ internal class CharacterSheetRequestHandler(
                 freeCompany.FallbackReason));
         }
 
-        return new CharacterSheet(image, metadata);
+        return new CharacterSheet(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted);
     }
 }

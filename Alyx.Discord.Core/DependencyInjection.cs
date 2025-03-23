@@ -13,9 +13,8 @@ public static class DependencyInjection
     {
         services.AddSingleton(AlyxConfiguration.FromEnvironment(configuration));
 
-        services.AddHttpClient();
         services.AddSingleton<ExternalResourceService>();
-        services.AddScoped<CharacterSheetService>();
+        services.AddHttpClient<CharacterSheetService>().AddStandardResilienceHandler();
         services.AddNetStoneApiClient(configuration);
 
         services.AddHostedService<PostStartupService>();

@@ -64,15 +64,26 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
-        var buttonMetadata = await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata);
+        IList<DiscordComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
 
-        if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
+        if (sheet.MinionsPublic)
+        {
+            buttons.Add(CreateLodestoneMinionsButton(lodestoneId));
+        }
+
+        if (sheet.MountsPublic)
+        {
+            buttons.Add(CreateLodestoneMountsButton(lodestoneId));
+        }
+
+        buttons.Add(await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata));
+
+        builder.AddFile(fileName, stream, true).AddComponents(buttons);
+
+		if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
         {
             builder.AddEmbed(embed);
         }
-
-        builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
 
         await followupTask(builder);
     }
@@ -129,6 +140,18 @@ internal static class BaseDiscordMessageBuilderExtension
             await interactionDataService.AddDataAsync(metadata, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
+    }
+
+    private static DiscordLinkButtonComponent CreateLodestoneMinionsButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/minion";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
+    }
+
+    private static DiscordLinkButtonComponent CreateLodestoneMountsButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/mount";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.Mounts);
     }
 
     private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
