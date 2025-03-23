@@ -80,6 +80,11 @@ internal static class BaseDiscordMessageBuilderExtension
 
         builder.AddFile(fileName, stream, true).AddComponents(buttons);
 
+		if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
+        {
+            builder.AddEmbed(embed);
+        }
+
         await followupTask(builder);
     }
 
@@ -147,6 +152,24 @@ internal static class BaseDiscordMessageBuilderExtension
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/mount";
         return new DiscordLinkButtonComponent(url, Messages.Buttons.Mounts);
+    }
+
+    private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
+    {
+        if (metadata.All(x => !x.FallbackUsed))
+        {
+            // no fallback used, do not create embed
+            return null;
+        }
+
+        return new DiscordEmbedBuilder
+        {
+            Color = DiscordColor.Red,
+            Description = """
+                          Updating some data from the Lodestone failed. Cached data is shown instead.
+                          Sheet metadata will show which data failed to update.
+                          """
+        }.Build();
     }
 
     #endregion

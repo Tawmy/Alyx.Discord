@@ -46,7 +46,14 @@ internal class ButtonSheetMetadataHandler(
 
         foreach (var entry in metadata)
         {
-            builder.AddField(entry.Title, Formatter.Timestamp(entry.LastUpdated), true);
+            var message = $"{Formatter.Timestamp(entry.LastUpdated)}";
+            if (entry.FallbackUsed)
+            {
+                message += "\r*Cache Fallback*";
+                message += $"\r{new string(entry.FallbackReason?.Take(140).ToArray())}";
+            }
+
+            builder.AddField(entry.Title, message, !entry.FallbackUsed);
         }
 
         return builder.Build();

@@ -174,7 +174,7 @@ internal static class Messages
         public const string EditLodestoneProfile = "Edit Lodestone Profile";
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
-        public const string CharacterSheetMetadata = "Show Sheet Metadata";
+        public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
     }
