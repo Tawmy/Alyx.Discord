@@ -23,7 +23,9 @@ internal class UserContextMenuCharacterSheetRequestHandler(
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(Messages.UserContextMenus.CharacterSheet.NotFoundDescription,
+            var embed = embedService.CreateError(
+                Messages.UserContextMenus.CharacterSheet.NotFoundDescription(request.GetSlashCommandMapping(),
+                    "character claim", "ffxiv copypasta"),
                 Messages.UserContextMenus.CharacterSheet.NotFoundTitle);
             await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
             return;

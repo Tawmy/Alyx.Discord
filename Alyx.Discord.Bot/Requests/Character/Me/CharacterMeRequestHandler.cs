@@ -24,7 +24,8 @@ internal class CharacterMeRequestHandler(
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(Messages.Commands.Character.Me.NotFoundDescription,
+            var embed = embedService.CreateError(
+                Messages.Commands.Character.Me.NotFoundDescription(request.GetSlashCommandMapping(), "character claim"),
                 Messages.Commands.Character.Me.NotFoundTitle);
             await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
             return;
