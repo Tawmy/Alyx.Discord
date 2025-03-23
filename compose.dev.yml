@@ -10,7 +10,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      STATUS_MESSAGE: "New: User Context Menu!"
+      STATUS_MESSAGE: "New: Protected from Lodestone outages!"
       NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
       NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
       NETSTONE_MAX_AGE_MINIONS: "1080" # 18 hours
