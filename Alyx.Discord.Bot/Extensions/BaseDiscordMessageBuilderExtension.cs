@@ -71,21 +71,21 @@ internal static class BaseDiscordMessageBuilderExtension
 
         IList<DiscordComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
 
-        if (sheet.MinionsPublic)
-        {
-            buttons.Add(CreateLodestoneMinionsButton(lodestoneId));
-        }
-
         if (sheet.MountsPublic)
         {
             buttons.Add(CreateLodestoneMountsButton(lodestoneId));
+        }
+
+        if (sheet.MinionsPublic)
+        {
+            buttons.Add(CreateLodestoneMinionsButton(lodestoneId));
         }
 
         buttons.Add(await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata));
 
         builder.AddFile(fileName, stream, true).AddComponents(buttons);
 
-		if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
+        if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
         {
             builder.AddEmbed(embed);
         }
@@ -147,16 +147,16 @@ internal static class BaseDiscordMessageBuilderExtension
             Messages.Buttons.CharacterSheetMetadata);
     }
 
-    private static DiscordLinkButtonComponent CreateLodestoneMinionsButton(string characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/minion";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
-    }
-
     private static DiscordLinkButtonComponent CreateLodestoneMountsButton(string characterId)
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/mount";
         return new DiscordLinkButtonComponent(url, Messages.Buttons.Mounts);
+    }
+
+    private static DiscordLinkButtonComponent CreateLodestoneMinionsButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/minion";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
     }
 
     private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
