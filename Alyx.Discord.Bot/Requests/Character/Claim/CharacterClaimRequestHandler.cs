@@ -49,7 +49,7 @@ internal class CharacterClaimRequestHandler(
         var characterClaimRequestResponse = await sender.Send(coreRequest, cancellationToken);
 
         await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
-            lodestoneId);
+            lodestoneId, request.GetSlashCommandMapping());
 
         await request.Ctx.FollowupAsync(builder);
     }

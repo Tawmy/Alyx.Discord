@@ -42,7 +42,7 @@ public static class DependencyInjection
         });
 
         var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
-        services.AddCommandsExtension(x =>
+        services.AddCommandsExtension((_, x) =>
             {
                 x.AddProcessor<SlashCommandProcessor>();
                 x.AddProcessor<UserCommandProcessor>();

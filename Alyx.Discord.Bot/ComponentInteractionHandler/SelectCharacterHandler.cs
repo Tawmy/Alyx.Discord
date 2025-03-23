@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using DSharpPlus;
+using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using MediatR;
@@ -11,7 +12,7 @@ internal class SelectCharacterHandler(ISender sender, IInteractionDataService in
     : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
     {
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();

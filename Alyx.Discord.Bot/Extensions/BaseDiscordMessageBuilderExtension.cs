@@ -4,6 +4,7 @@ using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Claim;
 using Alyx.Discord.Core.Requests.Character.Sheet;
 using Alyx.Discord.Core.Structs;
+using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using MediatR;
 using SixLabors.ImageSharp.Formats.Webp;
@@ -16,7 +17,8 @@ internal static class BaseDiscordMessageBuilderExtension
         CharacterClaimRequestResponse claimRequestResponse,
         IInteractionDataService interactionDataService,
         DiscordEmbedService embedService,
-        string lodestoneId)
+        string lodestoneId,
+        IReadOnlyDictionary<ulong, Command> commands)
         where T : BaseDiscordMessageBuilder<T>
     {
         var buttonLodestone = CreateOpenLodestoneButton();
@@ -25,7 +27,8 @@ internal static class BaseDiscordMessageBuilderExtension
         switch (claimRequestResponse.Status)
         {
             case CharacterClaimRequestStatus.AlreadyClaimedByUser:
-                builder.AddEmbed(embedService.CreateError(Messages.Commands.Character.Claim.AlreadyClaimed));
+                builder.AddEmbed(embedService.CreateError(
+                    Messages.Commands.Character.Claim.AlreadyClaimed(commands, "character unclaim")));
                 break;
             case CharacterClaimRequestStatus.AlreadyClaimedByDifferentUser:
                 builder.AddEmbed(embedService.CreateError(Messages.Commands.Character.Claim.ClaimedBySomeoneElse));
@@ -39,11 +42,13 @@ internal static class BaseDiscordMessageBuilderExtension
                 builder.AddComponents(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.ClaimConfirmed:
-                builder.AddEmbed(embedService.Create(Messages.Commands.Character.Claim.ConfirmedDescription,
+                builder.AddEmbed(embedService.Create(
+                    Messages.Commands.Character.Claim.ConfirmedDescription(commands, "character me"),
                     Messages.Commands.Character.Claim.ConfirmedTitle));
                 break;
             case CharacterClaimRequestStatus.UserAlreadyHasMainCharacter:
-                builder.AddEmbed(embedService.CreateError(Messages.Commands.Character.Claim.AlreadyClaimedDifferent));
+                builder.AddEmbed(embedService.CreateError(
+                    Messages.Commands.Character.Claim.AlreadyClaimedDifferent(commands, "character unclaim")));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(claimRequestResponse), claimRequestResponse, null);
@@ -64,10 +69,26 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        var buttonLodestone = CreateLodestoneLinkButton(lodestoneId);
-        var buttonMetadata = await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata);
+        IList<DiscordComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
 
-        builder.AddFile(fileName, stream, true).AddComponents(buttonLodestone, buttonMetadata);
+        if (sheet.MountsPublic)
+        {
+            buttons.Add(CreateLodestoneMountsButton(lodestoneId));
+        }
+
+        if (sheet.MinionsPublic)
+        {
+            buttons.Add(CreateLodestoneMinionsButton(lodestoneId));
+        }
+
+        buttons.Add(await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata));
+
+        builder.AddFile(fileName, stream, true).AddComponents(buttons);
+
+        if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
+        {
+            builder.AddEmbed(embed);
+        }
 
         await followupTask(builder);
     }
@@ -124,6 +145,36 @@ internal static class BaseDiscordMessageBuilderExtension
             await interactionDataService.AddDataAsync(metadata, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
+    }
+
+    private static DiscordLinkButtonComponent CreateLodestoneMountsButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/mount";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.Mounts);
+    }
+
+    private static DiscordLinkButtonComponent CreateLodestoneMinionsButton(string characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/minion";
+        return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
+    }
+
+    private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
+    {
+        if (metadata.All(x => !x.FallbackUsed))
+        {
+            // no fallback used, do not create embed
+            return null;
+        }
+
+        return new DiscordEmbedBuilder
+        {
+            Color = DiscordColor.Red,
+            Description = """
+                          Updating some data from the Lodestone failed. Cached data is shown instead.
+                          Sheet metadata will show which data failed to update.
+                          """
+        }.Build();
     }
 
     #endregion
