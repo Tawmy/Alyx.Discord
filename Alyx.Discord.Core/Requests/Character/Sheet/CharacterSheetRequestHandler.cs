@@ -4,6 +4,7 @@ using Alyx.Discord.Core.Structs;
 using MediatR;
 using NetStone.Api.Client;
 using NetStone.Common.DTOs.FreeCompany;
+using NetStone.Common.Enums;
 using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Core.Requests.Character.Sheet;
@@ -19,11 +20,14 @@ internal class CharacterSheetRequestHandler(
     {
         var id = request.LodestoneId;
 
-        var taskCharacter = client.Character.GetAsync(id, config.NetStone.MaxAgeCharacter, true, cancellationToken);
-        var taskClassJobs = client.Character.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, true,
+        var taskCharacter = client.Character.GetAsync(id, config.NetStone.MaxAgeCharacter, FallbackType.Any,
             cancellationToken);
-        var taskMinions = client.Character.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, true, cancellationToken);
-        var taskMounts = client.Character.GetMountsAsync(id, config.NetStone.MaxAgeMounts, true, cancellationToken);
+        var taskClassJobs = client.Character.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, FallbackType.Any,
+            cancellationToken);
+        var taskMinions = client.Character.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, FallbackType.Any,
+            cancellationToken);
+        var taskMounts = client.Character.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
+            cancellationToken);
 
         try
         {
@@ -47,7 +51,7 @@ internal class CharacterSheetRequestHandler(
                 // TODO check if parser can be modified to return FC tag from character profile
                 // It'd be nice if we could skip this step just to retrieve the FC tag
                 freeCompany = await client.FreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
-                    config.NetStone.MaxAgeFreeCompany, true, cancellationToken);
+                    config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
             }
             catch (NotFoundException)
             {
