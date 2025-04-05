@@ -43,7 +43,8 @@ internal class CharacterGetRequestHandler(
         }
         else
         {
-            var first = searchDtos.First();
+            var first = searchDtos.FirstOrDefault(x =>
+                x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
             builder = new DiscordInteractionResponseBuilder();
             await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id,
