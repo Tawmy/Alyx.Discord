@@ -4,10 +4,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Alyx.Discord.Bot.HealthChecks;
 
-public class BotHealthCheck(DiscordClient client) : IHealthCheck
+public class DiscordHealthCheck(DiscordClient client) : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = new())
+        CancellationToken cancellationToken = default)
     {
         try
         {

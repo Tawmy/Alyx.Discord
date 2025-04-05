@@ -4,7 +4,7 @@ using NetStone.Api.Client;
 
 namespace Alyx.Discord.Core.HealthChecks;
 
-public class NetStoneApiHealthCheck(NetStoneApiClient client) : IHealthCheck
+public class CharacterGetHealthCheck(NetStoneApiClient client) : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)

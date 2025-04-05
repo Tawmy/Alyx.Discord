@@ -1,5 +1,6 @@
 using Alyx.Discord.Api.Components;
 using Alyx.Discord.Api.Extensions;
+using Alyx.Discord.Api.HealthChecks;
 using Alyx.Discord.Bot;
 using Alyx.Discord.Bot.HealthChecks;
 using Alyx.Discord.Core;
@@ -26,8 +27,9 @@ builder.Services.AddDbServices();
 builder.Services.AddBotServices(builder.Configuration);
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<DatabaseContext>()
-    .AddCheck<BotHealthCheck>("bot")
-    .AddCheck<NetStoneApiHealthCheck>("netstone");
+    .AddCheck<DiscordHealthCheck>("bot")
+    .AddCheck<CharacterGetHealthCheck>("netstone")
+    .AddCheck<DataProtectionCertificateHealthCheck>("cert");
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 

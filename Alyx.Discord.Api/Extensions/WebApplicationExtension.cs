@@ -20,5 +20,9 @@ internal static class WebApplicationExtension
         app.MapHealthChecks("/health/netstone", new HealthCheckOptions
                 { Predicate = check => check.Name.Equals("netstone", StringComparison.OrdinalIgnoreCase) })
             .RequireAuthorization();
+
+        app.MapHealthChecks("/health/cert", new HealthCheckOptions
+                { Predicate = check => check.Name.Equals("cert", StringComparison.OrdinalIgnoreCase) })
+            .RequireAuthorization();
     }
 }
