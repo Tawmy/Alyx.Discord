@@ -35,15 +35,32 @@ internal class CharacterClaimRequestHandler(
             return;
         }
 
+        string lodestoneId;
         if (searchDtos.Count > 1)
         {
-            var description = Messages.Commands.Character.Claim.MultipleResults(request.Name, request.World);
-            builder.AddEmbed(embedService.Create(description));
-            await request.Ctx.FollowupAsync(builder);
-            return;
-        }
+            // more than one match, check if one of the results is an exact match
 
-        var lodestoneId = searchDtos.First().Id;
+            var exactNameMatch = searchDtos.FirstOrDefault(x =>
+                x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase));
+
+            if (exactNameMatch is not null)
+            {
+                // one name is exact match, use that
+                lodestoneId = exactNameMatch.Id;
+            }
+            else
+            {
+                // there is no exact name match, unclear which one to use
+                var description = Messages.Commands.Character.Claim.MultipleResults(request.Name, request.World);
+                builder.AddEmbed(embedService.Create(description));
+                await request.Ctx.FollowupAsync(builder);
+                return;
+            }
+        }
+        else
+        {
+            lodestoneId = searchDtos.First().Id;
+        }
 
         var coreRequest = new CoreRequest(request.Ctx.Interaction.User.Id, lodestoneId);
         var characterClaimRequestResponse = await sender.Send(coreRequest, cancellationToken);
