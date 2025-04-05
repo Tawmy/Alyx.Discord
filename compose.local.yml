@@ -8,6 +8,9 @@ services:
     environment:
       DEBUG_GUILD_ID: 1284800895967559711
       STATUS_MESSAGE: "I'm in development!"
+      DATA_PROTECTION_CERTIFICATE: /mnt/cert/alyx-discord
+    volumes:
+      - /Users/tawmy/Desktop/alyx-discord/cert:/mnt/cert
     labels:
       - dev.orbstack.domains=alyx.discord.local
     ports:

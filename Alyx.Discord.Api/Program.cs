@@ -19,6 +19,8 @@ builder.Services.AddSwaggerGen();
 var version = typeof(Program).Assembly.GetName().Version!;
 builder.Services.AddSingleton(version);
 
+builder.Services.AddDataProtection(builder.Configuration);
+
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddDbServices();
 builder.Services.AddBotServices(builder.Configuration);

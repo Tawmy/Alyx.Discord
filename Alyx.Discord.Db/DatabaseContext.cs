@@ -1,10 +1,11 @@
 using Alyx.Discord.Db.Models;
 using EntityFramework.Exceptions.PostgreSQL;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alyx.Discord.Db;
 
-public class DatabaseContext : DbContext
+public class DatabaseContext : DbContext, IDataProtectionKeyContext
 {
     public DatabaseContext()
     {
@@ -35,6 +36,8 @@ public class DatabaseContext : DbContext
     }
 
     #region DbSets
+
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public DbSet<Character> Characters { get; set; }
     public DbSet<InteractionData> InteractionDatas { get; set; }
