@@ -2,7 +2,8 @@ using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetStone.Api.Client;
+using NetStone.Api.Sdk;
+using NetStone.Api.Sdk.DependencyInjection;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Core;
@@ -15,12 +16,12 @@ public static class DependencyInjection
 
         services.AddSingleton<ExternalResourceService>();
         services.AddHttpClient<CharacterSheetService>().AddStandardResilienceHandler();
-        services.AddNetStoneApiClient(configuration);
+        services.AddNetStoneApi(configuration);
 
         services.AddHostedService<PostStartupService>();
     }
 
-    private static void AddNetStoneApiClient(this IServiceCollection services, IConfiguration configuration)
+    private static void AddNetStoneApi(this IServiceCollection services, IConfiguration configuration)
     {
         var apiRootUri = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiRootUri));
         var authAuthority = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiAuthority));
@@ -30,8 +31,9 @@ public static class DependencyInjection
         var authScopesArray =
             authScopes.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var netStoneApiClientConfiguration = new NetStoneApiClientConfiguration(apiRootUri, authAuthority, authClientId,
-            authClientSecret, authScopesArray);
-        services.AddSingleton(new NetStoneApiClient(netStoneApiClientConfiguration));
+        var options = new NetStoneApiOptions(apiRootUri, authAuthority, authClientId, authClientSecret,
+            authScopesArray);
+
+        services.AddNetStoneApi(options);
     }
 }

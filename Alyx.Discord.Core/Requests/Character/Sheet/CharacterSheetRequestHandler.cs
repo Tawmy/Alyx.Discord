@@ -2,7 +2,7 @@ using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
 using Alyx.Discord.Core.Structs;
 using MediatR;
-using NetStone.Api.Client;
+using NetStone.Api.Sdk.Abstractions;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
 using NetStone.Common.Exceptions;
@@ -11,7 +11,8 @@ namespace Alyx.Discord.Core.Requests.Character.Sheet;
 
 internal class CharacterSheetRequestHandler(
     AlyxConfiguration config,
-    NetStoneApiClient client,
+    INetStoneApiCharacter apiCharacter,
+    INetStoneApiFreeCompany apiFreeCompany,
     CharacterSheetService characterSheetService)
     : IRequestHandler<CharacterSheetRequest, CharacterSheet>
 {
@@ -20,13 +21,13 @@ internal class CharacterSheetRequestHandler(
     {
         var id = request.LodestoneId;
 
-        var taskCharacter = client.Character.GetAsync(id, config.NetStone.MaxAgeCharacter, FallbackType.Any,
+        var taskCharacter = apiCharacter.GetAsync(id, config.NetStone.MaxAgeCharacter, FallbackType.Any,
             cancellationToken);
-        var taskClassJobs = client.Character.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, FallbackType.Any,
+        var taskClassJobs = apiCharacter.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, FallbackType.Any,
             cancellationToken);
-        var taskMinions = client.Character.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, FallbackType.Any,
+        var taskMinions = apiCharacter.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, FallbackType.Any,
             cancellationToken);
-        var taskMounts = client.Character.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
+        var taskMounts = apiCharacter.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
             cancellationToken);
 
         try
@@ -50,7 +51,7 @@ internal class CharacterSheetRequestHandler(
             {
                 // TODO check if parser can be modified to return FC tag from character profile
                 // It'd be nice if we could skip this step just to retrieve the FC tag
-                freeCompany = await client.FreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
+                freeCompany = await apiFreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
                     config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
             }
             catch (NotFoundException)
