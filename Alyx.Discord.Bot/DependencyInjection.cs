@@ -48,6 +48,7 @@ public static class DependencyInjection
                 x.AddProcessor<UserCommandProcessor>();
                 x.AddProcessor<MessageCommandProcessor>();
 
+                x.AddCommands<GeneralCommands>();
                 x.AddCommands<CharacterCommands>();
                 x.AddCommands<FfxivCommands>();
 

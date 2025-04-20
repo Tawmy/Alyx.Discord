@@ -28,6 +28,14 @@ internal static class Messages
             public const string Private = "Whether response is visible only to you.";
         }
 
+        public static class General
+        {
+            public static class About
+            {
+                public const string Description = "Info and stats about Alyx.";
+            }
+        }
+
         public static class Character
         {
             public static class Get

@@ -7,7 +7,6 @@ using Alyx.Discord.Core;
 using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.HealthChecks;
 using Alyx.Discord.Db;
-using NetStone.Common.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +58,6 @@ app.MapControllers();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-app.Logger.LogInformation("Alyx.Discord, Version {v}", version.ToVersionString());
+app.Logger.LogInformation("Alyx.Discord, Version {v}", version.ToString(3));
 
 app.Run();
