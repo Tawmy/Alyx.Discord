@@ -37,8 +37,8 @@ internal class CharacterSheetRequestHandler(
         {
             try
             {
-                // TODO check if parser can be modified to return FC tag from character profile
-                // It'd be nice if we could skip this step just to retrieve the FC tag
+                // character page does not return FC tag, so we need to queue full free company
+                // returning tag of cached fc is not a good idea either because it might be outdated
                 freeCompany = await apiFreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
                     request.ForceRefresh ? 0 : config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
             }
