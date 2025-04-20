@@ -30,19 +30,7 @@ internal class CharacterSheetRequestHandler(
         var taskMounts = apiCharacter.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
             cancellationToken);
 
-        try
-        {
-            await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
-        }
-        catch (NotFoundException)
-        {
-            // TODO replace with Resilience, retry 1 or 2 times instead of proceeding without certain data
-            // note: may throw NotFoundException when no mounts or if page private?
-            if (taskCharacter.IsFaulted)
-            {
-                throw;
-            }
-        }
+        await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
 
         FreeCompanyDtoV3? freeCompany = null;
         if (taskCharacter.Result.FreeCompany is not null)
