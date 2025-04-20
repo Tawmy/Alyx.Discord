@@ -59,33 +59,45 @@ internal class CharacterSheetRequestHandler(
         var metadata = new List<SheetMetadata>
         {
             new("Character", taskCharacter.Result.LastUpdated ?? now, taskCharacter.Result.FallbackUsed,
-                taskCharacter.Result.FallbackReason)
+                CreateFallbackMessage(taskCharacter.Result.FallbackReason))
         };
 
         if (!taskClassJobs.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Jobs", taskClassJobs.Result.LastUpdated ?? now,
-                taskClassJobs.Result.FallbackUsed, taskClassJobs.Result.FallbackReason));
+                taskClassJobs.Result.FallbackUsed, CreateFallbackMessage(taskClassJobs.Result.FallbackReason)));
         }
 
         if (!taskMinions.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Minions", taskMinions.Result.LastUpdated ?? now,
-                taskMinions.Result.FallbackUsed, taskMinions.Result.FallbackReason));
+                taskMinions.Result.FallbackUsed, CreateFallbackMessage(taskMinions.Result.FallbackReason)));
         }
 
         if (!taskMounts.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Mounts", taskMounts.Result.LastUpdated ?? now,
-                taskMounts.Result.FallbackUsed, taskMounts.Result.FallbackReason));
+                taskMounts.Result.FallbackUsed, CreateFallbackMessage(taskMounts.Result.FallbackReason)));
         }
 
         if (freeCompany is not null)
         {
             metadata.Add(new SheetMetadata("Free Company", freeCompany.LastUpdated ?? now, freeCompany.FallbackUsed,
-                freeCompany.FallbackReason));
+                CreateFallbackMessage(freeCompany.FallbackReason)));
         }
 
         return new CharacterSheet(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? "Profile set to private or Lodestone under maintenance"
+            : fallbackReason;
     }
 }
