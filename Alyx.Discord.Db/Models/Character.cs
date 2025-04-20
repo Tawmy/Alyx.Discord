@@ -13,4 +13,6 @@ public class Character
     public bool Confirmed { get; set; }
 
     public bool IsMainCharacter { get; set; }
+
+    public DateTime? LastForceRefresh { get; set; }
 }

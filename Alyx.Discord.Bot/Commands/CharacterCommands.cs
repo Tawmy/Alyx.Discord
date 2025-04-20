@@ -37,10 +37,12 @@ internal class CharacterCommands(ISender sender)
     [Command("me")]
     [Description(Messages.Commands.Character.Me.Description)]
     public Task MeAsync(SlashCommandContext ctx,
+        [Description(Messages.Commands.Parameters.ForceRefresh)]
+        bool forceRefresh = false,
         [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
         bool isPrivate = false)
     {
-        return sender.Send(new CharacterMeRequest(ctx, isPrivate));
+        return sender.Send(new CharacterMeRequest(ctx, forceRefresh, isPrivate));
     }
 
     [Command("claim")]

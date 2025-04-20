@@ -1,10 +1,10 @@
 using System.Diagnostics;
+using DSharpPlus;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using NetStone.Api.Client;
 
-namespace Alyx.Discord.Core.HealthChecks;
+namespace Alyx.Discord.Bot.HealthChecks;
 
-public class NetStoneApiHealthCheck(NetStoneApiClient client) : IHealthCheck
+public class DiscordHealthCheck(DiscordClient client) : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -12,7 +12,7 @@ public class NetStoneApiHealthCheck(NetStoneApiClient client) : IHealthCheck
         try
         {
             var stopwatch = Stopwatch.StartNew();
-            await client.Character.GetAsync("28812634", cancellationToken: cancellationToken);
+            await client.GetUserAsync(111462437164724224, true);
             stopwatch.Stop();
 
             return stopwatch.ElapsedMilliseconds > 1000 ? HealthCheckResult.Degraded() : HealthCheckResult.Healthy();

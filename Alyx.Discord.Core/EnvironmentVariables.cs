@@ -16,4 +16,5 @@ public static class EnvironmentVariables
     public const string NetStoneMaxAgeMinions = "NETSTONE_MAX_AGE_MINIONS";
     public const string NetStoneMaxAgeMounts = "NETSTONE_MAX_AGE_MOUNTS";
     public const string NetStoneMaxAgeFreeCompany = "NETSTONE_MAX_FREE_COMPANY";
+    public const string ForceRefreshCooldown = "FORCE_REFRESH_COOLDOWN";
 }

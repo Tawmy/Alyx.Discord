@@ -8,7 +8,8 @@ public record NetStoneConfiguration(
     int MaxAgeClassJobs,
     int MaxAgeMinions,
     int MaxAgeMounts,
-    int MaxAgeFreeCompany)
+    int MaxAgeFreeCompany,
+    int ForceRefreshCooldown)
 {
     internal static NetStoneConfiguration FromEnvironment(IConfiguration configuration)
     {
@@ -25,7 +26,10 @@ public record NetStoneConfiguration(
                            ?? day;
         var maxAgeFc = configuration.GetOptionalConfiguration<int>(EnvironmentVariables.NetStoneMaxAgeFreeCompany)
                        ?? week;
+        var forceRefreshCooldown = configuration.GetOptionalConfiguration<int>(
+            EnvironmentVariables.ForceRefreshCooldown) ?? day;
 
-        return new NetStoneConfiguration(maxAgeCharacter, maxAgeClassJobs, maxAgeMinions, maxAgeMounts, maxAgeFc);
+        return new NetStoneConfiguration(maxAgeCharacter, maxAgeClassJobs, maxAgeMinions, maxAgeMounts, maxAgeFc,
+            forceRefreshCooldown);
     }
 }

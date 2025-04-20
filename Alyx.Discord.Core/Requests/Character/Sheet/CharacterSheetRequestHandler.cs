@@ -2,7 +2,7 @@ using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
 using Alyx.Discord.Core.Structs;
 using MediatR;
-using NetStone.Api.Client;
+using NetStone.Api.Sdk.Abstractions;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
 using NetStone.Common.Exceptions;
@@ -11,7 +11,8 @@ namespace Alyx.Discord.Core.Requests.Character.Sheet;
 
 internal class CharacterSheetRequestHandler(
     AlyxConfiguration config,
-    NetStoneApiClient client,
+    INetStoneApiCharacter apiCharacter,
+    INetStoneApiFreeCompany apiFreeCompany,
     CharacterSheetService characterSheetService)
     : IRequestHandler<CharacterSheetRequest, CharacterSheet>
 {
@@ -20,28 +21,16 @@ internal class CharacterSheetRequestHandler(
     {
         var id = request.LodestoneId;
 
-        var taskCharacter = client.Character.GetAsync(id, config.NetStone.MaxAgeCharacter, FallbackType.Any,
-            cancellationToken);
-        var taskClassJobs = client.Character.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, FallbackType.Any,
-            cancellationToken);
-        var taskMinions = client.Character.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, FallbackType.Any,
-            cancellationToken);
-        var taskMounts = client.Character.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
-            cancellationToken);
+        var taskCharacter = apiCharacter.GetAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeCharacter,
+            FallbackType.Any, cancellationToken);
+        var taskClassJobs = apiCharacter.GetClassJobsAsync(id,
+            request.ForceRefresh ? 0 : config.NetStone.MaxAgeClassJobs, FallbackType.Any, cancellationToken);
+        var taskMinions = apiCharacter.GetMinionsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMinions,
+            FallbackType.Any, cancellationToken);
+        var taskMounts = apiCharacter.GetMountsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMounts,
+            FallbackType.Any, cancellationToken);
 
-        try
-        {
-            await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
-        }
-        catch (NotFoundException)
-        {
-            // TODO replace with Resilience, retry 1 or 2 times instead of proceeding without certain data
-            // note: may throw NotFoundException when no mounts or if page private?
-            if (taskCharacter.IsFaulted)
-            {
-                throw;
-            }
-        }
+        await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
 
         FreeCompanyDtoV3? freeCompany = null;
         if (taskCharacter.Result.FreeCompany is not null)
@@ -50,8 +39,8 @@ internal class CharacterSheetRequestHandler(
             {
                 // TODO check if parser can be modified to return FC tag from character profile
                 // It'd be nice if we could skip this step just to retrieve the FC tag
-                freeCompany = await client.FreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
-                    config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
+                freeCompany = await apiFreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
+                    request.ForceRefresh ? 0 : config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
             }
             catch (NotFoundException)
             {
@@ -70,33 +59,45 @@ internal class CharacterSheetRequestHandler(
         var metadata = new List<SheetMetadata>
         {
             new("Character", taskCharacter.Result.LastUpdated ?? now, taskCharacter.Result.FallbackUsed,
-                taskCharacter.Result.FallbackReason)
+                CreateFallbackMessage(taskCharacter.Result.FallbackReason))
         };
 
         if (!taskClassJobs.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Jobs", taskClassJobs.Result.LastUpdated ?? now,
-                taskClassJobs.Result.FallbackUsed, taskClassJobs.Result.FallbackReason));
+                taskClassJobs.Result.FallbackUsed, CreateFallbackMessage(taskClassJobs.Result.FallbackReason)));
         }
 
         if (!taskMinions.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Minions", taskMinions.Result.LastUpdated ?? now,
-                taskMinions.Result.FallbackUsed, taskMinions.Result.FallbackReason));
+                taskMinions.Result.FallbackUsed, CreateFallbackMessage(taskMinions.Result.FallbackReason)));
         }
 
         if (!taskMounts.IsFaulted)
         {
             metadata.Add(new SheetMetadata("Mounts", taskMounts.Result.LastUpdated ?? now,
-                taskMounts.Result.FallbackUsed, taskMounts.Result.FallbackReason));
+                taskMounts.Result.FallbackUsed, CreateFallbackMessage(taskMounts.Result.FallbackReason)));
         }
 
         if (freeCompany is not null)
         {
             metadata.Add(new SheetMetadata("Free Company", freeCompany.LastUpdated ?? now, freeCompany.FallbackUsed,
-                freeCompany.FallbackReason));
+                CreateFallbackMessage(freeCompany.FallbackReason)));
         }
 
         return new CharacterSheet(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? "Profile set to private or Lodestone under maintenance"
+            : fallbackReason;
     }
 }

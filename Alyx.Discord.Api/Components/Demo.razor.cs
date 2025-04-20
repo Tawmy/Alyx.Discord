@@ -19,7 +19,7 @@ public partial class Demo : ComponentBase
         _showMessage = true;
         await InvokeAsync(StateHasChanged);
 
-        var sheet = await Sender.Send(new CharacterSheetRequest(LodestoneId));
+        var sheet = await Sender.Send(new CharacterSheetRequest(LodestoneId, false));
         var image = sheet.Image;
         _imageSource = image.ToBase64String(WebpFormat.Instance);
         await InvokeAsync(StateHasChanged);

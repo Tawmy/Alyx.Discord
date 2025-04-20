@@ -1,3 +1,4 @@
+using System.Net;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
@@ -7,6 +8,7 @@ using Alyx.Discord.Core.Structs;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using MediatR;
+using Refit;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Extensions;
@@ -56,11 +58,30 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        ISender sender, IInteractionDataService interactionDataService, string lodestoneId,
-        Func<BaseDiscordMessageBuilder<T>, Task> followupTask, CancellationToken cancellationToken = default)
+        ISender sender, IInteractionDataService interactionDataService, DiscordEmbedService embedService,
+        string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> followupTask,
+        CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
     {
-        var sheet = await sender.Send(new CharacterSheetRequest(lodestoneId), cancellationToken);
+        CharacterSheet sheet;
+        try
+        {
+            sheet = await sender.Send(new CharacterSheetRequest(lodestoneId, forceRefresh), cancellationToken);
+        }
+        catch (ValidationApiException e)
+        {
+            if (e.StatusCode is not HttpStatusCode.ServiceUnavailable)
+            {
+                throw;
+            }
+
+            var errorEmbed = embedService.CreateError(Messages.Other.ServiceUnavailableDescription,
+                Messages.Other.ServiceUnavailableTitle);
+            builder.AddEmbed(errorEmbed);
+
+            await followupTask(builder);
+            return;
+        }
 
         await using var stream = new MemoryStream();
         await sheet.Image.SaveAsync(stream, new WebpEncoder(), cancellationToken);

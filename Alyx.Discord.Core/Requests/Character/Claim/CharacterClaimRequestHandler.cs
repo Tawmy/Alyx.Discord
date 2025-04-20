@@ -2,11 +2,11 @@ using System.Text;
 using Alyx.Discord.Db;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using NetStone.Api.Client;
+using NetStone.Api.Sdk.Abstractions;
 
 namespace Alyx.Discord.Core.Requests.Character.Claim;
 
-internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApiClient netStoneApiClient)
+internal class CharacterClaimRequestHandler(DatabaseContext context, INetStoneApiCharacter apiCharacter)
     : IRequestHandler<CharacterClaimRequest, CharacterClaimRequestResponse>
 {
     public async Task<CharacterClaimRequestResponse> Handle(CharacterClaimRequest request,
@@ -112,7 +112,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, NetStoneApi
     /// <param name="cancellationToken">Cancellation token.</param>
     private async Task<bool> ValidateCodeAsync(string lodestoneId, string code, CancellationToken cancellationToken)
     {
-        var character = await netStoneApiClient.Character.GetAsync(lodestoneId, 0,
+        var character = await apiCharacter.GetAsync(lodestoneId, 0,
             cancellationToken: cancellationToken);
         return character.Bio.Contains(code);
     }

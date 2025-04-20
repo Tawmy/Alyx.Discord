@@ -1,5 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using DSharpPlus;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
@@ -8,7 +9,10 @@ using MediatR;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class SelectCharacterHandler(ISender sender, IInteractionDataService interactionDataService)
+internal class SelectCharacterHandler(
+    ISender sender,
+    IInteractionDataService interactionDataService,
+    DiscordEmbedService embedService)
     : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
@@ -18,7 +22,7 @@ internal class SelectCharacterHandler(ISender sender, IInteractionDataService in
         var selectedLodestoneId = args.Values.First();
 
         var builder = new DiscordFollowupMessageBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, selectedLodestoneId,
-            async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b));
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, selectedLodestoneId,
+            false, async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b));
     }
 }

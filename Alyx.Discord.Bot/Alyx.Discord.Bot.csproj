@@ -7,16 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02464"/>
-        <PackageReference Include="DSharpPlus.Commands" Version="5.0.0-nightly-02464"/>
-        <PackageReference Include="MediatR" Version="12.4.1"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02484"/>
+        <PackageReference Include="DSharpPlus.Commands" Version="5.0.0-nightly-02484"/>
+        <PackageReference Include="MediatR" Version="12.5.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Alyx.Discord.Core\Alyx.Discord.Core.csproj"/>
+        <ProjectReference Include="..\NetStone.Api.Sdk\NetStone.Common\NetStone.Common\NetStone.Common.csproj"/>
     </ItemGroup>
 
 </Project>

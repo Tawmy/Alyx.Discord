@@ -2,7 +2,11 @@ using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
+using Alyx.Discord.Core.Configuration;
+using Alyx.Discord.Core.Requests.Character.GetLastForceRefresh;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
+using Alyx.Discord.Core.Requests.Character.SetLastForceRefresh;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
@@ -12,7 +16,8 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 internal class CharacterMeRequestHandler(
     ISender sender,
     DiscordEmbedService embedService,
-    IInteractionDataService interactionDataService)
+    IInteractionDataService interactionDataService,
+    AlyxConfiguration alyxConfiguration)
     : IRequestHandler<CharacterMeRequest>
 {
     public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
@@ -31,10 +36,35 @@ internal class CharacterMeRequestHandler(
             return;
         }
 
+        if (request.ForceRefresh)
+        {
+            var lastForceRefresh = await sender.Send(new GetLastForceRefreshRequest(lodestoneId), cancellationToken);
+            var allowedBefore = DateTime.Now.AddMinutes(-1 * alyxConfiguration.NetStone.ForceRefreshCooldown);
+
+            if (lastForceRefresh > allowedBefore)
+            {
+                var formattedLastRefresh = Formatter.Timestamp(lastForceRefresh.Value);
+                var allowedAfter = lastForceRefresh.Value.AddMinutes(alyxConfiguration.NetStone.ForceRefreshCooldown);
+                var formattedAllowedAfterRel = Formatter.Timestamp(allowedAfter);
+                var formattedAllowedAfterAbs = Formatter.Timestamp(allowedAfter, TimestampFormat.ShortDateTime);
+                var embed = embedService.CreateError(
+                    Messages.Commands.Character.Me.ForceRefreshErrorDescription(formattedLastRefresh,
+                        formattedAllowedAfterRel, formattedAllowedAfterAbs));
+                await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+                return;
+            }
+        }
+
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
         var builder = new DiscordInteractionResponseBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId,
-            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, lodestoneId,
+            request.ForceRefresh, async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+
+        if (request.ForceRefresh)
+        {
+            await sender.Send(new SetLastForceRefreshRequest(lodestoneId, DateTime.UtcNow), cancellationToken);
+        }
     }
 }

@@ -5,18 +5,19 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <AssemblyVersion>1.5.2</AssemblyVersion>
+        <AssemblyVersion>1.6.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Alyx.Discord.Bot\Alyx.Discord.Bot.csproj"/>
         <ProjectReference Include="..\Alyx.Discord.External\Alyx.Discord.External\Alyx.Discord.External.csproj"/>
+        <ProjectReference Include="..\NetStone.Api.Sdk\NetStone.Common\NetStone.Common\NetStone.Common.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
