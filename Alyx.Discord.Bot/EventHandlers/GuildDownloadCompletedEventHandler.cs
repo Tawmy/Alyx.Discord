@@ -8,7 +8,7 @@ namespace Alyx.Discord.Bot.EventHandlers;
 /// <summary>
 ///     Event is fired when bot is fully ready.
 /// </summary>
-public class GuildDownloadCompletedEventHandler(AlyxConfiguration config)
+internal class GuildDownloadCompletedEventHandler(AlyxConfiguration config)
     : IEventHandler<GuildDownloadCompletedEventArgs>
 {
     public Task HandleEventAsync(DiscordClient discordClient, GuildDownloadCompletedEventArgs eventArgs)

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Core.Requests.General.Statistics;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -6,7 +7,8 @@ using MediatR;
 
 namespace Alyx.Discord.Bot.Requests.General.About;
 
-internal class AboutRequestHandler(ISender sender, Version version) : IRequestHandler<AboutRequest>
+internal class AboutRequestHandler(ISender sender, CachingService cachingService, Version version)
+    : IRequestHandler<AboutRequest>
 {
     public async Task Handle(AboutRequest request, CancellationToken cancellationToken)
     {
@@ -21,7 +23,11 @@ internal class AboutRequestHandler(ISender sender, Version version) : IRequestHa
         embed.WithColor(DiscordColor.Gold);
 
         embed.WithThumbnail(request.Ctx.Client.CurrentUser.AvatarUrl);
-        embed.WithImageUrl(request.Ctx.Client.CurrentUser.BannerUrl);
+
+        if (cachingService.GetBannerUrl() is { } bannerUrl)
+        {
+            embed.WithImageUrl(bannerUrl);
+        }
 
         embed.AddField("Version", version.ToString(3));
 

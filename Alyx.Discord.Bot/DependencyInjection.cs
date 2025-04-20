@@ -27,6 +27,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<DiscordEmbedService>();
+        services.AddSingleton<CachingService>();
 
         services.AddMediatR(cfg =>
         {
@@ -60,6 +61,7 @@ public static class DependencyInjection
         services.AddComponentInteractionHandlers();
         services.ConfigureEventHandlers(x =>
         {
+            x.AddEventHandlers<ClientStartedEventHandler>();
             x.AddEventHandlers<GuildDownloadCompletedEventHandler>();
             x.AddEventHandlers<ComponentInteractionCreatedEventHandler>();
         });
