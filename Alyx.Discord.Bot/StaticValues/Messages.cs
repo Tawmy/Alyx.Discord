@@ -224,4 +224,10 @@ internal static class Messages
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
     }
+
+    public static class Other
+    {
+        public const string ServiceUnavailableTitle = "Retrieving data failed";
+        public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
+    }
 }
