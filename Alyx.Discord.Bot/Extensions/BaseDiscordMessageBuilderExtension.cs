@@ -58,14 +58,15 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        ISender sender, IInteractionDataService interactionDataService, string lodestoneId,
-        Func<BaseDiscordMessageBuilder<T>, Task> followupTask, CancellationToken cancellationToken = default)
+        ISender sender, IInteractionDataService interactionDataService, DiscordEmbedService embedService,
+        string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> followupTask,
+        CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
     {
         CharacterSheet sheet;
         try
         {
-            sheet = await sender.Send(new CharacterSheetRequest(lodestoneId), cancellationToken);
+            sheet = await sender.Send(new CharacterSheetRequest(lodestoneId, forceRefresh), cancellationToken);
         }
         catch (ValidationApiException e)
         {
@@ -74,9 +75,9 @@ internal static class BaseDiscordMessageBuilderExtension
                 throw;
             }
 
-            builder.AddEmbed(new DiscordEmbedBuilder().WithColor(DiscordColor.Red)
-                .WithTitle(Messages.Other.ServiceUnavailableTitle)
-                .WithDescription(Messages.Other.ServiceUnavailableDescription));
+            var errorEmbed = embedService.CreateError(Messages.Other.ServiceUnavailableDescription,
+                Messages.Other.ServiceUnavailableTitle);
+            builder.AddEmbed(errorEmbed);
 
             await followupTask(builder);
             return;

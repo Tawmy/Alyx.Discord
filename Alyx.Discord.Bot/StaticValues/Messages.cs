@@ -24,6 +24,7 @@ internal static class Messages
         {
             public const string CharacterName = "Character name";
             public const string CharacterWorld = "Character's home world.";
+            public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
         }
 
@@ -67,6 +68,15 @@ internal static class Messages
                 {
                     return
                         $"You have not claimed a character yet. You can do so using {CreateCommandDisplayStr(commands, command)}.";
+                }
+
+                public static string ForceRefreshErrorDescription(string lastRefresh, string allowedInRelative,
+                    string allowedInAbsolute)
+                {
+                    return $"""
+                            Last force refresh was {lastRefresh}.
+                            You can force refresh again in {allowedInRelative}, at {allowedInAbsolute}.
+                            """;
                 }
             }
 

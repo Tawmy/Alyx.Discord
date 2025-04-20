@@ -21,14 +21,14 @@ internal class CharacterSheetRequestHandler(
     {
         var id = request.LodestoneId;
 
-        var taskCharacter = apiCharacter.GetAsync(id, config.NetStone.MaxAgeCharacter, FallbackType.Any,
-            cancellationToken);
-        var taskClassJobs = apiCharacter.GetClassJobsAsync(id, config.NetStone.MaxAgeClassJobs, FallbackType.Any,
-            cancellationToken);
-        var taskMinions = apiCharacter.GetMinionsAsync(id, config.NetStone.MaxAgeMinions, FallbackType.Any,
-            cancellationToken);
-        var taskMounts = apiCharacter.GetMountsAsync(id, config.NetStone.MaxAgeMounts, FallbackType.Any,
-            cancellationToken);
+        var taskCharacter = apiCharacter.GetAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeCharacter,
+            FallbackType.Any, cancellationToken);
+        var taskClassJobs = apiCharacter.GetClassJobsAsync(id,
+            request.ForceRefresh ? 0 : config.NetStone.MaxAgeClassJobs, FallbackType.Any, cancellationToken);
+        var taskMinions = apiCharacter.GetMinionsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMinions,
+            FallbackType.Any, cancellationToken);
+        var taskMounts = apiCharacter.GetMountsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMounts,
+            FallbackType.Any, cancellationToken);
 
         await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
 
@@ -40,7 +40,7 @@ internal class CharacterSheetRequestHandler(
                 // TODO check if parser can be modified to return FC tag from character profile
                 // It'd be nice if we could skip this step just to retrieve the FC tag
                 freeCompany = await apiFreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
-                    config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
+                    request.ForceRefresh ? 0 : config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
             }
             catch (NotFoundException)
             {

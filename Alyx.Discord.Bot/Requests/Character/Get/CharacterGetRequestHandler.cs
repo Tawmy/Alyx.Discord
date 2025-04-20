@@ -47,7 +47,7 @@ internal class CharacterGetRequestHandler(
                 x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
             builder = new DiscordInteractionResponseBuilder();
-            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id,
+            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, first.Id, false,
                 async b => await request.Ctx.FollowupAsync(b), cancellationToken);
         }
     }
