@@ -10,7 +10,7 @@ services:
       STATUS_MESSAGE: "I'm in development!"
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/alyx-discord
     volumes:
-      - /Users/tawmy/Desktop/alyx-discord/cert:/mnt/cert
+      - /Users/tawmy/Desktop/cert/alyx-discord:/mnt/cert
     labels:
       - dev.orbstack.domains=alyx.discord.local
     ports:
