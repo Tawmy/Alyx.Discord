@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Alyx.Discord.External" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/NetStone.Api.Sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/NetStone.Api.Sdk/NetStone.Common" vcs="Git" />
   </component>
 </project>
