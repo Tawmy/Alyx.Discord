@@ -12,47 +12,64 @@ internal class AboutRequestHandler(ISender sender, CachingService cachingService
 {
     public async Task Handle(AboutRequest request, CancellationToken cancellationToken)
     {
-        var builder = new DiscordInteractionResponseBuilder();
+        var builder = new DiscordInteractionResponseBuilder().EnableV2Components();
 
-        var embed = new DiscordEmbedBuilder();
-        embed.WithTitle(request.Ctx.Client.CurrentUser.Username);
-        embed.WithDescription("""
-                              My name's Alyx.
-                              I'm here to provide support.
-                              """);
-        embed.WithColor(DiscordColor.Gold);
-
-        embed.WithThumbnail(request.Ctx.Client.CurrentUser.AvatarUrl);
-
-        if (cachingService.GetBannerUrl() is { } bannerUrl)
-        {
-            embed.WithImageUrl(bannerUrl);
-        }
-
-        embed.AddField("Version", version.ToString(3));
+        List<DiscordComponent> components = [];
 
         var currentProcess = Process.GetCurrentProcess();
         var startedAt = currentProcess.StartTime.ToUniversalTime();
-        var startedAtFormatted = $"""
-                                  Started {Formatter.Timestamp(startedAt)}
-                                  {Formatter.Timestamp(startedAt, TimestampFormat.ShortDateTime)}
-                                  """;
-        embed.AddField("Uptime", startedAtFormatted);
+
+        components.Add(new DiscordSectionComponent(
+            [
+                new DiscordTextDisplayComponent($"# {request.Ctx.Client.CurrentUser.Username}"),
+                new DiscordTextDisplayComponent("""
+                                                My name's Alyx.
+                                                I'm here to provide support.
+                                                """)
+            ],
+            new DiscordThumbnailComponent(request.Ctx.Client.CurrentUser.AvatarUrl)
+        ));
+
+        components.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+        components.Add(new DiscordSectionComponent(
+            new DiscordTextDisplayComponent($"### Version **{version.ToString(3)}**"),
+            new DiscordLinkButtonComponent("https://wiki.tawmy.net/books/alyx/page/release-notes", "Release Notes")
+        ));
+
+        components.Add(new DiscordSectionComponent(
+            new DiscordTextDisplayComponent($"""
+                                             Started {Formatter.Timestamp(startedAt)}
+                                             {Formatter.Timestamp(startedAt, TimestampFormat.ShortDateTime)}
+                                             """),
+            new DiscordLinkButtonComponent("https://alyx.status.tawmy.net", "Status")
+        ));
+
+        components.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
 
         var stats = await sender.Send(new StatisticsRequest(), cancellationToken);
 
-        embed.AddField("Claimed Characters", stats.ClaimedCharacters.ToString());
+        components.Add(
+            new DiscordTextDisplayComponent($"""
+                                             ### Statistics
+                                             Claimed Characters: `{stats.ClaimedCharacters.ToString()}`
+                                             """));
 
-        var links = $"""
-                     {Formatter.MaskedUrl("Home", new Uri("https://alyx.tawmy.net"))}
-                     {Formatter.MaskedUrl("Release Notes", new Uri("https://wiki.tawmy.net/books/alyx/page/release-notes"))}
-                     {Formatter.MaskedUrl("Status", new Uri("https://alyx.status.tawmy.net"))}
-                     """;
-        embed.AddField("External links", links);
+        if (cachingService.GetBannerUrl() is { } bannerUrl)
+        {
+            components.Add(new DiscordSeparatorComponent());
+            var desc = $"Banner for {request.Ctx.Client.CurrentUser.Username}";
+            components.Add(new DiscordMediaGalleryComponent(new DiscordMediaGalleryItem(bannerUrl, desc, false)));
+        }
+        else
+        {
+            components.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+        }
 
-        embed.WithFooter("tawmy.dev", "https://tawmy.dev/avatar.webp");
+        components.Add(new DiscordTextDisplayComponent(
+            $"Created by {Formatter.MaskedUrl("Tawmy", new Uri("https://tawmy.dev"))}"));
 
-        builder.AddEmbed(embed);
+        builder.AddRawComponents(new DiscordContainerComponent(components));
         builder.AsEphemeral(request.IsPrivate);
 
         await request.Ctx.RespondAsync(builder);
