@@ -10,7 +10,7 @@ public partial class Demo : ComponentBase
 {
     private const string LodestoneId = "28812634";
     private string? _imageSource;
-    private bool _showMessage = false;
+    private bool _showMessage;
 
     [Inject] public required ISender Sender { get; set; }
 
