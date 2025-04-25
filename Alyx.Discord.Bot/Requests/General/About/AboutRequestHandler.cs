@@ -69,7 +69,7 @@ internal class AboutRequestHandler(ISender sender, CachingService cachingService
         components.Add(new DiscordTextDisplayComponent(
             $"Created by {Formatter.MaskedUrl("Tawmy", new Uri("https://tawmy.dev"))}"));
 
-        builder.AddRawComponents(new DiscordContainerComponent(components));
+        builder.AddContainerComponent(new DiscordContainerComponent(components));
         builder.AsEphemeral(request.IsPrivate);
 
         await request.Ctx.RespondAsync(builder);

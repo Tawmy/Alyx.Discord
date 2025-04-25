@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Alyx.Discord.Bot.AutoCompleteProviders;
 using Alyx.Discord.Bot.Requests.Character.Claim;
+using Alyx.Discord.Bot.Requests.Character.Gear;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Requests.Character.Me;
 using Alyx.Discord.Bot.Requests.Character.Unclaim;
@@ -43,6 +44,20 @@ internal class CharacterCommands(ISender sender)
         bool isPrivate = false)
     {
         return sender.Send(new CharacterMeRequest(ctx, forceRefresh, isPrivate));
+    }
+
+    [Command("gear")]
+    [Description(Messages.Commands.Character.Get.Description)]
+    public Task GearAsync(SlashCommandContext ctx,
+        [Description(Messages.Commands.Parameters.CharacterName)]
+        string name,
+        [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
+        [Description(Messages.Commands.Parameters.CharacterWorld)]
+        string world,
+        [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+        bool isPrivate = false)
+    {
+        return sender.Send(new CharacterGearRequest(ctx, name, world, isPrivate));
     }
 
     [Command("claim")]

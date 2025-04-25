@@ -38,7 +38,7 @@ internal class CharacterGetRequestHandler(
         {
             var select = searchDtos.AsSelectComponent();
             var content = Messages.Commands.Character.Get.SelectMenu(searchDtos.Count);
-            builder = new DiscordInteractionResponseBuilder().AddComponents(select).WithContent(content);
+            builder = new DiscordInteractionResponseBuilder().AddActionRowComponent(select).WithContent(content);
             await request.Ctx.FollowupAsync(builder);
         }
         else

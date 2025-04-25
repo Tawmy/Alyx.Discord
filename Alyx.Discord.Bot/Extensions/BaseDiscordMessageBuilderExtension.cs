@@ -15,6 +15,25 @@ namespace Alyx.Discord.Bot.Extensions;
 
 internal static class BaseDiscordMessageBuilderExtension
 {
+    public static T AddError<T>(this BaseDiscordMessageBuilder<T> builder, string description, string? title = null)
+        where T : BaseDiscordMessageBuilder<T>
+    {
+        builder.EnableV2Components();
+
+        List<DiscordComponent> components = [];
+
+        if (title is not null)
+        {
+            components.Add(new DiscordTextDisplayComponent($"## {title}"));
+        }
+
+        components.Add(new DiscordTextDisplayComponent(description));
+
+        builder.AddContainerComponent(new DiscordContainerComponent(components, color: DiscordColor.Red));
+
+        return (T)builder;
+    }
+
     public static async Task AddClaimResponseAsync<T>(this BaseDiscordMessageBuilder<T> builder,
         CharacterClaimRequestResponse claimRequestResponse,
         IInteractionDataService interactionDataService,
@@ -37,11 +56,11 @@ internal static class BaseDiscordMessageBuilderExtension
                 break;
             case CharacterClaimRequestStatus.ClaimAlreadyExistsForThisCharacter:
                 builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, true));
-                builder.AddComponents(buttonLodestone, buttonConfirm);
+                builder.AddActionRowComponent(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.NewClaimCreated:
                 builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, false));
-                builder.AddComponents(buttonLodestone, buttonConfirm);
+                builder.AddActionRowComponent(buttonLodestone, buttonConfirm);
                 break;
             case CharacterClaimRequestStatus.ClaimConfirmed:
                 builder.AddEmbed(embedService.Create(
@@ -90,7 +109,7 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        IList<DiscordComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
+        IList<DiscordButtonComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
 
         if (sheet.MountsPublic)
         {
@@ -104,7 +123,7 @@ internal static class BaseDiscordMessageBuilderExtension
 
         buttons.Add(await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata));
 
-        builder.AddFile(fileName, stream, true).AddComponents(buttons);
+        builder.AddFile(fileName, stream, true).AddActionRowComponent(buttons);
 
         if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
         {

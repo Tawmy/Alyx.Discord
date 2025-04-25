@@ -88,6 +88,11 @@ internal static class Messages
                 }
             }
 
+            public static class Gear
+            {
+                public const string Description = "Get information about a character's gear.";
+            }
+
             public static class Claim
             {
                 public const string Description = "Claim a character as your main character.";

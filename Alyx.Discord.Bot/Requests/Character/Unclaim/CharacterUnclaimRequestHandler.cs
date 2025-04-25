@@ -36,7 +36,8 @@ internal class CharacterUnclaimRequestHandler(ISender sender, DiscordEmbedServic
         var embed = CreateConfirmationEmbed(character.Name, character.Server);
         var button = CreateConfirmationButton();
 
-        await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed).AddComponents(button));
+        await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed)
+            .AddActionRowComponent(button));
     }
 
     private DiscordEmbed CreateConfirmationEmbed(string name, string world)
