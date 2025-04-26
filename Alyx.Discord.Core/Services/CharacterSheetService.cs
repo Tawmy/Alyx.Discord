@@ -214,22 +214,16 @@ internal class CharacterSheetService
             Origin = CharacterSheetCoordinates.Other.Mounts
         };
 
-        if (mounts is not null)
-        {
-            var text = Math.Round(mounts.CollectedPercentage);
-            _image.Mutate(x => x.DrawText(optionsMo, $"{text}%", Color.White));
-        }
+        var mountsPercentage = Math.Round(mounts?.CollectedPercentage ?? 0);
+        _image.Mutate(x => x.DrawText(optionsMo, $"{mountsPercentage}%", Color.White));
 
-        if (minions is not null)
+        var optionsMi = new RichTextOptions(optionsMo)
         {
-            var optionsMi = new RichTextOptions(optionsMo)
-            {
-                Origin = CharacterSheetCoordinates.Other.Minions
-            };
+            Origin = CharacterSheetCoordinates.Other.Minions
+        };
 
-            var text = Math.Round(minions.CollectedPercentage);
-            _image.Mutate(x => x.DrawText(optionsMi, $"{text}%", Color.White));
-        }
+        var minionsPercentage = Math.Round(minions?.CollectedPercentage ?? 0);
+        _image.Mutate(x => x.DrawText(optionsMi, $"{minionsPercentage}%", Color.White));
     }
 
     private void AddJobLevels(CharacterClassJobOuterDtoV3 classJobs)
