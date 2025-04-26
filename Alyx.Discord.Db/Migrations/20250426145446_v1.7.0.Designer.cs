@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Alyx.Discord.Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250426130813_OptionHistory")]
-    partial class OptionHistory
+    [Migration("20250426145446_v1.7.0")]
+    partial class v170
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
