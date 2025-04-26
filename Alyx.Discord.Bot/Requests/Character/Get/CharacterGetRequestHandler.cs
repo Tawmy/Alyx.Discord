@@ -2,6 +2,8 @@ using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
+using Alyx.Discord.Core.Requests.OptionHistory.Add;
+using Alyx.Discord.Db.Models;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
@@ -46,6 +48,10 @@ internal class CharacterGetRequestHandler(
             builder = new DiscordInteractionResponseBuilder();
             await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id, false,
                 async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+
+            // cache recent search for discord user
+            await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.Character, first.Name),
+                cancellationToken);
         }
     }
 }
