@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Alyx.Discord.Db.Migrations
 {
     /// <inheritdoc />
-    public partial class OptionHistory : Migration
+    public partial class v170 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
