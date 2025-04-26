@@ -30,7 +30,14 @@ internal class CharacterSheetRequestHandler(
         var taskMounts = apiCharacter.GetMountsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMounts,
             FallbackType.Any, cancellationToken);
 
-        await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
+        try
+        {
+            await Task.WhenAll(taskCharacter, taskClassJobs, taskMinions, taskMounts);
+        }
+        catch (NotFoundException)
+        {
+            // do nothing
+        }
 
         FreeCompanyDtoV3? freeCompany = null;
         if (taskCharacter.Result.FreeCompany is not null)
