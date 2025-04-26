@@ -5,6 +5,7 @@ internal static class ComponentIds
     public static class Select
     {
         public const string Character = "SELECT_CHARACTER";
+        public const string CharacterForGear = "SELECT_CHARACTER_FOR_GEAR";
     }
 
     public static class Button

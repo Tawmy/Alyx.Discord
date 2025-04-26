@@ -34,7 +34,7 @@ internal class CharacterGetRequestHandler(
 
         if (request.IsPrivate && searchDtos.Count > 1)
         {
-            var select = searchDtos.AsSelectComponent();
+            var select = searchDtos.AsSelectComponent(ComponentIds.Select.Character);
             var content = Messages.Commands.Character.Get.SelectMenu(searchDtos.Count);
             builder = new DiscordInteractionResponseBuilder().AddActionRowComponent(select).WithContent(content);
             await request.Ctx.FollowupAsync(builder);

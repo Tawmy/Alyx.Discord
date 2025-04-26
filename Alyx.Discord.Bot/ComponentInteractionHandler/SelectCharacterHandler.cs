@@ -14,13 +14,14 @@ internal class SelectCharacterHandler(
     : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
     {
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
 
         var builder = new DiscordFollowupMessageBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, selectedLodestoneId, false,
-            async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b));
+            async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b),
+            cancellationToken);
     }
 }

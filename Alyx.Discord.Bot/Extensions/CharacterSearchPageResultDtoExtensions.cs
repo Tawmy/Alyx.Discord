@@ -1,4 +1,3 @@
-using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Entities;
 using NetStone.Common.DTOs.Character;
 
@@ -6,7 +5,8 @@ namespace Alyx.Discord.Bot.Extensions;
 
 internal static class CharacterSearchPageResultDtoExtensions
 {
-    public static DiscordSelectComponent AsSelectComponent(this ICollection<CharacterSearchPageResultDto> dtos)
+    public static DiscordSelectComponent AsSelectComponent(this ICollection<CharacterSearchPageResultDto> dtos,
+        string selectId)
     {
         var options = dtos
             .Take(25)
@@ -16,7 +16,7 @@ internal static class CharacterSearchPageResultDtoExtensions
             ? $"(Showing 25/{dtos.Count} results)"
             : $"({dtos.Count} results)";
 
-        return new DiscordSelectComponent(ComponentIds.Select.Character, $"Select Character {suffix}", options,
+        return new DiscordSelectComponent(selectId, $"Select Character {suffix}", options,
             minOptions: 1, maxOptions: 1);
     }
 }

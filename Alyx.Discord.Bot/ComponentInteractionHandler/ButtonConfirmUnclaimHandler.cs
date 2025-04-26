@@ -15,12 +15,12 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 internal class ButtonConfirmUnclaimHandler(ISender sender) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
     {
         try
         {
             // we do not need the return value here, we only need to catch the exception
-            await sender.Send(new GetMainCharacterIdRequest(args.Interaction.User.Id));
+            await sender.Send(new GetMainCharacterIdRequest(args.Interaction.User.Id), cancellationToken);
         }
         catch (NotFoundException)
         {
@@ -32,7 +32,7 @@ internal class ButtonConfirmUnclaimHandler(ISender sender) : IComponentInteracti
             return;
         }
 
-        await sender.Send(new CharacterUnclaimRequest(args.Interaction.User.Id));
+        await sender.Send(new CharacterUnclaimRequest(args.Interaction.User.Id), cancellationToken);
 
         var builder = new DiscordInteractionResponseBuilder().EnableV2Components().AsEphemeral();
 

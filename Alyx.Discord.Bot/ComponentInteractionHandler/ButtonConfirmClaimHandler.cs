@@ -17,7 +17,7 @@ internal class ButtonConfirmClaimHandler(
     CharacterClaimService claimService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId, IReadOnlyDictionary<ulong, Command> commands)
+        string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
@@ -36,7 +36,8 @@ internal class ButtonConfirmClaimHandler(
             return;
         }
 
-        var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
+        var characterClaimRequestResponse =
+            await sender.Send(new CoreRequest(args.User.Id, lodestoneId), cancellationToken);
 
         var builder = new DiscordFollowupMessageBuilder();
         await claimService.AddClaimResponseAsync(builder, characterClaimRequestResponse, lodestoneId, commands);
