@@ -32,6 +32,12 @@ internal static class Messages
             public static class About
             {
                 public const string Description = "Info and stats about Alyx.";
+
+                public const string Squex = """
+                                            -# FINAL FANTASY XIV ©2010 Square Enix Co., Ltd.
+                                            -# FINAL FANTASY is a registered trademark of Square Enix Holdings Co., Ltd.
+                                            -# All material used under license.
+                                            """;
             }
         }
 

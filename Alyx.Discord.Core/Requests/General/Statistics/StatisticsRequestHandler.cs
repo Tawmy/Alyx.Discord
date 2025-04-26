@@ -1,3 +1,4 @@
+using Alyx.Discord.Core.Structs;
 using Alyx.Discord.Db;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,10 @@ internal class StatisticsRequestHandler(DatabaseContext context)
     {
         var claimedCharacters = await context.Characters.Where(x => x.Confirmed).CountAsync(cancellationToken);
 
-        return new StatisticsRequestResponse(claimedCharacters);
+        var typeName = typeof(IEnumerable<SheetMetadata>).FullName;
+        var sheetsRequested = await context.InteractionDatas.Where(x => x.Type.Equals(typeName))
+            .CountAsync(cancellationToken);
+
+        return new StatisticsRequestResponse(claimedCharacters, sheetsRequested);
     }
 }
