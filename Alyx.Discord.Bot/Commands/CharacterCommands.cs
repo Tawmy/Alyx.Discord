@@ -26,7 +26,7 @@ internal class CharacterCommands(ISender sender)
     [Description(Messages.Commands.Character.Get.Description)]
     public Task GetAsync(SlashCommandContext ctx,
         [SlashAutoCompleteProvider<CharacterAutoCompleteProvider>]
-        [Description(Messages.Commands.Parameters.CharacterName)]
+        [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
         string name,
         [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
         [Description(Messages.Commands.Parameters.CharacterWorld)]
@@ -74,7 +74,7 @@ internal class CharacterCommands(ISender sender)
         [Description(Messages.Commands.Character.Gear.GearGet.Description)]
         public Task GetAsync(SlashCommandContext ctx,
             [SlashAutoCompleteProvider<CharacterAutoCompleteProvider>]
-            [Description(Messages.Commands.Parameters.CharacterName)]
+            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
             string name,
             [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
             [Description(Messages.Commands.Parameters.CharacterWorld)]

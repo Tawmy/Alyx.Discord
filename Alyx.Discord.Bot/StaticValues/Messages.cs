@@ -21,7 +21,11 @@ internal static class Messages
     {
         public static class Parameters
         {
-            public const string CharacterName = "Character name. Options above show your recent searches.";
+            public const string CharacterName = "Character name.";
+
+            public const string CharacterNameWithCompletion =
+                "Character name. Options above show your recent searches.";
+
             public const string CharacterWorld = "Character's home world.";
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
@@ -152,7 +156,7 @@ internal static class Messages
 
                 public static string ClaimInstructionsPart1(string code)
                 {
-                    return $"Add this code to your Lodestone profile: `{code}`.";
+                    return $"Add this code to your Lodestone profile: `{code}`";
                 }
             }
 
