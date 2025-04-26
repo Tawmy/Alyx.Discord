@@ -75,7 +75,11 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        IList<DiscordButtonComponent> buttons = [CreateLodestoneLinkButton(lodestoneId)];
+        List<DiscordButtonComponent> buttons =
+        [
+            CreateLodestoneLinkButton(lodestoneId),
+            await CreateGearButtonAsync(interactionDataService, lodestoneId)
+        ];
 
         if (sheet.MountsPublic)
         {
@@ -105,6 +109,14 @@ internal static class BaseDiscordMessageBuilderExtension
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
         return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
+    }
+
+    private static async Task<DiscordButtonComponent> CreateGearButtonAsync(
+        IInteractionDataService interactionDataService, string lodestoneId)
+    {
+        var componentId =
+            await interactionDataService.AddDataAsync(lodestoneId, ComponentIds.Button.CharacterSheetGear);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
     }
 
     private static async Task<DiscordButtonComponent> CreateMetadataButtonAsync(

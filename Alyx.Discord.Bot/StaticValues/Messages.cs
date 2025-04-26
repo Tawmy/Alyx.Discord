@@ -240,6 +240,7 @@ internal static class Messages
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Sheet Metadata";
+        public const string Gear = "Gear";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
     }

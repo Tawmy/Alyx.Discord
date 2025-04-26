@@ -80,6 +80,8 @@ public static class DependencyInjection
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
             .ConfirmUnclaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
+            .CharacterSheetGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button
             .CharacterSheetMetadata);
     }
