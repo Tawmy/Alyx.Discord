@@ -1,6 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using DSharpPlus.Entities;
@@ -11,7 +10,6 @@ namespace Alyx.Discord.Bot.Requests.UserContextMenu.CharacterSheet;
 
 internal class UserContextMenuCharacterSheetRequestHandler(
     ISender sender,
-    DiscordEmbedService embedService,
     IInteractionDataService interactionDataService) : IRequestHandler<UserContextMenuCharacterSheetRequest>
 {
     public async Task Handle(UserContextMenuCharacterSheetRequest request, CancellationToken cancellationToken)
@@ -23,18 +21,17 @@ internal class UserContextMenuCharacterSheetRequestHandler(
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(
+            var errorBuilder = new DiscordInteractionResponseBuilder().AddError(
                 Messages.UserContextMenus.CharacterSheet.NotFoundDescription(request.GetSlashCommandMapping(),
-                    "character claim", "ffxiv copypasta"),
-                Messages.UserContextMenus.CharacterSheet.NotFoundTitle);
-            await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+                    "character claim", "ffxiv copypasta"), Messages.UserContextMenus.CharacterSheet.NotFoundTitle);
+            await request.Ctx.RespondAsync(errorBuilder.AsEphemeral());
             return;
         }
 
         await request.Ctx.DeferResponseAsync();
 
         var builder = new DiscordInteractionResponseBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, lodestoneId, false,
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, false,
             async b => await request.Ctx.FollowupAsync(b), cancellationToken);
     }
 }

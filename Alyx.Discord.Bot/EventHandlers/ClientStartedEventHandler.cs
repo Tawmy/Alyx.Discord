@@ -9,9 +9,9 @@ namespace Alyx.Discord.Bot.EventHandlers;
 /// </summary>
 internal class ClientStartedEventHandler(CachingService cachingService) : IEventHandler<ClientStartedEventArgs>
 {
-    public Task HandleEventAsync(DiscordClient sender, ClientStartedEventArgs eventArgs)
+    public async Task HandleEventAsync(DiscordClient sender, ClientStartedEventArgs eventArgs)
     {
         cachingService.CacheBannerUrl(sender.CurrentUser.BannerUrl);
-        return Task.CompletedTask;
+        cachingService.CacheApplicationEmojis(await sender.GetApplicationEmojisAsync());
     }
 }

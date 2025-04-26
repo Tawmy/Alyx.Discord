@@ -1,5 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetLastForceRefresh;
@@ -10,15 +10,14 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Me;
+namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
 
-internal class CharacterMeRequestHandler(
+internal class CharacterGearMeRequestHandler(
     ISender sender,
-    IInteractionDataService interactionDataService,
-    AlyxConfiguration alyxConfiguration)
-    : IRequestHandler<CharacterMeRequest>
+    AlyxConfiguration alyxConfiguration,
+    CharacterGearService gearService) : IRequestHandler<CharacterGearMeRequest>
 {
-    public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CharacterGearMeRequest request, CancellationToken cancellationToken)
     {
         string lodestoneId;
         try
@@ -53,12 +52,14 @@ internal class CharacterMeRequestHandler(
             }
         }
 
+        // TODO move the above from this and CharacterMeRequestHandler to a common method
+
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
-        var builder = new DiscordInteractionResponseBuilder();
-
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, request.ForceRefresh,
-            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+        var container =
+            await gearService.CreateGearContainerAsync(lodestoneId, request.ForceRefresh, cancellationToken);
+        await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
+            .AddContainerComponent(container));
 
         if (request.ForceRefresh)
         {

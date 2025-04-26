@@ -6,18 +6,15 @@ using DSharpPlus;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using MediatR;
-using CoreRequest = Alyx.Discord.Core.Requests.Character.Claim.CharacterClaimRequest;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonConfirmClaimHandler(
-    ISender sender,
+internal class ButtonCharacterGearHandler(
     IInteractionDataService interactionDataService,
-    CharacterClaimService claimService) : IComponentInteractionHandler
+    CharacterGearService gearService) : IComponentInteractionHandler
 {
-    public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
-        string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
+        IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(dataId);
 
@@ -36,12 +33,8 @@ internal class ButtonConfirmClaimHandler(
             return;
         }
 
-        var characterClaimRequestResponse =
-            await sender.Send(new CoreRequest(args.User.Id, lodestoneId), cancellationToken);
-
-        var builder = new DiscordFollowupMessageBuilder();
-        await claimService.AddClaimResponseAsync(builder, characterClaimRequestResponse, lodestoneId, commands);
-
+        var container = await gearService.CreateGearContainerAsync(lodestoneId, cancellationToken: cancellationToken);
+        var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }
 }

@@ -1,5 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using Alyx.Discord.Core.Requests.OptionHistory.Add;
@@ -9,14 +9,12 @@ using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Get;
+namespace Alyx.Discord.Bot.Requests.Character.Gear.Get;
 
-internal class CharacterGetRequestHandler(
-    ISender sender,
-    IInteractionDataService interactionDataService)
-    : IRequestHandler<CharacterGetRequest>
+internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearService gearService)
+    : IRequestHandler<CharacterGearGetRequest>
 {
-    public async Task Handle(CharacterGetRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CharacterGearGetRequest request, CancellationToken cancellationToken)
     {
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
@@ -36,22 +34,21 @@ internal class CharacterGetRequestHandler(
 
         if (request.IsPrivate && searchDtos.Count > 1)
         {
-            var select = searchDtos.AsSelectComponent(ComponentIds.Select.Character);
+            var select = searchDtos.AsSelectComponent(ComponentIds.Select.CharacterForGear);
             builder = new DiscordInteractionResponseBuilder().AddTieBreakerSelect(select, searchDtos.Count);
             await request.Ctx.FollowupAsync(builder);
+            return;
         }
-        else
-        {
-            var first = searchDtos.FirstOrDefault(x =>
-                x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
-            builder = new DiscordInteractionResponseBuilder();
-            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id, false,
-                async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+        var first = searchDtos.FirstOrDefault(x =>
+            x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
-            // cache recent search for discord user
-            await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.Character, first.Name),
-                cancellationToken);
-        }
+        var container = await gearService.CreateGearContainerAsync(first.Id, cancellationToken: cancellationToken);
+        await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
+            .AddContainerComponent(container));
+
+        // cache recent search for discord user
+        await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.Character, first.Name),
+            cancellationToken);
     }
 }

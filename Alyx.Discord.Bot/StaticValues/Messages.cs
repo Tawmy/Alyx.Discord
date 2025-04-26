@@ -1,4 +1,3 @@
-using System.Text;
 using DSharpPlus.Commands.Trees;
 
 namespace Alyx.Discord.Bot.StaticValues;
@@ -22,7 +21,11 @@ internal static class Messages
     {
         public static class Parameters
         {
-            public const string CharacterName = "Character name";
+            public const string CharacterName = "Character name.";
+
+            public const string CharacterNameWithCompletion =
+                "Character name. Options above show your recent searches.";
+
             public const string CharacterWorld = "Character's home world.";
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
@@ -33,6 +36,12 @@ internal static class Messages
             public static class About
             {
                 public const string Description = "Info and stats about Alyx.";
+
+                public const string Squex = """
+                                            -# FINAL FANTASY XIV ©2010 Square Enix Co., Ltd.
+                                            -# FINAL FANTASY is a registered trademark of Square Enix Holdings Co., Ltd.
+                                            -# All material used under license.
+                                            """;
             }
         }
 
@@ -42,22 +51,13 @@ internal static class Messages
             {
                 public const string Description = "Get information about a character.";
 
-                public static string SelectMenu(int total)
+                public const string SelectMenuTitle = "More than one character found.";
+
+                public static string SelectMenuFooter(int total)
                 {
-                    var sb = new StringBuilder();
-
-                    sb.Append("More than one character found.");
-
-                    if (total > 25)
-                    {
-                        sb.Append($" Showing first 25 out of {total} results.");
-                    }
-                    else
-                    {
-                        sb.Append($" Showing all {total} results.");
-                    }
-
-                    return sb.ToString();
+                    return total > 25
+                        ? $"Showing first 25 out of {total} results."
+                        : $"{total} results";
                 }
 
                 public static string CharacterNotFound(string name, string world)
@@ -83,8 +83,21 @@ internal static class Messages
                 {
                     return $"""
                             Last force refresh was {lastRefresh}.
-                            You can force refresh again in {allowedInRelative}, at {allowedInAbsolute}.
+                            You can force refresh again {allowedInRelative}, at {allowedInAbsolute}.
                             """;
+                }
+            }
+
+            public static class Gear
+            {
+                public static class GearGet
+                {
+                    public const string Description = "Get information about a character's gear.";
+                }
+
+                public static class GearMe
+                {
+                    public const string Description = "Get information about your character's gear.";
                 }
             }
 
@@ -101,6 +114,14 @@ internal static class Messages
                 public const string CodeNotFound =
                     "Code was not found. Please make sure you have added the code to the correct character on the Lodestone.";
 
+                public const string ClaimInstructionsDescription =
+                    "To validate your character, please follow these steps:";
+
+                public const string ClaimInstructionsPart1Subtext =
+                    "If you already have a bio on your profile, it's enough to add the code to it, you do not have to delete anything.";
+
+                public const string ClaimInstructionsPart2 = "Added the code?";
+
                 public static string AlreadyClaimed(IReadOnlyDictionary<ulong, Command> commands, string command)
                 {
                     return $"""
@@ -114,7 +135,7 @@ internal static class Messages
                     return $"""
                             You can now request your character sheet using {CreateCommandDisplayStr(commands, command)}.
 
-                            Feel free to remove the code from your Lodestone profile.
+                            -# Feel free to remove the code from your Lodestone profile.
                             """;
                 }
 
@@ -133,30 +154,25 @@ internal static class Messages
                     return $"Multiple results found for {name} on {world}. Please enter an exact name.";
                 }
 
-                public static string ClaimInstructionsDescription(string code)
+                public static string ClaimInstructionsPart1(string code)
                 {
-                    return $"""
-                            To validate your character, please add the following code to your Lodestone profile: `{code}`.
-
-                            If you already have a bio on your profile, it's enough to add the code to it, you do not have to delete anything.
-
-                            Afterwards, press the button to validate the code.
-                            """;
+                    return $"Add this code to your Lodestone profile: `{code}`";
                 }
             }
 
             public static class Unclaim
             {
+                public const string Title = "Unclaim Character";
+
                 public const string Description =
                     "Unclaim your main character. Use this if you want to switch main characters.";
 
                 public const string NoMainCharacterTitle = "No Main Character";
 
-                public const string ConfirmDescription = """
-                                                         Are you sure you want to unclaim this character?
+                public const string ConfirmDescription =
+                    "This action cannot be undone. You will have to verify this or another character by adding a code to the Lodestone again.";
 
-                                                         This action cannot be undone, you will have to verify this or another character by adding a code to the Lodestone again.
-                                                         """;
+                public const string ButtonDescription = "Are you sure you want to unclaim this character?";
 
                 public const string SuccessTitle = "Main Character Unclaimed";
 
@@ -176,11 +192,6 @@ internal static class Messages
                          You do not have a main character to unclaim.
                          You can claim one using {CreateCommandDisplayStr(commands, command)}.
                          """;
-                }
-
-                public static string ConfirmTitle(string name, string world)
-                {
-                    return $"Unclaim {name} ({world})";
                 }
             }
         }
@@ -235,10 +246,11 @@ internal static class Messages
     public static class Buttons
     {
         public const string OpenLodestoneProfile = "Lodestone Profile";
-        public const string EditLodestoneProfile = "Edit Lodestone Profile";
+        public const string EditLodestoneProfile = "Open Lodestone";
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Sheet Metadata";
+        public const string Gear = "Gear";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
     }
