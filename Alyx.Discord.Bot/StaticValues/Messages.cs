@@ -152,16 +152,17 @@ internal static class Messages
 
             public static class Unclaim
             {
+                public const string Title = "Unclaim Character";
+
                 public const string Description =
                     "Unclaim your main character. Use this if you want to switch main characters.";
 
                 public const string NoMainCharacterTitle = "No Main Character";
 
-                public const string ConfirmDescription = """
-                                                         Are you sure you want to unclaim this character?
+                public const string ConfirmDescription =
+                    "This action cannot be undone. You will have to verify this or another character by adding a code to the Lodestone again.";
 
-                                                         This action cannot be undone, you will have to verify this or another character by adding a code to the Lodestone again.
-                                                         """;
+                public const string ButtonDescription = "Are you sure you want to unclaim this character?";
 
                 public const string SuccessTitle = "Main Character Unclaimed";
 
@@ -181,11 +182,6 @@ internal static class Messages
                          You do not have a main character to unclaim.
                          You can claim one using {CreateCommandDisplayStr(commands, command)}.
                          """;
-                }
-
-                public static string ConfirmTitle(string name, string world)
-                {
-                    return $"Unclaim {name} ({world})";
                 }
             }
         }

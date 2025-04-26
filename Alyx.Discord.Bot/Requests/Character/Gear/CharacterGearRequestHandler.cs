@@ -54,27 +54,14 @@ internal class CharacterGearRequestHandler(ISender sender, AlyxConfiguration con
 
     private List<DiscordComponent> CreateComponents(CharacterDtoV3 character)
     {
-        List<DiscordComponent> c = [];
+        List<DiscordComponent> c =
+        [
+            character.ToSectionComponent(cachingService, true),
 
-        var jobPrefix = cachingService.TryGetApplicationEmoji(character.ActiveClassJob.ToString(), out var jobIcon)
-            ? $"{jobIcon} "
-            : string.Empty;
-        var job = character.ActiveClassJob.GetSpaceSeparatedDisplayString();
-
-        c.Add(new DiscordSectionComponent(
-            new DiscordTextDisplayComponent($"""
-                                             # {character.Name}
-                                             {jobPrefix}{job} • Lv. {character.ActiveClassJobLevel}
-                                             {character.Server}
-                                             """),
-            new DiscordThumbnailComponent(character.Portrait)
-        ));
-
-        c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-
-        c.Add(new DiscordTextDisplayComponent($"### Avg. Item Level: {character.Gear.GetAvarageItemLevel()}"));
-
-        c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
+            new DiscordTextDisplayComponent($"### Avg. Item Level: {character.Gear.GetAvarageItemLevel()}"),
+            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large)
+        ];
 
         string?[] gear1 =
         [
