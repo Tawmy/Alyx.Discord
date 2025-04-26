@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<DiscordEmbedService>();
         services.AddSingleton<CachingService>();
+        services.AddSingleton<CharacterClaimService>();
 
         services.AddMediatR(cfg =>
         {

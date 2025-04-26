@@ -14,7 +14,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 internal class ButtonConfirmClaimHandler(
     ISender sender,
     IInteractionDataService interactionDataService,
-    DiscordEmbedService embedService) : IComponentInteractionHandler
+    CharacterClaimService claimService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId, IReadOnlyDictionary<ulong, Command> commands)
@@ -31,17 +31,15 @@ internal class ButtonConfirmClaimHandler(
         catch (InvalidOperationException)
         {
             // this can be removed long-term, only here to not break functionality from before data was persisted to db 
-            var embed = embedService.CreateError(Messages.InteractionData.NotPersisted);
             await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+                new DiscordInteractionResponseBuilder().AddError(Messages.InteractionData.NotPersisted).AsEphemeral());
             return;
         }
 
         var characterClaimRequestResponse = await sender.Send(new CoreRequest(args.User.Id, lodestoneId));
 
         var builder = new DiscordFollowupMessageBuilder();
-        await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
-            lodestoneId, commands);
+        await claimService.AddClaimResponseAsync(builder, characterClaimRequestResponse, lodestoneId, commands);
 
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

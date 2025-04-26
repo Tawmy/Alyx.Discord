@@ -2,10 +2,8 @@ using System.Net;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
-using Alyx.Discord.Core.Requests.Character.Claim;
 using Alyx.Discord.Core.Requests.Character.Sheet;
 using Alyx.Discord.Core.Structs;
-using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using MediatR;
 using Refit;
@@ -32,48 +30,6 @@ internal static class BaseDiscordMessageBuilderExtension
         builder.AddContainerComponent(new DiscordContainerComponent(components, color: DiscordColor.Red));
 
         return (T)builder;
-    }
-
-    public static async Task AddClaimResponseAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        CharacterClaimRequestResponse claimRequestResponse,
-        IInteractionDataService interactionDataService,
-        DiscordEmbedService embedService,
-        string lodestoneId,
-        IReadOnlyDictionary<ulong, Command> commands)
-        where T : BaseDiscordMessageBuilder<T>
-    {
-        var buttonLodestone = CreateOpenLodestoneButton();
-        var buttonConfirm = await CreateClaimConfirmButtonAsync(interactionDataService, lodestoneId);
-
-        switch (claimRequestResponse.Status)
-        {
-            case CharacterClaimRequestStatus.AlreadyClaimedByUser:
-                builder.AddEmbed(embedService.CreateError(
-                    Messages.Commands.Character.Claim.AlreadyClaimed(commands, "character unclaim")));
-                break;
-            case CharacterClaimRequestStatus.AlreadyClaimedByDifferentUser:
-                builder.AddEmbed(embedService.CreateError(Messages.Commands.Character.Claim.ClaimedBySomeoneElse));
-                break;
-            case CharacterClaimRequestStatus.ClaimAlreadyExistsForThisCharacter:
-                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, true));
-                builder.AddActionRowComponent(buttonLodestone, buttonConfirm);
-                break;
-            case CharacterClaimRequestStatus.NewClaimCreated:
-                builder.AddEmbed(CreateClaimInstructionsEmbed(embedService, claimRequestResponse.Code!, false));
-                builder.AddActionRowComponent(buttonLodestone, buttonConfirm);
-                break;
-            case CharacterClaimRequestStatus.ClaimConfirmed:
-                builder.AddEmbed(embedService.Create(
-                    Messages.Commands.Character.Claim.ConfirmedDescription(commands, "character me"),
-                    Messages.Commands.Character.Claim.ConfirmedTitle));
-                break;
-            case CharacterClaimRequestStatus.UserAlreadyHasMainCharacter:
-                builder.AddEmbed(embedService.CreateError(
-                    Messages.Commands.Character.Claim.AlreadyClaimedDifferent(commands, "character unclaim")));
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(claimRequestResponse), claimRequestResponse, null);
-        }
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
@@ -132,43 +88,6 @@ internal static class BaseDiscordMessageBuilderExtension
 
         await followupTask(builder);
     }
-
-    #region AddClaimResponse
-
-    /// <summary>
-    ///     Create instructions for claiming character.
-    /// </summary>
-    /// <param name="embedService">Instance of embed service.</param>
-    /// <param name="code">Code that user needs needs to add to their Lodestone profile.</param>
-    /// <param name="isRetry">If this is not the first time user sees message, add additional note.</param>
-    /// <returns>Discord embed with instructions.</returns>
-    private static DiscordEmbed CreateClaimInstructionsEmbed(DiscordEmbedService embedService, string code,
-        bool isRetry)
-    {
-        var description = Messages.Commands.Character.Claim.ClaimInstructionsDescription(code);
-
-        if (isRetry)
-        {
-            description = $"**{Messages.Commands.Character.Claim.CodeNotFound}**\n\n{description}";
-        }
-
-        return embedService.Create(description, Messages.Commands.Character.Claim.ClaimInstructionsTitle);
-    }
-
-    private static async Task<DiscordButtonComponent> CreateClaimConfirmButtonAsync(
-        IInteractionDataService interactionDataService, string lodestoneId)
-    {
-        var componentId = await interactionDataService.AddDataAsync(lodestoneId, ComponentIds.Button.ConfirmClaim);
-        return new DiscordButtonComponent(DiscordButtonStyle.Primary, componentId, Messages.Buttons.ValidateCode);
-    }
-
-    private static DiscordLinkButtonComponent CreateOpenLodestoneButton()
-    {
-        const string url = "https://eu.finalfantasyxiv.com/lodestone/my/setting/profile/";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.EditLodestoneProfile);
-    }
-
-    #endregion
 
     #region CreateSheetAndSendFollowupAsync
 

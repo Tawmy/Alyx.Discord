@@ -14,13 +14,13 @@ namespace Alyx.Discord.Bot.Requests.Character.Claim;
 internal class CharacterClaimRequestHandler(
     ISender sender,
     IInteractionDataService interactionDataService,
-    DiscordEmbedService embedService) : IRequestHandler<CharacterClaimRequest>
+    CharacterClaimService claimService) : IRequestHandler<CharacterClaimRequest>
 {
     public async Task Handle(CharacterClaimRequest request, CancellationToken cancellationToken)
     {
         await request.Ctx.DeferResponseAsync(true);
 
-        var builder = new DiscordInteractionResponseBuilder();
+        var builder = new DiscordInteractionResponseBuilder().EnableV2Components();
 
         ICollection<CharacterSearchPageResultDto> searchDtos;
         try
@@ -30,7 +30,7 @@ internal class CharacterClaimRequestHandler(
         catch (NotFoundException)
         {
             var description = Messages.Commands.Character.Get.CharacterNotFound(request.Name, request.World);
-            builder.AddEmbed(embedService.CreateError(description));
+            builder.AddError(description);
             await request.Ctx.FollowupAsync(builder);
             return;
         }
@@ -52,7 +52,7 @@ internal class CharacterClaimRequestHandler(
             {
                 // there is no exact name match, unclear which one to use
                 var description = Messages.Commands.Character.Claim.MultipleResults(request.Name, request.World);
-                builder.AddEmbed(embedService.Create(description));
+                builder.AddError(description);
                 await request.Ctx.FollowupAsync(builder);
                 return;
             }
@@ -65,8 +65,8 @@ internal class CharacterClaimRequestHandler(
         var coreRequest = new CoreRequest(request.Ctx.Interaction.User.Id, lodestoneId);
         var characterClaimRequestResponse = await sender.Send(coreRequest, cancellationToken);
 
-        await builder.AddClaimResponseAsync(characterClaimRequestResponse, interactionDataService, embedService,
-            lodestoneId, request.GetSlashCommandMapping());
+        await claimService.AddClaimResponseAsync(builder, characterClaimRequestResponse, lodestoneId,
+            request.GetSlashCommandMapping());
 
         await request.Ctx.FollowupAsync(builder);
     }

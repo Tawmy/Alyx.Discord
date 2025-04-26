@@ -106,6 +106,14 @@ internal static class Messages
                 public const string CodeNotFound =
                     "Code was not found. Please make sure you have added the code to the correct character on the Lodestone.";
 
+                public const string ClaimInstructionsDescription =
+                    "To validate your character, please follow these steps:";
+
+                public const string ClaimInstructionsPart1Subtext =
+                    "If you already have a bio on your profile, it's enough to add the code to it, you do not have to delete anything.";
+
+                public const string ClaimInstructionsPart2 = "Added the code?";
+
                 public static string AlreadyClaimed(IReadOnlyDictionary<ulong, Command> commands, string command)
                 {
                     return $"""
@@ -119,7 +127,7 @@ internal static class Messages
                     return $"""
                             You can now request your character sheet using {CreateCommandDisplayStr(commands, command)}.
 
-                            Feel free to remove the code from your Lodestone profile.
+                            -# Feel free to remove the code from your Lodestone profile.
                             """;
                 }
 
@@ -138,15 +146,9 @@ internal static class Messages
                     return $"Multiple results found for {name} on {world}. Please enter an exact name.";
                 }
 
-                public static string ClaimInstructionsDescription(string code)
+                public static string ClaimInstructionsPart1(string code)
                 {
-                    return $"""
-                            To validate your character, please add the following code to your Lodestone profile: `{code}`.
-
-                            If you already have a bio on your profile, it's enough to add the code to it, you do not have to delete anything.
-
-                            Afterwards, press the button to validate the code.
-                            """;
+                    return $"Add this code to your Lodestone profile: `{code}`.";
                 }
             }
 
@@ -236,7 +238,7 @@ internal static class Messages
     public static class Buttons
     {
         public const string OpenLodestoneProfile = "Lodestone Profile";
-        public const string EditLodestoneProfile = "Edit Lodestone Profile";
+        public const string EditLodestoneProfile = "Open Lodestone";
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Sheet Metadata";
