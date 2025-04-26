@@ -1,6 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetLastForceRefresh;
@@ -15,7 +14,6 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 
 internal class CharacterMeRequestHandler(
     ISender sender,
-    DiscordEmbedService embedService,
     IInteractionDataService interactionDataService,
     AlyxConfiguration alyxConfiguration)
     : IRequestHandler<CharacterMeRequest>
@@ -29,10 +27,10 @@ internal class CharacterMeRequestHandler(
         }
         catch (NotFoundException)
         {
-            var embed = embedService.CreateError(
+            var errorBuilder = new DiscordInteractionResponseBuilder().AddError(
                 Messages.Commands.Character.Me.NotFoundDescription(request.GetSlashCommandMapping(), "character claim"),
                 Messages.Commands.Character.Me.NotFoundTitle);
-            await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+            await request.Ctx.RespondAsync(errorBuilder.AsEphemeral());
             return;
         }
 
@@ -47,10 +45,10 @@ internal class CharacterMeRequestHandler(
                 var allowedAfter = lastForceRefresh.Value.AddMinutes(alyxConfiguration.NetStone.ForceRefreshCooldown);
                 var formattedAllowedAfterRel = Formatter.Timestamp(allowedAfter);
                 var formattedAllowedAfterAbs = Formatter.Timestamp(allowedAfter, TimestampFormat.ShortDateTime);
-                var embed = embedService.CreateError(
-                    Messages.Commands.Character.Me.ForceRefreshErrorDescription(formattedLastRefresh,
+                var errorBuilder = new DiscordInteractionResponseBuilder()
+                    .AddError(Messages.Commands.Character.Me.ForceRefreshErrorDescription(formattedLastRefresh,
                         formattedAllowedAfterRel, formattedAllowedAfterAbs));
-                await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+                await request.Ctx.RespondAsync(errorBuilder.AsEphemeral());
                 return;
             }
         }
@@ -59,8 +57,8 @@ internal class CharacterMeRequestHandler(
 
         var builder = new DiscordInteractionResponseBuilder();
 
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, lodestoneId,
-            request.ForceRefresh, async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, request.ForceRefresh,
+            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
 
         if (request.ForceRefresh)
         {

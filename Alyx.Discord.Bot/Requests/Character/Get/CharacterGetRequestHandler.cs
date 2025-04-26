@@ -1,6 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus.Entities;
@@ -12,7 +11,6 @@ namespace Alyx.Discord.Bot.Requests.Character.Get;
 
 internal class CharacterGetRequestHandler(
     ISender sender,
-    DiscordEmbedService embedService,
     IInteractionDataService interactionDataService)
     : IRequestHandler<CharacterGetRequest>
 {
@@ -29,7 +27,7 @@ internal class CharacterGetRequestHandler(
         catch (NotFoundException)
         {
             var description = Messages.Commands.Character.Get.CharacterNotFound(request.Name, request.World);
-            builder = new DiscordInteractionResponseBuilder().AddEmbed(embedService.CreateError(description));
+            builder = new DiscordInteractionResponseBuilder().AddError(description);
             await request.Ctx.FollowupAsync(builder);
             return;
         }
@@ -47,7 +45,7 @@ internal class CharacterGetRequestHandler(
                 x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
             builder = new DiscordInteractionResponseBuilder();
-            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, embedService, first.Id, false,
+            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id, false,
                 async b => await request.Ctx.FollowupAsync(b), cancellationToken);
         }
     }

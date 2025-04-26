@@ -26,7 +26,6 @@ public static class DependencyInjection
     public static void AddBotServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
-        services.AddSingleton<DiscordEmbedService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
 

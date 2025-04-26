@@ -1,6 +1,5 @@
 using System.Net;
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Sheet;
 using Alyx.Discord.Core.Structs;
@@ -33,7 +32,7 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        ISender sender, IInteractionDataService interactionDataService, DiscordEmbedService embedService,
+        ISender sender, IInteractionDataService interactionDataService,
         string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> followupTask,
         CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
@@ -50,9 +49,7 @@ internal static class BaseDiscordMessageBuilderExtension
                 throw;
             }
 
-            var errorEmbed = embedService.CreateError(Messages.Other.ServiceUnavailableDescription,
-                Messages.Other.ServiceUnavailableTitle);
-            builder.AddEmbed(errorEmbed);
+            builder.AddError(Messages.Other.ServiceUnavailableDescription, Messages.Other.ServiceUnavailableTitle);
 
             await followupTask(builder);
             return;
