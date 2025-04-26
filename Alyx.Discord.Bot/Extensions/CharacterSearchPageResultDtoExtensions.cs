@@ -12,11 +12,6 @@ internal static class CharacterSearchPageResultDtoExtensions
             .Take(25)
             .Select(x => new DiscordSelectComponentOption(x.Name, x.Id));
 
-        var suffix = dtos.Count > 25
-            ? $"(Showing 25/{dtos.Count} results)"
-            : $"({dtos.Count} results)";
-
-        return new DiscordSelectComponent(selectId, $"Select Character {suffix}", options,
-            minOptions: 1, maxOptions: 1);
+        return new DiscordSelectComponent(selectId, "Select Character", options, minOptions: 1, maxOptions: 1);
     }
 }

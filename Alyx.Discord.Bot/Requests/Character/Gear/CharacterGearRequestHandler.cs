@@ -33,8 +33,7 @@ internal class CharacterGearRequestHandler(ISender sender, CharacterGearService 
         if (request.IsPrivate && searchDtos.Count > 1)
         {
             var select = searchDtos.AsSelectComponent(ComponentIds.Select.CharacterForGear);
-            var content = Messages.Commands.Character.Get.SelectMenu(searchDtos.Count);
-            builder = new DiscordInteractionResponseBuilder().AddActionRowComponent(select).WithContent(content);
+            builder = new DiscordInteractionResponseBuilder().AddTieBreakerSelect(select, searchDtos.Count);
             await request.Ctx.FollowupAsync(builder);
             return;
         }

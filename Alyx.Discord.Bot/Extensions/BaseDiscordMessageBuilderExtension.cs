@@ -31,6 +31,19 @@ internal static class BaseDiscordMessageBuilderExtension
         return (T)builder;
     }
 
+    public static T AddTieBreakerSelect<T>(this BaseDiscordMessageBuilder<T> builder, DiscordSelectComponent select,
+        int resultsTotal)
+        where T : BaseDiscordMessageBuilder<T>
+    {
+        builder.EnableV2Components();
+        builder.AddContainerComponent(new DiscordContainerComponent([
+            new DiscordTextDisplayComponent($"### {Messages.Commands.Character.Get.SelectMenuTitle}"),
+            new DiscordActionRowComponent([select]),
+            new DiscordTextDisplayComponent($"-# {Messages.Commands.Character.Get.SelectMenuFooter(resultsTotal)}")
+        ]));
+        return (T)builder;
+    }
+
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
         ISender sender, IInteractionDataService interactionDataService,
         string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> followupTask,

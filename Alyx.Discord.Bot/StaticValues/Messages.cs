@@ -1,4 +1,3 @@
-using System.Text;
 using DSharpPlus.Commands.Trees;
 
 namespace Alyx.Discord.Bot.StaticValues;
@@ -42,22 +41,13 @@ internal static class Messages
             {
                 public const string Description = "Get information about a character.";
 
-                public static string SelectMenu(int total)
+                public const string SelectMenuTitle = "More than one character found.";
+
+                public static string SelectMenuFooter(int total)
                 {
-                    var sb = new StringBuilder();
-
-                    sb.Append("More than one character found.");
-
-                    if (total > 25)
-                    {
-                        sb.Append($" Showing first 25 out of {total} results.");
-                    }
-                    else
-                    {
-                        sb.Append($" Showing all {total} results.");
-                    }
-
-                    return sb.ToString();
+                    return total > 25
+                        ? $"Showing first 25 out of {total} results."
+                        : $"{total} results";
                 }
 
                 public static string CharacterNotFound(string name, string world)
