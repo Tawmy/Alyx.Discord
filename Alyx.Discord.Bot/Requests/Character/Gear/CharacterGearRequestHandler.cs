@@ -74,16 +74,11 @@ internal class CharacterGearRequestHandler(ISender sender, AlyxConfiguration con
 
         string?[] gear2 =
         [
-            CreateGearString(character.Gear, GearSlot.Head,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("head"))} Head"),
-            CreateGearString(character.Gear, GearSlot.Body,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("body"))} Body"),
-            CreateGearString(character.Gear, GearSlot.Hands,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("hands"))} Hands"),
-            CreateGearString(character.Gear, GearSlot.Legs,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("legs"))} Legs"),
-            CreateGearString(character.Gear, GearSlot.Feet,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("feet"))} Feet")
+            CreateGearString(character.Gear, GearSlot.Head, "head"),
+            CreateGearString(character.Gear, GearSlot.Body, "body"),
+            CreateGearString(character.Gear, GearSlot.Hands, "hands"),
+            CreateGearString(character.Gear, GearSlot.Legs, "legs"),
+            CreateGearString(character.Gear, GearSlot.Feet, "feet")
         ];
 
         c.Add(CreateGearTextDisplayComponent(gear2));
@@ -91,16 +86,11 @@ internal class CharacterGearRequestHandler(ISender sender, AlyxConfiguration con
 
         string?[] gear3 =
         [
-            CreateGearString(character.Gear, GearSlot.Earrings,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("earrings"))} Earrings"),
-            CreateGearString(character.Gear, GearSlot.Necklace,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("necklace"))} Necklace"),
-            CreateGearString(character.Gear, GearSlot.Bracelets,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("bracelet"))} Bracelets"),
-            CreateGearString(character.Gear, GearSlot.Ring1,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("ring"))} Ring 1"),
-            CreateGearString(character.Gear, GearSlot.Ring2,
-                $"{Formatter.Emoji(cachingService.GetApplicationEmoji("ring"))} Ring 2")
+            CreateGearString(character.Gear, GearSlot.Earrings, "earrings"),
+            CreateGearString(character.Gear, GearSlot.Necklace, "necklace"),
+            CreateGearString(character.Gear, GearSlot.Bracelets, "bracelet"),
+            CreateGearString(character.Gear, GearSlot.Ring1, "ring"),
+            CreateGearString(character.Gear, GearSlot.Ring2, "ring")
         ];
 
         c.Add(CreateGearTextDisplayComponent(gear3));
@@ -108,8 +98,8 @@ internal class CharacterGearRequestHandler(ISender sender, AlyxConfiguration con
         return c;
     }
 
-    private static string? CreateGearString(ICollection<CharacterGearDto> gearDtos,
-        GearSlot slot, string displayString)
+    private string? CreateGearString(ICollection<CharacterGearDto> gearDtos,
+        GearSlot slot, string emoji)
     {
         if (gearDtos.FirstOrDefault(x => x.Slot == slot) is not { } gear)
         {
@@ -117,21 +107,27 @@ internal class CharacterGearRequestHandler(ISender sender, AlyxConfiguration con
         }
 
         var sb = new StringBuilder();
-        sb.AppendLine($"**{displayString}**");
+
+        if (cachingService.TryGetApplicationEmoji(emoji, out var discordEmoji) && discordEmoji is not null)
+        {
+            sb.Append($"{Formatter.Emoji(discordEmoji)} ");
+        }
+
+        sb.Append("**");
+        sb.Append(gear.ItemDatabaseLink is not null
+            ? Formatter.MaskedUrl(gear.StrippedItemName ?? gear.ItemName, new Uri(gear.ItemDatabaseLink))
+            : gear.StrippedItemName ?? gear.ItemName);
+        sb.Append("**");
+
+        sb.AppendLine($" • {gear.ItemLevel}");
 
         if (!string.IsNullOrEmpty(gear.GlamourName))
         {
-            var pfx = "Glamour: ";
+            var pfx = $"{Formatter.Emoji(cachingService.GetApplicationEmoji("glamour"))} ";
             sb.AppendLine(gear.GlamourDatabaseLink is not null
                 ? $"{pfx}{Formatter.MaskedUrl(gear.GlamourName, new Uri(gear.GlamourDatabaseLink))}"
                 : $"{pfx}{gear.GlamourName}");
         }
-
-        sb.Append(gear.ItemDatabaseLink is not null
-            ? Formatter.MaskedUrl(gear.StrippedItemName ?? gear.ItemName, new Uri(gear.ItemDatabaseLink))
-            : gear.StrippedItemName ?? gear.ItemName);
-
-        sb.AppendLine($" • {gear.ItemLevel}");
 
         return sb.ToString();
     }
