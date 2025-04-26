@@ -13,12 +13,11 @@ namespace Alyx.Discord.Bot.Services;
 
 internal class CharacterGearService(ISender sender, AlyxConfiguration config, CachingService cachingService)
 {
-    public async Task<DiscordContainerComponent> CreateGearContainerAsync(string lodestoneId,
+    public async Task<DiscordContainerComponent> CreateGearContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
-        var character =
-            await sender.Send(new CharacterGetCharacterRequest(lodestoneId, config.NetStone.MaxAgeCharacter),
-                cancellationToken);
+        var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
+        var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
         return new DiscordContainerComponent(CreateComponents(character));
     }
 
@@ -27,8 +26,6 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
         List<DiscordComponent> c =
         [
             character.ToSectionComponent(cachingService, true),
-
-            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordTextDisplayComponent($"### Avg. Item Level: {character.Gear.GetAvarageItemLevel()}"),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large)
         ];
@@ -64,6 +61,14 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
         ];
 
         c.Add(CreateGearTextDisplayComponent(gear3));
+
+        c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+        if (character.LastUpdated is not null)
+        {
+            c.Add(new DiscordTextDisplayComponent(
+                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}"));
+        }
 
         return c;
     }

@@ -7,12 +7,12 @@ using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Gear;
+namespace Alyx.Discord.Bot.Requests.Character.Gear.Get;
 
-internal class CharacterGearRequestHandler(ISender sender, CharacterGearService gearService)
-    : IRequestHandler<CharacterGearRequest>
+internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearService gearService)
+    : IRequestHandler<CharacterGearGetRequest>
 {
-    public async Task Handle(CharacterGearRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CharacterGearGetRequest request, CancellationToken cancellationToken)
     {
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
@@ -41,7 +41,7 @@ internal class CharacterGearRequestHandler(ISender sender, CharacterGearService 
         var first = searchDtos.FirstOrDefault(x =>
             x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
-        var container = await gearService.CreateGearContainerAsync(first.Id, cancellationToken);
+        var container = await gearService.CreateGearContainerAsync(first.Id, cancellationToken: cancellationToken);
         await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
             .AddContainerComponent(container));
     }

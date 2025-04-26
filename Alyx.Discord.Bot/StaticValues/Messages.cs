@@ -73,14 +73,22 @@ internal static class Messages
                 {
                     return $"""
                             Last force refresh was {lastRefresh}.
-                            You can force refresh again in {allowedInRelative}, at {allowedInAbsolute}.
+                            You can force refresh again {allowedInRelative}, at {allowedInAbsolute}.
                             """;
                 }
             }
 
             public static class Gear
             {
-                public const string Description = "Get information about a character's gear.";
+                public static class GearGet
+                {
+                    public const string Description = "Get information about a character's gear.";
+                }
+
+                public static class GearMe
+                {
+                    public const string Description = "Get information about your character's gear.";
+                }
             }
 
             public static class Claim

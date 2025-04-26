@@ -1,7 +1,8 @@
 using System.ComponentModel;
 using Alyx.Discord.Bot.AutoCompleteProviders;
 using Alyx.Discord.Bot.Requests.Character.Claim;
-using Alyx.Discord.Bot.Requests.Character.Gear;
+using Alyx.Discord.Bot.Requests.Character.Gear.Get;
+using Alyx.Discord.Bot.Requests.Character.Gear.Me;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Requests.Character.Me;
 using Alyx.Discord.Bot.Requests.Character.Unclaim;
@@ -46,20 +47,6 @@ internal class CharacterCommands(ISender sender)
         return sender.Send(new CharacterMeRequest(ctx, forceRefresh, isPrivate));
     }
 
-    [Command("gear")]
-    [Description(Messages.Commands.Character.Get.Description)]
-    public Task GearAsync(SlashCommandContext ctx,
-        [Description(Messages.Commands.Parameters.CharacterName)]
-        string name,
-        [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
-        [Description(Messages.Commands.Parameters.CharacterWorld)]
-        string world,
-        [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
-        bool isPrivate = false)
-    {
-        return sender.Send(new CharacterGearRequest(ctx, name, world, isPrivate));
-    }
-
     [Command("claim")]
     [Description(Messages.Commands.Character.Claim.Description)]
     public Task ClaimAsync(SlashCommandContext ctx,
@@ -77,5 +64,34 @@ internal class CharacterCommands(ISender sender)
     public Task UnclaimAsync(SlashCommandContext ctx)
     {
         return sender.Send(new CharacterUnclaimRequest(ctx));
+    }
+
+    [Command("gear")]
+    internal class Gear(ISender sender)
+    {
+        [Command("get")]
+        [Description(Messages.Commands.Character.Gear.GearGet.Description)]
+        public Task GetAsync(SlashCommandContext ctx,
+            [Description(Messages.Commands.Parameters.CharacterName)]
+            string name,
+            [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
+            [Description(Messages.Commands.Parameters.CharacterWorld)]
+            string world,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterGearGetRequest(ctx, name, world, isPrivate));
+        }
+
+        [Command("me")]
+        [Description(Messages.Commands.Character.Gear.GearMe.Description)]
+        public Task MeAsync(SlashCommandContext ctx,
+            [Description(Messages.Commands.Parameters.ForceRefresh)]
+            bool forceRefresh = false,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterGearMeRequest(ctx, forceRefresh, isPrivate));
+        }
     }
 }

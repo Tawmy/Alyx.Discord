@@ -15,7 +15,8 @@ internal class SelectCharacterForGearHandler(CharacterGearService gearService) :
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
 
-        var container = await gearService.CreateGearContainerAsync(selectedLodestoneId, cancellationToken);
+        var container = await gearService.CreateGearContainerAsync(selectedLodestoneId,
+            cancellationToken: cancellationToken);
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }
