@@ -23,12 +23,10 @@ internal class AboutRequestHandler(ISender sender, CachingService cachingService
         components.Add(new DiscordSectionComponent(
             [
                 new DiscordTextDisplayComponent($"# {request.Ctx.Client.CurrentUser.Username}"),
-                new DiscordTextDisplayComponent($"""
-                                                 My name's Alyx.
-                                                 I'm here to provide support.
-
-                                                 -# Created by {Formatter.MaskedUrl("Tawmy", new Uri("https://tawmy.dev"))}
-                                                 """)
+                new DiscordTextDisplayComponent("""
+                                                My name's Alyx.
+                                                I'm here to provide support.
+                                                """)
             ],
             new DiscordThumbnailComponent(request.Ctx.Client.CurrentUser.AvatarUrl)
         ));
@@ -96,6 +94,9 @@ internal class AboutRequestHandler(ISender sender, CachingService cachingService
         {
             components.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
         }
+
+        components.Add(new DiscordTextDisplayComponent(
+            $"-# Created by {Formatter.MaskedUrl("Tawmy", new Uri("https://tawmy.dev"))}"));
 
         builder.AddContainerComponent(new DiscordContainerComponent(components));
         builder.AsEphemeral(request.IsPrivate);
