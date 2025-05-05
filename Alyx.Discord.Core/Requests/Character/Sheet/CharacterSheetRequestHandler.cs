@@ -14,9 +14,9 @@ internal class CharacterSheetRequestHandler(
     INetStoneApiCharacter apiCharacter,
     INetStoneApiFreeCompany apiFreeCompany,
     CharacterSheetService characterSheetService)
-    : IRequestHandler<CharacterSheetRequest, CharacterSheet>
+    : IRequestHandler<CharacterSheetRequest, CharacterSheetResponse>
 {
-    public async Task<CharacterSheet> Handle(CharacterSheetRequest request,
+    public async Task<CharacterSheetResponse> Handle(CharacterSheetRequest request,
         CancellationToken cancellationToken)
     {
         var id = request.LodestoneId;
@@ -93,7 +93,8 @@ internal class CharacterSheetRequestHandler(
                 CreateFallbackMessage(freeCompany.FallbackReason)));
         }
 
-        return new CharacterSheet(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted);
+        return new CharacterSheetResponse(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted,
+            taskCharacter.Result);
     }
 
     private static string? CreateFallbackMessage(string? fallbackReason)

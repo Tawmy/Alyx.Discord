@@ -13,12 +13,17 @@ namespace Alyx.Discord.Bot.Services;
 
 internal class CharacterGearService(ISender sender, AlyxConfiguration config, CachingService cachingService)
 {
+    public Task<DiscordContainerComponent> CreateGearContainerAsync(CharacterDtoV3 character)
+    {
+        return Task.FromResult(new DiscordContainerComponent(CreateComponents(character)));
+    }
+
     public async Task<DiscordContainerComponent> CreateGearContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(CreateComponents(character));
+        return await CreateGearContainerAsync(character);
     }
 
     private List<DiscordComponent> CreateComponents(CharacterDtoV3 character)

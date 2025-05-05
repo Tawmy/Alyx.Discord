@@ -5,6 +5,7 @@ using Alyx.Discord.Core.Requests.Character.Sheet;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus.Entities;
 using MediatR;
+using NetStone.Common.DTOs.Character;
 using Refit;
 using SixLabors.ImageSharp.Formats.Webp;
 
@@ -50,7 +51,7 @@ internal static class BaseDiscordMessageBuilderExtension
         CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
     {
-        CharacterSheet sheet;
+        CharacterSheetResponse sheet;
         try
         {
             sheet = await sender.Send(new CharacterSheetRequest(lodestoneId, forceRefresh), cancellationToken);
@@ -78,7 +79,7 @@ internal static class BaseDiscordMessageBuilderExtension
         List<DiscordButtonComponent> buttons =
         [
             CreateLodestoneLinkButton(lodestoneId),
-            await CreateGearButtonAsync(interactionDataService, lodestoneId)
+            await CreateGearButtonAsync(interactionDataService, sheet.Character)
         ];
 
         if (sheet.MountsPublic)
@@ -112,10 +113,10 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     private static async Task<DiscordButtonComponent> CreateGearButtonAsync(
-        IInteractionDataService interactionDataService, string lodestoneId)
+        IInteractionDataService interactionDataService, CharacterDtoV3 character)
     {
         var componentId =
-            await interactionDataService.AddDataAsync(lodestoneId, ComponentIds.Button.CharacterSheetGear);
+            await interactionDataService.AddDataAsync(character, ComponentIds.Button.CharacterSheetGear);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
     }
 

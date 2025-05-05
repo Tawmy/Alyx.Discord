@@ -15,7 +15,7 @@ public class InteractionDataGetRequestHandler<T>(DatabaseContext context)
 
         if (data.Type != request.Type.FullName)
         {
-            throw new ArgumentException("Interaction data type does not match");
+            throw new TypeMismatchException(request.Type.FullName ?? request.Type.Name);
         }
 
         var des = JsonSerializer.Deserialize<T>(data.Value);
