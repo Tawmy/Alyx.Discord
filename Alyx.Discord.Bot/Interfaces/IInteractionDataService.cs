@@ -14,7 +14,7 @@ internal interface IInteractionDataService
     /// <exception cref="UniqueConstraintException">
     ///     Thrown if data for key already exists. Should never happen as key is automatically generated.
     /// </exception>
-    Task<string> AddDataAsync<T>(T data);
+    Task<Guid> AddDataAsync<T>(T data);
 
     /// <inheritdoc cref="AddDataAsync{T}(T)" />
     /// <returns>Component ID to be used for Discord components. Format: ComponentId/DataKey</returns>

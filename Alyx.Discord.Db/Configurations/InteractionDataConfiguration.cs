@@ -12,7 +12,9 @@ internal class InteractionDataConfiguration : IEntityTypeConfiguration<Interacti
 
         builder.HasIndex(x => x.Key).IsUnique();
 
-        builder.Property(x => x.Key).HasMaxLength(32).IsFixedLength();
+        // Guid Version 7 is 36 characters, but previous logic created 32 character long strings
+        // -> cannot use fixed length
+        builder.Property(x => x.Key).HasMaxLength(36);
 
         builder.Property(x => x.Value).HasColumnType("jsonb").HasMaxLength(2000);
 

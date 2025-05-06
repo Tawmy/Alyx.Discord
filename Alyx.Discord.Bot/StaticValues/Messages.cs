@@ -69,7 +69,7 @@ internal static class Messages
                 {
                     return $"""
                             {CharacterNotFound(name, world)}
-                            
+
                             Search is unavailable (is the Lodestone down?), and this character was not searched for before. It cannot be loaded from the cache.
                             """;
                 }
