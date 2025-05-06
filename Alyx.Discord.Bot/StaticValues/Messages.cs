@@ -62,7 +62,16 @@ internal static class Messages
 
                 public static string CharacterNotFound(string name, string world)
                 {
-                    return $"Could not find {name} on {world}.";
+                    return $"Could not find **{name}** on **{world}**.";
+                }
+
+                public static string CharacterNotFoundInCache(string name, string world)
+                {
+                    return $"""
+                            {CharacterNotFound(name, world)}
+                            
+                            Search is unavailable (is the Lodestone down?), and this character was not searched for before. It cannot be loaded from the cache.
+                            """;
                 }
             }
 

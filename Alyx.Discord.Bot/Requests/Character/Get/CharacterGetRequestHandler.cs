@@ -80,8 +80,7 @@ internal class CharacterGetRequestHandler(
         }
         catch (NotFoundException)
         {
-            // TODO more specific error message? Right now it's not clear the character was not found because it was not cached
-            var description = Messages.Commands.Character.Get.CharacterNotFound(request.Name, request.World);
+            var description = Messages.Commands.Character.Get.CharacterNotFoundInCache(request.Name, request.World);
             builder = new DiscordInteractionResponseBuilder().AddError(description);
             await request.Ctx.FollowupAsync(builder);
             return;
