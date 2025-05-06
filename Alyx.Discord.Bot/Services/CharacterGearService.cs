@@ -31,6 +31,7 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
         List<DiscordComponent> c =
         [
             character.ToSectionComponent(cachingService, true),
+            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordTextDisplayComponent($"### Avg. Item Level: {character.Gear.GetAvarageItemLevel()}"),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large)
         ];
