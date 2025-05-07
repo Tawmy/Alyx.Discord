@@ -12,18 +12,19 @@ using NetStone.Common.Extensions;
 namespace Alyx.Discord.Bot.Services;
 
 internal class CharacterGearService(ISender sender, AlyxConfiguration config, CachingService cachingService)
+    : IDiscordContainerService
 {
-    public Task<DiscordContainerComponent> CreateGearContainerAsync(CharacterDtoV3 character)
+    public Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
     {
         return Task.FromResult(new DiscordContainerComponent(CreateComponents(character)));
     }
 
-    public async Task<DiscordContainerComponent> CreateGearContainerAsync(string lodestoneId, bool forceRefresh = false,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return await CreateGearContainerAsync(character);
+        return await CreateContainerAsync(character);
     }
 
     private List<DiscordComponent> CreateComponents(CharacterDtoV3 character)

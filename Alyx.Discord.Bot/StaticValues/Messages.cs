@@ -110,6 +110,19 @@ internal static class Messages
                 }
             }
 
+            public static class Attributes
+            {
+                public static class AttributesGet
+                {
+                    public const string Description = "Get a character's attributes.";
+                }
+
+                public static class AttributesMe
+                {
+                    public const string Description = "Get your character's attributes.";
+                }
+            }
+
             public static class Claim
             {
                 public const string Description = "Claim a character as your main character.";
@@ -268,5 +281,22 @@ internal static class Messages
     {
         public const string ServiceUnavailableTitle = "Retrieving data failed";
         public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
+    }
+
+    public static class Ffxiv
+    {
+        public static class Attributes
+        {
+            public const string Same = "Attributes";
+            public const string OffensiveProperties = "Offensive Properties";
+            public const string DefensiveProperties = "Defensive Properties";
+            public const string PhysicalProperties = "Physical Properties";
+            public const string Crafting = "Crafting";
+            public const string Gathering = "Gathering";
+            public const string MentalProperties = "Mental Properties";
+            public const string Role = "Role";
+            public const string Gear = "Gear";
+            public const string AverageItemLevel = "Average Item Level";
+        }
     }
 }

@@ -44,9 +44,9 @@ internal class ButtonCharacterGearHandler(
         }
 
         var container = character is not null
-            ? await gearService.CreateGearContainerAsync(character)
+            ? await gearService.CreateContainerAsync(character)
             : lodestoneId is not null
-                ? await gearService.CreateGearContainerAsync(lodestoneId, cancellationToken: cancellationToken)
+                ? await gearService.CreateContainerAsync(lodestoneId, cancellationToken: cancellationToken)
                 : throw new InvalidOperationException("Lodestone ID must not be null");
 
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);

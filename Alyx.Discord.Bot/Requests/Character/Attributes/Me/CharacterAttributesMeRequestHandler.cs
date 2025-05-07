@@ -10,14 +10,14 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
+namespace Alyx.Discord.Bot.Requests.Character.Attributes.Me;
 
-internal class CharacterGearMeRequestHandler(
+internal class CharacterAttributesMeRequestHandler(
     ISender sender,
-    AlyxConfiguration alyxConfiguration,
-    CharacterGearService gearService) : IRequestHandler<CharacterGearMeRequest>
+    AlyxConfiguration config,
+    CharacterAttributesService attributesService) : IRequestHandler<CharacterAttributesMeRequest>
 {
-    public async Task Handle(CharacterGearMeRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CharacterAttributesMeRequest request, CancellationToken cancellationToken)
     {
         string lodestoneId;
         try
@@ -36,12 +36,12 @@ internal class CharacterGearMeRequestHandler(
         if (request.ForceRefresh)
         {
             var lastForceRefresh = await sender.Send(new GetLastForceRefreshRequest(lodestoneId), cancellationToken);
-            var allowedBefore = DateTime.Now.AddMinutes(-1 * alyxConfiguration.NetStone.ForceRefreshCooldown);
+            var allowedBefore = DateTime.Now.AddMinutes(-1 * config.NetStone.ForceRefreshCooldown);
 
             if (lastForceRefresh > allowedBefore)
             {
                 var formattedLastRefresh = Formatter.Timestamp(lastForceRefresh.Value);
-                var allowedAfter = lastForceRefresh.Value.AddMinutes(alyxConfiguration.NetStone.ForceRefreshCooldown);
+                var allowedAfter = lastForceRefresh.Value.AddMinutes(config.NetStone.ForceRefreshCooldown);
                 var formattedAllowedAfterRel = Formatter.Timestamp(allowedAfter);
                 var formattedAllowedAfterAbs = Formatter.Timestamp(allowedAfter, TimestampFormat.ShortDateTime);
                 var errorBuilder = new DiscordInteractionResponseBuilder()
@@ -56,8 +56,9 @@ internal class CharacterGearMeRequestHandler(
 
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
-        var container =
-            await gearService.CreateContainerAsync(lodestoneId, request.ForceRefresh, cancellationToken);
+        var container = await attributesService.CreateContainerAsync(lodestoneId, request.ForceRefresh,
+            cancellationToken);
+
         await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
             .AddContainerComponent(container));
 

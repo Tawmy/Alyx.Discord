@@ -7,15 +7,16 @@ using DSharpPlus.EventArgs;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class SelectCharacterForGearHandler(CharacterGearService gearService) : IComponentInteractionHandler
+internal class SelectCharacterForAttributesHandler(CharacterAttributesService attributesService)
+    : IComponentInteractionHandler
 {
-    public async Task HandleAsync(DiscordClient client, ComponentInteractionCreatedEventArgs args, string? dataId,
+    public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
     {
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
 
-        var container = await gearService.CreateContainerAsync(selectedLodestoneId,
+        var container = await attributesService.CreateContainerAsync(selectedLodestoneId,
             cancellationToken: cancellationToken);
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);

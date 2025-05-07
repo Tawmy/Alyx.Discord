@@ -9,12 +9,12 @@ using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
-namespace Alyx.Discord.Bot.Requests.Character.Gear.Get;
+namespace Alyx.Discord.Bot.Requests.Character.Attributes.Get;
 
-internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearService gearService)
-    : IRequestHandler<CharacterGearGetRequest>
+internal class CharacterAttributesGetRequestHandler(ISender sender, CharacterAttributesService attributesService)
+    : IRequestHandler<CharacterAttributesGetRequest>
 {
-    public async Task Handle(CharacterGearGetRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CharacterAttributesGetRequest request, CancellationToken cancellationToken)
     {
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
@@ -34,7 +34,7 @@ internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearServi
 
         if (request.IsPrivate && searchDtos.Count > 1)
         {
-            var select = searchDtos.AsSelectComponent(ComponentIds.Select.CharacterForGear);
+            var select = searchDtos.AsSelectComponent(ComponentIds.Select.CharacterForAttributes);
             builder = new DiscordInteractionResponseBuilder().AddTieBreakerSelect(select, searchDtos.Count);
             await request.Ctx.FollowupAsync(builder);
             return;
@@ -43,7 +43,7 @@ internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearServi
         var first = searchDtos.FirstOrDefault(x =>
             x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
-        var container = await gearService.CreateContainerAsync(first.Id, cancellationToken: cancellationToken);
+        var container = await attributesService.CreateContainerAsync(first.Id, cancellationToken: cancellationToken);
         await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
             .AddContainerComponent(container));
 

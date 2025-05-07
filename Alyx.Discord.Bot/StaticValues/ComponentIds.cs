@@ -6,6 +6,7 @@ internal static class ComponentIds
     {
         public const string Character = "SELECT_CHARACTER";
         public const string CharacterForGear = "SELECT_CHARACTER_FOR_GEAR";
+        public const string CharacterForAttributes = "SELECT_CHARACTER_FOR_ATTRIBUTES";
     }
 
     public static class Button

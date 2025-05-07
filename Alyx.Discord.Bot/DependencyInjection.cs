@@ -28,7 +28,8 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddSingleton<CharacterGearService>();
+        services.AddSingleton<CharacterGearService>(); // TODO use interface
+        services.AddSingleton<CharacterAttributesService>(); // TODO use interface
 
         services.AddMediatR(cfg =>
         {
@@ -75,6 +76,8 @@ public static class DependencyInjection
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterHandler>(ComponentIds.Select.Character);
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForGearHandler>(ComponentIds.Select
             .CharacterForGear);
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForAttributesHandler>(ComponentIds.Select
+            .CharacterForAttributes);
 
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
             .ConfirmClaim);
