@@ -155,7 +155,7 @@ internal class CharacterAttributesService(ISender sender, AlyxConfiguration conf
                      """)
             );
         }
-        
+
         if (character.LastUpdated is not null)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));

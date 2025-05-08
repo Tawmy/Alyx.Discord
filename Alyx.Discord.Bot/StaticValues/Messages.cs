@@ -273,6 +273,7 @@ internal static class Messages
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Gear = "Gear";
+        public const string Attributes = "Attributes";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
     }

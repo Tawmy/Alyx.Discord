@@ -76,25 +76,36 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        List<DiscordButtonComponent> buttons =
+        List<DiscordButtonComponent> buttonsLine1 =
         [
-            CreateLodestoneLinkButton(lodestoneId),
-            await CreateGearButtonAsync(interactionDataService, sheet.Character)
+            CreateLodestoneLinkButton(lodestoneId)
         ];
+
+        var buttonGear = await CreateGearButtonAsync(interactionDataService, sheet.Character);
+        buttonsLine1.Add(buttonGear);
+
+        var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
+            ComponentIds.Button.CharacterSheetAttributes);
+        buttonsLine1.Add(await CreateAttributesButtonAsync(sheet.Character, buttonAttributesId));
 
         if (sheet.MountsPublic)
         {
-            buttons.Add(CreateLodestoneMountsButton(lodestoneId));
+            buttonsLine1.Add(CreateLodestoneMountsButton(lodestoneId));
         }
 
         if (sheet.MinionsPublic)
         {
-            buttons.Add(CreateLodestoneMinionsButton(lodestoneId));
+            buttonsLine1.Add(CreateLodestoneMinionsButton(lodestoneId));
         }
 
-        buttons.Add(await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata));
+        List<DiscordButtonComponent> buttonsLine2 =
+        [
+            await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata)
+        ];
 
-        builder.AddFile(fileName, stream, true).AddActionRowComponent(buttons);
+        builder.AddFile(fileName, stream, true)
+            .AddActionRowComponent(buttonsLine1)
+            .AddActionRowComponent(buttonsLine2);
 
         if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
         {
@@ -113,11 +124,18 @@ internal static class BaseDiscordMessageBuilderExtension
     }
 
     private static async Task<DiscordButtonComponent> CreateGearButtonAsync(
-        IInteractionDataService interactionDataService, CharacterDtoV3 character)
+        IInteractionDataService interactionDataService,
+        CharacterDtoV3 character)
     {
-        var componentId =
-            await interactionDataService.AddDataAsync(character, ComponentIds.Button.CharacterSheetGear);
+        var componentId = await interactionDataService.AddDataAsync(character,
+            ComponentIds.Button.CharacterSheetGear);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
+    }
+
+    private static async Task<DiscordButtonComponent> CreateAttributesButtonAsync(CharacterDtoV3 character,
+        string componentId)
+    {
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Attributes);
     }
 
     private static async Task<DiscordButtonComponent> CreateMetadataButtonAsync(

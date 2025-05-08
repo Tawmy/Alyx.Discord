@@ -17,9 +17,18 @@ internal interface IInteractionDataService
     Task<Guid> AddDataAsync<T>(T data);
 
     /// <inheritdoc cref="AddDataAsync{T}(T)" />
-    /// <returns>Component ID to be used for Discord components. Format: ComponentId/DataKey</returns>
+    /// <returns>Data Component ID to be used for Discord components. Format: ComponentId/DataKey</returns>
     /// <remarks>There is no overload for submitting data ID. It must always be automatically generated.</remarks>
     Task<string> AddDataAsync<T>(T data, string componentId);
+
+    /// <summary>
+    ///     Creates a new component ID by replacing an existing data component ID's component ID with a new one.
+    ///     Allows referencing the same cached data multiple times.
+    /// </summary>
+    /// <param name="existingDataComponentId">The existing data component ID.</param>
+    /// <param name="newComponentId">The new component ID to combine with the existing one.</param>
+    /// <returns>The newly generated component ID.</returns>
+    string CreateDataComponentIdFromExisting(string existingDataComponentId, string newComponentId);
 
     /// <summary>
     ///     Get data for given ID and remove from cache.
