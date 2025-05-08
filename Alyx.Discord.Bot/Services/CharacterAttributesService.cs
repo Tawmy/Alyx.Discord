@@ -3,6 +3,7 @@ using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
@@ -153,6 +154,13 @@ internal class CharacterAttributesService(ISender sender, AlyxConfiguration conf
                      ```
                      """)
             );
+        }
+        
+        if (character.LastUpdated is not null)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+            c.Add(new DiscordTextDisplayComponent(
+                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}"));
         }
 
         return c;

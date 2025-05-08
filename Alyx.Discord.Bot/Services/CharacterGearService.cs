@@ -69,10 +69,9 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
 
         c.Add(CreateGearTextDisplayComponent(gear3));
 
-        c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-
         if (character.LastUpdated is not null)
         {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
             c.Add(new DiscordTextDisplayComponent(
                 $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}"));
         }
