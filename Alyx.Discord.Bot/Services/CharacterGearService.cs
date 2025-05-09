@@ -14,6 +14,8 @@ namespace Alyx.Discord.Bot.Services;
 internal class CharacterGearService(ISender sender, AlyxConfiguration config, CachingService cachingService)
     : IDiscordContainerService
 {
+    public const string Key = "gear";
+
     public Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
     {
         return Task.FromResult(new DiscordContainerComponent(CreateComponents(character)));

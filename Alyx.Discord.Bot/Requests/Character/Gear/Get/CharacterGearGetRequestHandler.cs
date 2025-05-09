@@ -6,13 +6,16 @@ using Alyx.Discord.Core.Requests.OptionHistory.Add;
 using Alyx.Discord.Db.Models;
 using DSharpPlus.Entities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.Character.Gear.Get;
 
-internal class CharacterGearGetRequestHandler(ISender sender, CharacterGearService gearService)
-    : IRequestHandler<CharacterGearGetRequest>
+internal class CharacterGearGetRequestHandler(
+    ISender sender,
+    [FromKeyedServices(CharacterGearService.Key)]
+    IDiscordContainerService gearService) : IRequestHandler<CharacterGearGetRequest>
 {
     public async Task Handle(CharacterGearGetRequest request, CancellationToken cancellationToken)
     {

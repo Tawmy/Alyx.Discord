@@ -8,6 +8,7 @@ using Alyx.Discord.Core.Requests.Character.SetLastForceRefresh;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
@@ -15,7 +16,8 @@ namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
 internal class CharacterGearMeRequestHandler(
     ISender sender,
     AlyxConfiguration alyxConfiguration,
-    CharacterGearService gearService) : IRequestHandler<CharacterGearMeRequest>
+    [FromKeyedServices(CharacterGearService.Key)]
+    IDiscordContainerService gearService) : IRequestHandler<CharacterGearMeRequest>
 {
     public async Task Handle(CharacterGearMeRequest request, CancellationToken cancellationToken)
     {

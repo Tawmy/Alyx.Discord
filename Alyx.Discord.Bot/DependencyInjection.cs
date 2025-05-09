@@ -28,8 +28,8 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddSingleton<CharacterGearService>(); // TODO use interface
-        services.AddSingleton<CharacterAttributesService>(); // TODO use interface
+        services.AddKeyedSingleton<IDiscordContainerService, CharacterGearService>("gear");
+        services.AddKeyedSingleton<IDiscordContainerService, CharacterAttributesService>("attributes");
 
         services.AddMediatR(cfg =>
         {
