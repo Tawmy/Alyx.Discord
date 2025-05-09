@@ -24,7 +24,7 @@ internal class CharacterAttributesService(
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
     {
-        return new DiscordContainerComponent(await CreateComponentsAsync(character));
+        return new DiscordContainerComponent(await CreateComponentsAsync(character, true));
     }
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
@@ -32,10 +32,10 @@ internal class CharacterAttributesService(
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return await CreateContainerAsync(character);
+        return new DiscordContainerComponent(await CreateComponentsAsync(character, false));
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)
     {
         const int lineLength = 28;
 
@@ -166,20 +166,24 @@ internal class CharacterAttributesService(
         if (character.LastUpdated is not null)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-            var text = new DiscordTextDisplayComponent(
-                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}");
+
+            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}";
 
             var maxAgeCharacter = TimeSpan.FromMinutes(config.NetStone.MaxAgeCharacter);
-            if (DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
+            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
             {
                 c.Add(new DiscordSectionComponent(
-                    text,
+                    new DiscordTextDisplayComponent(
+                        $"""
+                         -# Attributes are from character sheet. They might be outdated.
+                         {lastUpdatedStr}
+                         """),
                     await CreateCharacterAttributesButtonAsync(character)
                 ));
             }
             else
             {
-                c.Add(text);
+                c.Add(new DiscordTextDisplayComponent(lastUpdatedStr));
             }
         }
 
