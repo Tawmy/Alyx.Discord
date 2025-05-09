@@ -86,7 +86,7 @@ internal static class BaseDiscordMessageBuilderExtension
 
         var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
             ComponentIds.Button.CharacterSheetAttributes);
-        buttonsLine1.Add(await CreateAttributesButtonAsync(sheet.Character, buttonAttributesId));
+        buttonsLine1.Add(CreateAttributesButton(sheet.Character, buttonAttributesId));
 
         if (sheet.MountsPublic)
         {
@@ -132,7 +132,7 @@ internal static class BaseDiscordMessageBuilderExtension
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
     }
 
-    private static async Task<DiscordButtonComponent> CreateAttributesButtonAsync(CharacterDtoV3 character,
+    private static DiscordButtonComponent CreateAttributesButton(CharacterDtoV3 character,
         string componentId)
     {
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Attributes);

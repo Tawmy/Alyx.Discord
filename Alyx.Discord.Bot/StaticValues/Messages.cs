@@ -276,6 +276,8 @@ internal static class Messages
         public const string Attributes = "Attributes";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
+        public const string CurrentGear = "Show current gear";
+        public const string CurrentAttributes = "Show current attributes";
     }
 
     public static class Other

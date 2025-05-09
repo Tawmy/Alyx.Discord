@@ -1,5 +1,6 @@
 using System.Text;
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
@@ -12,14 +13,18 @@ using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
 
-internal class CharacterAttributesService(ISender sender, AlyxConfiguration config, CachingService cachingService)
+internal class CharacterAttributesService(
+    ISender sender,
+    AlyxConfiguration config,
+    CachingService cachingService,
+    IInteractionDataService interactionDataService)
     : IDiscordContainerService
 {
     public const string Key = "attributes";
 
-    public Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
+    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
     {
-        return Task.FromResult(new DiscordContainerComponent(CreateComponents(character)));
+        return new DiscordContainerComponent(await CreateComponentsAsync(character));
     }
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
@@ -30,7 +35,7 @@ internal class CharacterAttributesService(ISender sender, AlyxConfiguration conf
         return await CreateContainerAsync(character);
     }
 
-    private List<DiscordComponent> CreateComponents(CharacterDtoV3 character)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character)
     {
         const int lineLength = 28;
 
@@ -161,8 +166,21 @@ internal class CharacterAttributesService(ISender sender, AlyxConfiguration conf
         if (character.LastUpdated is not null)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-            c.Add(new DiscordTextDisplayComponent(
-                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}"));
+            var text = new DiscordTextDisplayComponent(
+                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}");
+
+            var maxAgeCharacter = TimeSpan.FromMinutes(config.NetStone.MaxAgeCharacter);
+            if (DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
+            {
+                c.Add(new DiscordSectionComponent(
+                    text,
+                    await CreateCharacterAttributesButtonAsync(character)
+                ));
+            }
+            else
+            {
+                c.Add(text);
+            }
         }
 
         return c;
@@ -182,5 +200,11 @@ internal class CharacterAttributesService(ISender sender, AlyxConfiguration conf
 
             return $"{key}{paddingStr}{value}";
         }
+    }
+
+    private async Task<DiscordButtonComponent> CreateCharacterAttributesButtonAsync(CharacterDtoV3 character)
+    {
+        var id = await interactionDataService.AddDataAsync(character.Id, ComponentIds.Button.CharacterAttributes);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentAttributes);
     }
 }

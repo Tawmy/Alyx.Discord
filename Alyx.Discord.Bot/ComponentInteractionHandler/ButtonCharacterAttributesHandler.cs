@@ -7,7 +7,6 @@ using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
-using NetStone.Common.DTOs.Character;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
@@ -23,10 +22,10 @@ internal class ButtonCharacterAttributesHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        CharacterDtoV3? character;
+        string lodestoneId;
         try
         {
-            character = await interactionDataService.GetDataAsync<CharacterDtoV3>(dataId);
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
         }
         catch (InvalidOperationException)
         {
@@ -36,7 +35,7 @@ internal class ButtonCharacterAttributesHandler(
             return;
         }
 
-        var container = await attributesService.CreateContainerAsync(character);
+        var container = await attributesService.CreateContainerAsync(lodestoneId, cancellationToken: cancellationToken);
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

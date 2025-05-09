@@ -16,5 +16,7 @@ internal static class ComponentIds
         public const string CharacterSheetGear = "BUTTON_CHARACTER_SHEET_GEAR";
         public const string CharacterSheetAttributes = "BUTTON_CHARACTER_SHEET_ATTRIBUTES";
         public const string CharacterSheetMetadata = "BUTTON_CHARACTER_SHEET_METADATA";
+        public const string CharacterGear = "BUTTON_CHARACTER_GEAR";
+        public const string CharacterAttributes = "BUTTON_CHARACTER_ATTRIBUTES";
     }
 }

@@ -7,13 +7,14 @@ using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonCharacterGearHandler(
+internal class ButtonCharacterSheetAttributesHandler(
     IInteractionDataService interactionDataService,
-    [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService gearService) : IComponentInteractionHandler
+    [FromKeyedServices(CharacterAttributesService.Key)]
+    IDiscordContainerService attributesService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -22,10 +23,10 @@ internal class ButtonCharacterGearHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        string lodestoneId;
+        CharacterDtoV3? character;
         try
         {
-            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+            character = await interactionDataService.GetDataAsync<CharacterDtoV3>(dataId);
         }
         catch (InvalidOperationException)
         {
@@ -35,7 +36,7 @@ internal class ButtonCharacterGearHandler(
             return;
         }
 
-        var container = await gearService.CreateContainerAsync(lodestoneId, cancellationToken: cancellationToken);
+        var container = await attributesService.CreateContainerAsync(character);
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

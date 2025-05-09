@@ -83,10 +83,14 @@ public static class DependencyInjection
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
             .ConfirmUnclaim);
-        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetGearHandler>(ComponentIds.Button
             .CharacterSheetGear);
-        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button
             .CharacterSheetAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
+            .CharacterGear);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
+            .CharacterAttributes);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button
             .CharacterSheetMetadata);
     }
