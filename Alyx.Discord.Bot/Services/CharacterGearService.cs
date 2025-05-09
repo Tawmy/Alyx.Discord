@@ -18,7 +18,7 @@ internal class CharacterGearService(
     AlyxConfiguration config,
     CachingService cachingService,
     IInteractionDataService interactionDataService)
-    : IDiscordContainerService
+    : IDiscordContainerService<CharacterDtoV3>
 {
     public const string Key = "gear";
 

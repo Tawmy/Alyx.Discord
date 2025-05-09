@@ -15,7 +15,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 internal class ButtonCharacterSheetGearHandler(
     IInteractionDataService interactionDataService,
     [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService gearService) : IComponentInteractionHandler
+    IDiscordContainerService<CharacterDtoV3> gearService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)

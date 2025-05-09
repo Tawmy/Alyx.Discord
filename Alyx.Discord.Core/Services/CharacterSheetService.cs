@@ -1,5 +1,6 @@
 using System.Numerics;
 using Alyx.Discord.Core.Enums;
+using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.StaticValues;
 using Alyx.Discord.Core.Structs;
 using NetStone.Common.DTOs.Character;
@@ -320,30 +321,12 @@ internal class CharacterSheetService
             return false;
         }
 
-        var crest = await DownloadFreeCompanyCrestAsync(freeCompany);
+        var crest = await freeCompany.CrestLayers.DownloadCrestAsync(_httpClient);
         crest.Mutate(x => x.Resize(CharacterSheetValues.DimensionsGcFcCrest, CharacterSheetValues.DimensionsGcFcCrest,
             KnownResamplers.Lanczos3));
         var fullName = $"{freeCompany.Name} {freeCompany.Tag}";
         PrintInTopValueArea(fullName, crest);
         return true;
-    }
-
-    private async Task<Image> DownloadFreeCompanyCrestAsync(FreeCompanyDtoV3 freeCompany)
-    {
-        // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
-
-        var dataTopLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.TopLayer);
-        var dataMiddleLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.MiddleLayer);
-        var dataBottomLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.BottomLayer);
-
-        var topLayer = Image.Load<Rgba32>(dataTopLayer);
-        var middleLayer = Image.Load<Rgba32>(dataMiddleLayer);
-        var bottomLayer = Image.Load<Rgba32>(dataBottomLayer);
-
-        bottomLayer.Mutate(x => x.DrawImage(middleLayer, 1));
-        bottomLayer.Mutate(x => x.DrawImage(topLayer, 1));
-
-        return bottomLayer;
     }
 
     private void AddAttributes(CharacterDtoV3 character)

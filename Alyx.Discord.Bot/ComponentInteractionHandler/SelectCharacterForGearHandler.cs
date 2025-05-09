@@ -5,12 +5,13 @@ using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class SelectCharacterForGearHandler(
     [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService gearService) : IComponentInteractionHandler
+    IDiscordContainerService<CharacterDtoV3> gearService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient client, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)

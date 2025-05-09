@@ -9,6 +9,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.Character.Attributes.Me;
@@ -17,7 +18,7 @@ internal class CharacterAttributesMeRequestHandler(
     ISender sender,
     AlyxConfiguration config,
     [FromKeyedServices(CharacterAttributesService.Key)]
-    IDiscordContainerService attributesService) : IRequestHandler<CharacterAttributesMeRequest>
+    IDiscordContainerService<CharacterDtoV3> attributesService) : IRequestHandler<CharacterAttributesMeRequest>
 {
     public async Task Handle(CharacterAttributesMeRequest request, CancellationToken cancellationToken)
     {

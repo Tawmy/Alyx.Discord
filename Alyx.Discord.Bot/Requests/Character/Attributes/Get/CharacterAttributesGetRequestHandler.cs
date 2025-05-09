@@ -15,7 +15,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Attributes.Get;
 internal class CharacterAttributesGetRequestHandler(
     ISender sender,
     [FromKeyedServices(CharacterAttributesService.Key)]
-    IDiscordContainerService attributesService) : IRequestHandler<CharacterAttributesGetRequest>
+    IDiscordContainerService<CharacterDtoV3> attributesService) : IRequestHandler<CharacterAttributesGetRequest>
 {
     public async Task Handle(CharacterAttributesGetRequest request, CancellationToken cancellationToken)
     {

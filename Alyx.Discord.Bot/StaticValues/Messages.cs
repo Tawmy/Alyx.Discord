@@ -29,6 +29,13 @@ internal static class Messages
             public const string CharacterWorld = "Character's home world.";
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
+
+            public const string FreeCompanyName = "Free Company name.";
+
+            public const string FreeCompanyNameWithCompletion =
+                "Free Company name. Options above show your recent searches.";
+
+            public const string FreeCompanyWorld = "Free Company's home world.";
         }
 
         public static class General
@@ -215,6 +222,19 @@ internal static class Messages
                          You can claim one using {CreateCommandDisplayStr(commands, command)}.
                          """;
                 }
+            }
+        }
+
+        public static class FreeCompany
+        {
+            public static class Get
+            {
+                public const string Description = "Get information about a free company.";
+            }
+
+            public static class Me
+            {
+                public const string Description = "Get information about your free company.";
             }
         }
 

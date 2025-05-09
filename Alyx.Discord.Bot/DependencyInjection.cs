@@ -14,6 +14,8 @@ using DSharpPlus.Commands.Processors.UserCommands;
 using DSharpPlus.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
+using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
@@ -28,8 +30,9 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddKeyedSingleton<IDiscordContainerService, CharacterGearService>("gear");
-        services.AddKeyedSingleton<IDiscordContainerService, CharacterAttributesService>("attributes");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDtoV3>, CharacterGearService>("gear");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDtoV3>, CharacterAttributesService>("attributes");
+        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDtoV3>, FreeCompanyService>("fc");
 
         services.AddMediatR(cfg =>
         {
@@ -53,6 +56,7 @@ public static class DependencyInjection
 
                 x.AddCommands<GeneralCommands>();
                 x.AddCommands<CharacterCommands>();
+                x.AddCommands<FreeCompanyCommands>();
                 x.AddCommands<FfxivCommands>();
 
                 // using generic type does not work if class isn't a command

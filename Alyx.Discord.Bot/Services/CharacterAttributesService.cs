@@ -18,7 +18,7 @@ internal class CharacterAttributesService(
     AlyxConfiguration config,
     CachingService cachingService,
     IInteractionDataService interactionDataService)
-    : IDiscordContainerService
+    : IDiscordContainerService<CharacterDtoV3>
 {
     public const string Key = "attributes";
 
