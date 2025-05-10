@@ -27,8 +27,6 @@ internal static class Messages
                 "Character name. Options above show your recent searches.";
 
             public const string CharacterWorld = "Character's home world.";
-            public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
-            public const string Private = "Whether response is visible only to you.";
 
             public const string FreeCompanyName = "Free Company name.";
 
@@ -36,6 +34,9 @@ internal static class Messages
                 "Free Company name. Options above show your recent searches.";
 
             public const string FreeCompanyWorld = "Free Company's home world.";
+
+            public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
+            public const string Private = "Whether response is visible only to you.";
         }
 
         public static class General
@@ -249,6 +250,13 @@ internal static class Messages
             public static class Me
             {
                 public const string Description = "Get information about your free company.";
+
+                public const string MainCharacterNotInFreeCompanyTitle = "No Free Company";
+
+                public static string MainCharacterNotInFreeCompanyDescription(string name, string world)
+                {
+                    return $"Your main character **{name}** ({world}) is not a member of a free company.";
+                }
             }
         }
 

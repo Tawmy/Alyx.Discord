@@ -28,7 +28,6 @@ internal class FreeCompanyMeRequestHandler(
         }
         catch (NotFoundException)
         {
-            // TODO clarify error messages
             var errorBuilder = new DiscordInteractionResponseBuilder().AddError(
                 Messages.Commands.Character.Me.NotFoundDescription(request.GetSlashCommandMapping(), "character claim"),
                 Messages.Commands.Character.Me.NotFoundTitle);
@@ -44,7 +43,7 @@ internal class FreeCompanyMeRequestHandler(
         }
         catch (NotFoundException)
         {
-            // TODO show appropriate error
+            // TODO show more appropriate error, maybe
             var errorBuilder = new DiscordInteractionResponseBuilder().AddError(
                 Messages.Commands.Character.Me.NotFoundDescription(request.GetSlashCommandMapping(), "character claim"),
                 Messages.Commands.Character.Me.NotFoundTitle);
@@ -52,12 +51,15 @@ internal class FreeCompanyMeRequestHandler(
             return;
         }
 
-        // TODO error if main character not in FC
         if (mainCharacter.FreeCompany is null)
         {
+            var errorBuilder = new DiscordInteractionResponseBuilder().AddError(
+                Messages.Commands.FreeCompany.Me.MainCharacterNotInFreeCompanyDescription(mainCharacter.Name,
+                    mainCharacter.Server),
+                Messages.Commands.FreeCompany.Me.MainCharacterNotInFreeCompanyTitle);
+            await request.Ctx.RespondAsync(errorBuilder.AsEphemeral());
             return;
         }
-
 
         await request.Ctx.DeferResponseAsync(true);
 
