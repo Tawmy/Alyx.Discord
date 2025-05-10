@@ -37,9 +37,15 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
 
         List<DiscordComponent> c =
         [
-            fc.ToSectionComponent(cachingService.GetApplicationEmoji("homeworld")),
-            new DiscordTextDisplayComponent(fc.Slogan),
-            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
+            fc.ToSectionComponent(cachingService.GetApplicationEmoji("homeworld"))
+        ];
+
+        if (!string.IsNullOrWhiteSpace(fc.Slogan))
+        {
+            c.Add(new DiscordTextDisplayComponent(fc.Slogan));
+        }
+
+        c.AddRange(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordTextDisplayComponent(
                 $"""
                  Formed: {Formatter.Timestamp(fc.Formed, TimestampFormat.ShortDate)}
@@ -47,7 +53,7 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
                  Rank: **{fc.Rank}**
                  """),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large)
-        ];
+        );
 
         if (fc.Focus.Any())
         {
