@@ -22,7 +22,8 @@ internal class CharacterAttributesService(
 {
     public const string Key = "attributes";
 
-    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character)
+    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character,
+        CancellationToken cancellationToken = default)
     {
         return new DiscordContainerComponent(await CreateComponentsAsync(character, true));
     }
@@ -32,10 +33,11 @@ internal class CharacterAttributesService(
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(await CreateComponentsAsync(character, false));
+        return new DiscordContainerComponent(await CreateComponentsAsync(character, false, cancellationToken));
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet,
+        CancellationToken cancellationToken = default)
     {
         const int lineLength = 28;
 

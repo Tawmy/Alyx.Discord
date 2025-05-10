@@ -10,8 +10,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class SelectCharacterHandler(
     ISender sender,
-    IInteractionDataService interactionDataService)
-    : IComponentInteractionHandler
+    IInteractionDataService interactionDataService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)

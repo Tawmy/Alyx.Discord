@@ -83,6 +83,9 @@ public static class DependencyInjection
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForAttributesHandler>(ComponentIds.Select
             .CharacterForAttributes);
 
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectFreeCompanyHandler>(ComponentIds.Select
+            .FreeCompany);
+
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button

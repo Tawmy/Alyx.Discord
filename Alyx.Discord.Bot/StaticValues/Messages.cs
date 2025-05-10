@@ -230,6 +230,20 @@ internal static class Messages
             public static class Get
             {
                 public const string Description = "Get information about a free company.";
+
+                public static string FreeCompanyNotFound(string name, string world)
+                {
+                    return $"Could not find **{name}** on **{world}**.";
+                }
+
+                public static string FreeCompanyNotFoundInCache(string name, string world)
+                {
+                    return $"""
+                            {FreeCompanyNotFound(name, world)}
+
+                            Search is unavailable (is the Lodestone down?), and this free company was not searched for before. It cannot be loaded from the cache.
+                            """;
+                }
             }
 
             public static class Me

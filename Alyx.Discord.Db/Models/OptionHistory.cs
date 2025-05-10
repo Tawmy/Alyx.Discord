@@ -15,5 +15,6 @@ public class OptionHistory
 
 public enum HistoryType
 {
-    Character
+    Character,
+    FreeCompany
 }

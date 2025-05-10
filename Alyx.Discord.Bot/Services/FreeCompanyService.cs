@@ -15,21 +15,21 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
 {
     public const string Key = "fc";
 
-    public Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDtoV3 fc)
+    public Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDtoV3 fc,
+        CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(new DiscordContainerComponent(CreateComponents(fc)));
+        return Task.FromResult(new DiscordContainerComponent(CreateComponents(fc, cancellationToken)));
     }
 
-    public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId,
-        bool forceRefresh = false,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var fc = await sender.Send(new FreeCompanyGetFreeCompanyRequest(lodestoneId, maxAge), cancellationToken);
-        return await CreateContainerAsync(fc);
+        return await CreateContainerAsync(fc, cancellationToken);
     }
 
-    private List<DiscordComponent> CreateComponents(FreeCompanyDtoV3 fc)
+    private List<DiscordComponent> CreateComponents(FreeCompanyDtoV3 fc, CancellationToken cancellationToken = default)
     {
         var maelstrom = fc.Reputation.First(x => x.GrandCompany is GrandCompany.Maelstrom);
         var flames = fc.Reputation.First(x => x.GrandCompany is GrandCompany.ImmortalFlames);

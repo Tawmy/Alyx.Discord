@@ -1,7 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
-using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using DSharpPlus.Entities;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.FreeCompany.Me;
 
@@ -60,20 +58,22 @@ internal class FreeCompanyMeRequestHandler(
             return;
         }
 
-        // https://github.com/discord/discord-api-docs/issues/7529
-        //await request.Ctx.DeferResponseAsync(true); // TODO defer response!!!!!
+
+        await request.Ctx.DeferResponseAsync(true);
 
         var container = await fcService.CreateContainerAsync(mainCharacter.FreeCompany.Id,
             cancellationToken: cancellationToken);
 
-        var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
-        using var stream = new MemoryStream();
-        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
+        // https://github.com/discord/discord-api-docs/issues/7529
+        // TODO get full crest once Discord bug fixed
+        // var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
+        // using var stream = new MemoryStream();
+        // await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+        // stream.Seek(0, SeekOrigin.Begin);
 
-        await request.Ctx.RespondAsync(new DiscordInteractionResponseBuilder()
+        await request.Ctx.RespondAsync(new DiscordFollowupMessageBuilder()
             .EnableV2Components()
-            .AddFile("crest.webp", stream)
+            // .AddFile("crest.webp", stream)
             .AddContainerComponent(container));
     }
 }
