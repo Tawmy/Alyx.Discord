@@ -1,5 +1,4 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompanyByName;
@@ -17,8 +16,8 @@ namespace Alyx.Discord.Bot.Requests.FreeCompany.Get;
 
 internal class FreeCompanyGetRequestHandler(
     ISender sender,
-    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDtoV3> fcService,
-    IInteractionDataService interactionDataService) : IRequestHandler<FreeCompanyGetRequest>
+    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDtoV3> fcService)
+    : IRequestHandler<FreeCompanyGetRequest>
 {
     public async Task Handle(FreeCompanyGetRequest request, CancellationToken cancellationToken)
     {

@@ -7,14 +7,14 @@ using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
-using NetStone.Common.DTOs.Character;
+using NetStone.Common.DTOs.FreeCompany;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
-internal class ButtonCharacterSheetAttributesHandler(
+internal class ButtonFreeCompanyHandler(
     IInteractionDataService interactionDataService,
-    [FromKeyedServices(CharacterAttributesService.Key)]
-    IDiscordContainerService<CharacterDtoV3> attributesService) : IComponentInteractionHandler
+    [FromKeyedServices(FreeCompanyService.Key)]
+    IDiscordContainerService<FreeCompanyDtoV3> fcService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -23,20 +23,20 @@ internal class ButtonCharacterSheetAttributesHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        CharacterDtoV3? character;
+        string lodestoneId;
         try
         {
-            character = await interactionDataService.GetDataAsync<CharacterDtoV3>(dataId);
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
         }
         catch (InvalidOperationException)
         {
-            // this can be removed long-term, only here to not break functionality from before data was persisted to db 
+            // this can be removed long-term, only here to not break functionality from before data was persisted to db
             await args.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder()
                 .AddError(Messages.InteractionData.NotPersisted));
             return;
         }
 
-        var container = await attributesService.CreateContainerAsync(character, cancellationToken);
+        var container = await fcService.CreateContainerAsync(lodestoneId, cancellationToken: cancellationToken);
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
         await args.Interaction.CreateFollowupMessageAsync(builder);
     }

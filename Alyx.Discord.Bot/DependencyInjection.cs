@@ -94,10 +94,14 @@ public static class DependencyInjection
             .CharacterSheetGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button
             .CharacterSheetAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetFreeCompanyHandler>(ComponentIds
+            .Button.CharacterSheetFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
             .CharacterGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
             .CharacterAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonFreeCompanyHandler>(ComponentIds.Button
+            .CharacterFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button
             .CharacterSheetMetadata);
     }

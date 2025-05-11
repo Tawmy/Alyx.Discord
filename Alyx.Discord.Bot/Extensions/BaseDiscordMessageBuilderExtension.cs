@@ -7,6 +7,7 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Api.Sdk;
 using NetStone.Common.DTOs.Character;
+using NetStone.Common.DTOs.FreeCompany;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Extensions;
@@ -61,10 +62,12 @@ internal static class BaseDiscordMessageBuilderExtension
             switch (e.HttpStatusCode)
             {
                 case HttpStatusCode.ServiceUnavailable:
-                    builder.AddError(Messages.Other.ServiceUnavailableDescription, Messages.Other.ServiceUnavailableTitle);
+                    builder.AddError(Messages.Other.ServiceUnavailableDescription,
+                        Messages.Other.ServiceUnavailableTitle);
                     break;
                 case HttpStatusCode.InternalServerError:
-                    builder.AddError(Messages.Other.NetStoneApiServerErrorDescription, Messages.Other.NetStoneApiServerErrorTitle);
+                    builder.AddError(Messages.Other.NetStoneApiServerErrorDescription,
+                        Messages.Other.NetStoneApiServerErrorTitle);
                     break;
                 default:
                     throw;
@@ -81,17 +84,12 @@ internal static class BaseDiscordMessageBuilderExtension
         var timestamp = DateTime.UtcNow;
         var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
 
-        List<DiscordButtonComponent> buttonsLine1 =
-        [
-            CreateLodestoneLinkButton(lodestoneId)
-        ];
-
         var buttonGear = await CreateGearButtonAsync(interactionDataService, sheet.Character);
-        buttonsLine1.Add(buttonGear);
-
         var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
             ComponentIds.Button.CharacterSheetAttributes);
-        buttonsLine1.Add(CreateAttributesButton(sheet.Character, buttonAttributesId));
+        var buttonAttributes = CreateAttributesButton(buttonAttributesId);
+
+        List<DiscordButtonComponent> buttonsLine1 = [buttonGear, buttonAttributes];
 
         if (sheet.MountsPublic)
         {
@@ -103,8 +101,14 @@ internal static class BaseDiscordMessageBuilderExtension
             buttonsLine1.Add(CreateLodestoneMinionsButton(lodestoneId));
         }
 
+        if (sheet.FreeCompany is { } freeCompany)
+        {
+            buttonsLine1.Add(await CreateFreeCompanyButtonAsync(interactionDataService, freeCompany));
+        }
+
         List<DiscordButtonComponent> buttonsLine2 =
         [
+            CreateLodestoneLinkButton(lodestoneId),
             await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata)
         ];
 
@@ -137,10 +141,18 @@ internal static class BaseDiscordMessageBuilderExtension
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
     }
 
-    private static DiscordButtonComponent CreateAttributesButton(CharacterDtoV3 character,
-        string componentId)
+    private static DiscordButtonComponent CreateAttributesButton(string componentId)
     {
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Attributes);
+    }
+
+    private static async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(
+        IInteractionDataService interactionDataService,
+        FreeCompanyDtoV3 freeCompany)
+    {
+        var componentId = await interactionDataService.AddDataAsync(freeCompany,
+            ComponentIds.Button.CharacterSheetFreeCompany);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.FreeCompany);
     }
 
     private static async Task<DiscordButtonComponent> CreateMetadataButtonAsync(

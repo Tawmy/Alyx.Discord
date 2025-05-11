@@ -33,11 +33,10 @@ internal class CharacterAttributesService(
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(await CreateComponentsAsync(character, false, cancellationToken));
+        return new DiscordContainerComponent(await CreateComponentsAsync(character, false));
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet,
-        CancellationToken cancellationToken = default)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)
     {
         const int lineLength = 28;
 

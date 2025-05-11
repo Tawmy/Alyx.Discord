@@ -1,4 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompany;
 using DSharpPlus;
@@ -10,15 +12,19 @@ using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
 
-internal class FreeCompanyService(ISender sender, AlyxConfiguration config, CachingService cachingService)
+internal class FreeCompanyService(
+    ISender sender,
+    AlyxConfiguration config,
+    CachingService cachingService,
+    IInteractionDataService interactionDataService)
     : IDiscordContainerService<FreeCompanyDtoV3>
 {
     public const string Key = "fc";
 
-    public Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDtoV3 fc,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDtoV3 fc,
         CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(new DiscordContainerComponent(CreateComponents(fc, cancellationToken)));
+        return new DiscordContainerComponent(await CreateComponentsAsync(fc, true));
     }
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
@@ -26,10 +32,10 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var fc = await sender.Send(new FreeCompanyGetFreeCompanyRequest(lodestoneId, maxAge), cancellationToken);
-        return await CreateContainerAsync(fc, cancellationToken);
+        return new DiscordContainerComponent(await CreateComponentsAsync(fc, false));
     }
 
-    private List<DiscordComponent> CreateComponents(FreeCompanyDtoV3 fc, CancellationToken cancellationToken = default)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(FreeCompanyDtoV3 fc, bool cachedFromSheet)
     {
         var maelstrom = fc.Reputation.First(x => x.GrandCompany is GrandCompany.Maelstrom);
         var flames = fc.Reputation.First(x => x.GrandCompany is GrandCompany.ImmortalFlames);
@@ -106,7 +112,25 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
         if (fc.LastUpdated is not null)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-            c.Add(new DiscordTextDisplayComponent($"-# Last updated {Formatter.Timestamp(fc.LastUpdated.Value)}"));
+
+            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(fc.LastUpdated.Value)}";
+
+            var maxAgeFc = TimeSpan.FromMinutes(config.NetStone.MaxAgeFreeCompany);
+            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeFc) > fc.LastUpdated)
+            {
+                c.Add(new DiscordSectionComponent(
+                    new DiscordTextDisplayComponent(
+                        $"""
+                         -# Free Company is from character sheet. It might be outdated.
+                         {lastUpdatedStr}
+                         """),
+                    await CreateCharacterAttributesButtonAsync(fc)
+                ));
+            }
+            else
+            {
+                c.Add(new DiscordTextDisplayComponent(lastUpdatedStr));
+            }
         }
 
         return c;
@@ -122,5 +146,11 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
                     {string.Join(" ", focusStrings)}
                     """;
         return new DiscordTextDisplayComponent(text);
+    }
+
+    private async Task<DiscordButtonComponent> CreateCharacterAttributesButtonAsync(FreeCompanyDtoV3 fc)
+    {
+        var id = await interactionDataService.AddDataAsync(fc.Id, ComponentIds.Button.CharacterFreeCompany);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentFreeCompany);
     }
 }

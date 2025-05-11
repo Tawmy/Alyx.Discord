@@ -94,7 +94,7 @@ internal class CharacterSheetRequestHandler(
         }
 
         return new CharacterSheetResponse(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted,
-            taskCharacter.Result);
+            taskCharacter.Result, freeCompany);
     }
 
     private static string? CreateFallbackMessage(string? fallbackReason)

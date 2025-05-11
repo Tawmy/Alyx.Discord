@@ -15,8 +15,7 @@ namespace Alyx.Discord.Bot.Requests.FreeCompany.Me;
 internal class FreeCompanyMeRequestHandler(
     ISender sender,
     [FromKeyedServices(FreeCompanyService.Key)]
-    IDiscordContainerService<FreeCompanyDtoV3> fcService,
-    HttpClient httpClient) : IRequestHandler<FreeCompanyMeRequest>
+    IDiscordContainerService<FreeCompanyDtoV3> fcService) : IRequestHandler<FreeCompanyMeRequest>
 {
     public async Task Handle(FreeCompanyMeRequest request, CancellationToken cancellationToken)
     {

@@ -46,7 +46,7 @@ internal class ButtonCharacterSheetGearHandler(
         }
 
         var container = character is not null
-            ? await gearService.CreateContainerAsync(character)
+            ? await gearService.CreateContainerAsync(character, cancellationToken)
             : lodestoneId is not null
                 ? await gearService.CreateContainerAsync(lodestoneId, cancellationToken: cancellationToken)
                 : throw new InvalidOperationException("Lodestone ID must not be null");
