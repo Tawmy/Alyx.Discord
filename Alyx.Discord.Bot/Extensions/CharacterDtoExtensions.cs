@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Services;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Extensions;
@@ -14,12 +15,13 @@ internal static class CharacterDtoExtensions
             ? $"{jobIcon} "
             : string.Empty;
         var job = character.ActiveClassJob.GetSpaceSeparatedDisplayString();
+        var homeWorldEmoji = cachingService.GetApplicationEmoji("homeWorld");
 
         return new DiscordSectionComponent(
             new DiscordTextDisplayComponent($"""
                                              # {character.Name}
                                              {jobPrefix}{job} • Lv. {character.ActiveClassJobLevel}
-                                             {character.Server}
+                                             -# {Formatter.Emoji(homeWorldEmoji)} {character.Server}
                                              """),
             new DiscordThumbnailComponent(fullPortrait ? character.Portrait : character.Avatar)
         );

@@ -37,7 +37,7 @@ internal class FreeCompanyService(ISender sender, AlyxConfiguration config, Cach
 
         List<DiscordComponent> c =
         [
-            fc.ToSectionComponent(cachingService.GetApplicationEmoji("homeworld"))
+            fc.ToSectionComponent(cachingService)
         ];
 
         if (!string.IsNullOrWhiteSpace(fc.Slogan))
