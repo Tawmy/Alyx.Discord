@@ -61,7 +61,7 @@ internal class FreeCompanyMeRequestHandler(
             return;
         }
 
-        await request.Ctx.DeferResponseAsync(true);
+        await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
         var container = await fcService.CreateContainerAsync(mainCharacter.FreeCompany.Id,
             cancellationToken: cancellationToken);
