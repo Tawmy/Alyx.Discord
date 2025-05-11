@@ -324,6 +324,8 @@ internal static class Messages
 
     public static class Other
     {
+        public const string NetStoneApiServerErrorTitle = "Parsing failed";
+        public const string NetStoneApiServerErrorDescription = "The parser failed unexpectedly. Please try again later.";
         public const string ServiceUnavailableTitle = "Retrieving data failed";
         public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
     }

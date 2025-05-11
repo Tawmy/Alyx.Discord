@@ -5,8 +5,8 @@ using Alyx.Discord.Core.Requests.Character.Sheet;
 using Alyx.Discord.Core.Structs;
 using DSharpPlus.Entities;
 using MediatR;
+using NetStone.Api.Sdk;
 using NetStone.Common.DTOs.Character;
-using Refit;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Extensions;
@@ -56,14 +56,19 @@ internal static class BaseDiscordMessageBuilderExtension
         {
             sheet = await sender.Send(new CharacterSheetRequest(lodestoneId, forceRefresh), cancellationToken);
         }
-        catch (ValidationApiException e)
+        catch (NetStoneException e)
         {
-            if (e.StatusCode is not HttpStatusCode.ServiceUnavailable)
+            switch (e.HttpStatusCode)
             {
-                throw;
+                case HttpStatusCode.ServiceUnavailable:
+                    builder.AddError(Messages.Other.ServiceUnavailableDescription, Messages.Other.ServiceUnavailableTitle);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    builder.AddError(Messages.Other.NetStoneApiServerErrorDescription, Messages.Other.NetStoneApiServerErrorTitle);
+                    break;
+                default:
+                    throw;
             }
-
-            builder.AddError(Messages.Other.ServiceUnavailableDescription, Messages.Other.ServiceUnavailableTitle);
 
             await followupTask(builder);
             return;
