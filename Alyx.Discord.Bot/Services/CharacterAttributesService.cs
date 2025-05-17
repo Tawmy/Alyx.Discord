@@ -176,7 +176,7 @@ internal class CharacterAttributesService(
                 c.Add(new DiscordSectionComponent(
                     new DiscordTextDisplayComponent(
                         $"""
-                         -# Attributes are from character sheet. They might be outdated.
+                         -# {Messages.InteractionData.CachedFromSheet("Attributes", true)}
                          {lastUpdatedStr}
                          """),
                     await CreateCharacterAttributesButtonAsync(character)

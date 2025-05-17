@@ -90,7 +90,7 @@ internal class CharacterGearService(
                 c.Add(new DiscordSectionComponent(
                     new DiscordTextDisplayComponent(
                         $"""
-                         -# Gear is from character sheet. It might be outdated.
+                         -# {Messages.InteractionData.CachedFromSheet("Gear")}
                          {lastUpdatedStr}
                          """),
                     await CreateCharacterGearButtonAsync(character)

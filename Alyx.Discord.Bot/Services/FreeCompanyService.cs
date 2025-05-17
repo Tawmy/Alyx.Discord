@@ -121,7 +121,7 @@ internal class FreeCompanyService(
                 c.Add(new DiscordSectionComponent(
                     new DiscordTextDisplayComponent(
                         $"""
-                         -# Free Company is from character sheet. It might be outdated.
+                         -# {Messages.InteractionData.CachedFromSheet("Free Company")}
                          {lastUpdatedStr}
                          """),
                     await CreateCharacterAttributesButtonAsync(fc)
