@@ -49,10 +49,12 @@ internal static class BaseDiscordMessageBuilderExtensions
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
         ISender sender, IInteractionDataService interactionDataService,
-        string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> followupTask,
+        string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> respondTask,
         CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
     {
+        builder.EnableV2Components();
+
         CharacterSheetResponse sheet;
         try
         {
@@ -74,16 +76,20 @@ internal static class BaseDiscordMessageBuilderExtensions
                     throw;
             }
 
-            await followupTask(builder);
+            await respondTask(builder);
             return;
         }
 
-        await using var stream = new MemoryStream();
-        await sheet.Image.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
-
         var timestamp = DateTime.UtcNow;
-        var fileName = $"{timestamp:yyyy-MM-dd HH-mm} {lodestoneId}.webp";
+        var fileName = $"{timestamp:yyyy-MM-dd_HH-mm}_{lodestoneId}";
+        await using var _ = await builder.AddImageAsync(sheet.Image, fileName, cancellationToken);
+
+        builder.AddMediaGalleryComponent(new DiscordMediaGalleryItem($"attachment://{fileName}.webp"));
+        
+        if (CreateFallbackContainerIfApplicable(sheet.SheetMetadata) is { } fallbackContainer)
+        {
+            builder.AddContainerComponent(fallbackContainer);
+        }
 
         var buttonGear = await CreateGearButtonAsync(interactionDataService, sheet.Character);
         var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
@@ -113,16 +119,9 @@ internal static class BaseDiscordMessageBuilderExtensions
             await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata)
         ];
 
-        builder.AddFile(fileName, stream, true)
-            .AddActionRowComponent(buttonsLine1)
-            .AddActionRowComponent(buttonsLine2);
+        builder.AddActionRowComponent(buttonsLine1).AddActionRowComponent(buttonsLine2);
 
-        if (CreateFallbackEmbedIfApplicable(sheet.SheetMetadata) is { } embed)
-        {
-            builder.AddEmbed(embed);
-        }
-
-        await followupTask(builder);
+        await respondTask(builder);
     }
 
     public static async Task<MemoryStream> AddImageAsync<T>(this BaseDiscordMessageBuilder<T> builder, Image image,
@@ -188,7 +187,7 @@ internal static class BaseDiscordMessageBuilderExtensions
         return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
     }
 
-    private static DiscordEmbed? CreateFallbackEmbedIfApplicable(IEnumerable<SheetMetadata> metadata)
+    private static DiscordContainerComponent? CreateFallbackContainerIfApplicable(IEnumerable<SheetMetadata> metadata)
     {
         if (metadata.All(x => !x.FallbackUsed))
         {
@@ -196,14 +195,14 @@ internal static class BaseDiscordMessageBuilderExtensions
             return null;
         }
 
-        return new DiscordEmbedBuilder
-        {
-            Color = DiscordColor.Red,
-            Description = """
-                          Updating some data from the Lodestone failed. Cached data is shown instead.
-                          Sheet metadata will show which data failed to update.
-                          """
-        }.Build();
+        return new DiscordContainerComponent(
+        [
+            new DiscordTextDisplayComponent(
+                """
+                Updating some data from the Lodestone failed. Cached data is shown instead.
+                Sheet metadata will show which data failed to update.
+                """)
+        ], color: DiscordColor.Red);
     }
 
     #endregion

@@ -61,7 +61,7 @@ internal class CharacterGetRequestHandler(
 
             builder = new DiscordInteractionResponseBuilder();
             await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id, false,
-                async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+                async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
             // cache recent search for discord user
             await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.Character, first.Name),
@@ -87,7 +87,7 @@ internal class CharacterGetRequestHandler(
         }
 
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, character.Id, false,
-            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+            async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
         // cache recent search for discord user
         await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.Character, character.Name),

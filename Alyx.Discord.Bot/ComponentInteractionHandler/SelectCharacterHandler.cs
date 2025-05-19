@@ -18,9 +18,9 @@ internal class SelectCharacterHandler(
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
 
-        var builder = new DiscordFollowupMessageBuilder();
+        var builder = new DiscordWebhookBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, selectedLodestoneId, false,
-            async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b),
+            async b => await args.Interaction.EditOriginalResponseAsync((DiscordWebhookBuilder)b),
             cancellationToken);
     }
 }

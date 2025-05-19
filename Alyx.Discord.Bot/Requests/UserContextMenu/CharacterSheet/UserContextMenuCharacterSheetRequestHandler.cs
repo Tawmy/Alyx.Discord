@@ -32,6 +32,6 @@ internal class UserContextMenuCharacterSheetRequestHandler(
 
         var builder = new DiscordInteractionResponseBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, false,
-            async b => await request.Ctx.FollowupAsync(b), cancellationToken);
+            async b => await request.Ctx.RespondAsync(b), cancellationToken);
     }
 }
