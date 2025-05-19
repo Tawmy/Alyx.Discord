@@ -326,6 +326,7 @@ internal static class Messages
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
         public const string FreeCompany = "Free Company";
+        public const string FreeCompanyMembers = "Members";
         public const string CurrentGear = "Show current gear";
         public const string CurrentAttributes = "Show current attributes";
         public const string CurrentFreeCompany = "Show current Free Company";

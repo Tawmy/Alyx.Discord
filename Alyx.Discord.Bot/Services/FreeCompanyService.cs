@@ -107,11 +107,16 @@ internal class FreeCompanyService(
                 $"""
                  -# {Formatter.Emoji(cachingService.GetApplicationEmoji("flames"))} {flames.GrandCompany.GetDisplayName()}
                  {flames.Rank}
-                 """));
+                 """),
+            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
+            new DiscordActionRowComponent([
+                CreateFreeCompanyLodestoneButton(fc),
+                CreateFreeCompanyMembersButton(fc)
+            ]));
 
         if (fc.LastUpdated is not null)
         {
-            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+            c.Add(new DiscordSeparatorComponent());
 
             var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(fc.LastUpdated.Value)}";
 
@@ -124,7 +129,7 @@ internal class FreeCompanyService(
                          -# {Messages.InteractionData.CachedFromSheet("Free Company")}
                          {lastUpdatedStr}
                          """),
-                    await CreateCharacterAttributesButtonAsync(fc)
+                    await CreateFreeCompanyButtonAsync(fc)
                 ));
             }
             else
@@ -148,9 +153,21 @@ internal class FreeCompanyService(
         return new DiscordTextDisplayComponent(text);
     }
 
-    private async Task<DiscordButtonComponent> CreateCharacterAttributesButtonAsync(FreeCompanyDtoV3 fc)
+    private async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(FreeCompanyDtoV3 fc)
     {
         var id = await interactionDataService.AddDataAsync(fc.Id, ComponentIds.Button.CharacterFreeCompany);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentFreeCompany);
+    }
+
+    private DiscordButtonComponent CreateFreeCompanyLodestoneButton(FreeCompanyDtoV3 fc)
+    {
+        var link = $"https://eu.finalfantasyxiv.com/lodestone/freecompany/{fc.Id}";
+        return new DiscordLinkButtonComponent(link, Messages.Buttons.OpenLodestoneProfile);
+    }
+
+    private DiscordButtonComponent CreateFreeCompanyMembersButton(FreeCompanyDtoV3 fc)
+    {
+        var link = $"https://eu.finalfantasyxiv.com/lodestone/freecompany/{fc.Id}/member";
+        return new DiscordLinkButtonComponent(link, Messages.Buttons.FreeCompanyMembers);
     }
 }
