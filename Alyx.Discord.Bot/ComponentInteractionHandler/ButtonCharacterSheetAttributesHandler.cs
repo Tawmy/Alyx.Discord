@@ -14,7 +14,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 internal class ButtonCharacterSheetAttributesHandler(
     IInteractionDataService interactionDataService,
     [FromKeyedServices(CharacterAttributesService.Key)]
-    IDiscordContainerService<CharacterDtoV3> attributesService) : IComponentInteractionHandler
+    IDiscordContainerService<CharacterDto> attributesService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -23,10 +23,10 @@ internal class ButtonCharacterSheetAttributesHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        CharacterDtoV3? character;
+        CharacterDto? character;
         try
         {
-            character = await interactionDataService.GetDataAsync<CharacterDtoV3>(dataId);
+            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId);
         }
         catch (InvalidOperationException)
         {

@@ -10,5 +10,5 @@ public record CharacterSheetResponse(
     IEnumerable<SheetMetadata> SheetMetadata,
     bool MinionsPublic,
     bool MountsPublic,
-    CharacterDtoV3 Character,
-    FreeCompanyDtoV3? FreeCompany);
+    CharacterDto Character,
+    FreeCompanyDto? FreeCompany);

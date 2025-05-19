@@ -85,7 +85,7 @@ internal static class BaseDiscordMessageBuilderExtensions
         await using var _ = await builder.AddImageAsync(sheet.Image, fileName, cancellationToken);
 
         builder.AddMediaGalleryComponent(new DiscordMediaGalleryItem($"attachment://{fileName}.webp"));
-        
+
         if (CreateFallbackContainerIfApplicable(sheet.SheetMetadata) is { } fallbackContainer)
         {
             builder.AddContainerComponent(fallbackContainer);
@@ -145,7 +145,7 @@ internal static class BaseDiscordMessageBuilderExtensions
 
     private static async Task<DiscordButtonComponent> CreateGearButtonAsync(
         IInteractionDataService interactionDataService,
-        CharacterDtoV3 character)
+        CharacterDto character)
     {
         var componentId = await interactionDataService.AddDataAsync(character,
             ComponentIds.Button.CharacterSheetGear);
@@ -159,7 +159,7 @@ internal static class BaseDiscordMessageBuilderExtensions
 
     private static async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(
         IInteractionDataService interactionDataService,
-        FreeCompanyDtoV3 freeCompany)
+        FreeCompanyDto freeCompany)
     {
         var componentId = await interactionDataService.AddDataAsync(freeCompany,
             ComponentIds.Button.CharacterSheetFreeCompany);

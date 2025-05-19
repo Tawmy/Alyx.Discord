@@ -18,7 +18,7 @@ internal class CharacterAttributesMeRequestHandler(
     ISender sender,
     AlyxConfiguration config,
     [FromKeyedServices(CharacterAttributesService.Key)]
-    IDiscordContainerService<CharacterDtoV3> attributesService) : IRequestHandler<CharacterAttributesMeRequest>
+    IDiscordContainerService<CharacterDto> attributesService) : IRequestHandler<CharacterAttributesMeRequest>
 {
     public async Task Handle(CharacterAttributesMeRequest request, CancellationToken cancellationToken)
     {

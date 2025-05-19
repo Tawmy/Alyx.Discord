@@ -5,9 +5,9 @@ using NetStone.Common.DTOs.FreeCompany;
 namespace Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompanyByName;
 
 public class FreeCompanyGetFreeCompanyByNameRequestHandler(INetStoneApiFreeCompany apiFc)
-    : IRequestHandler<FreeCompanyGetFreeCompanyByNameRequest, FreeCompanyDtoV3>
+    : IRequestHandler<FreeCompanyGetFreeCompanyByNameRequest, FreeCompanyDto>
 {
-    public Task<FreeCompanyDtoV3> Handle(FreeCompanyGetFreeCompanyByNameRequest request,
+    public Task<FreeCompanyDto> Handle(FreeCompanyGetFreeCompanyByNameRequest request,
         CancellationToken cancellationToken)
     {
         return apiFc.GetByNameAsync(request.Name, request.World, cancellationToken);

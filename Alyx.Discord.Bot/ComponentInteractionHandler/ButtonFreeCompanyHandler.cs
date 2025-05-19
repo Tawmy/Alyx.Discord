@@ -16,7 +16,7 @@ internal class ButtonFreeCompanyHandler(
     IInteractionDataService interactionDataService,
     HttpClient httpClient,
     [FromKeyedServices(FreeCompanyService.Key)]
-    IDiscordContainerService<FreeCompanyDtoV3> fcService) : IComponentInteractionHandler
+    IDiscordContainerService<FreeCompanyDto> fcService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)

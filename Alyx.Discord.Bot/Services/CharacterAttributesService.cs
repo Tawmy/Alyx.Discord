@@ -19,11 +19,11 @@ internal class CharacterAttributesService(
     AlyxConfiguration config,
     CachingService cachingService,
     IInteractionDataService interactionDataService)
-    : IDiscordContainerService<CharacterDtoV3>
+    : IDiscordContainerService<CharacterDto>
 {
     public const string Key = "attributes";
 
-    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDto character,
         CancellationToken cancellationToken = default)
     {
         return new DiscordContainerComponent(await CreateComponentsAsync(character, true));
@@ -36,7 +36,7 @@ internal class CharacterAttributesService(
         return container;
     }
 
-    public async Task<(DiscordContainerComponent, CharacterDtoV3)> RetrieveDataAndCreateContainerAsync(
+    public async Task<(DiscordContainerComponent, CharacterDto)> RetrieveDataAndCreateContainerAsync(
         string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
@@ -46,7 +46,7 @@ internal class CharacterAttributesService(
         return (container, character);
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDto character, bool cachedFromSheet)
     {
         const int lineLength = 28;
 
@@ -230,7 +230,7 @@ internal class CharacterAttributesService(
         }
     }
 
-    private async Task<DiscordButtonComponent> CreateCharacterAttributesButtonAsync(CharacterDtoV3 character)
+    private async Task<DiscordButtonComponent> CreateCharacterAttributesButtonAsync(CharacterDto character)
     {
         var id = await interactionDataService.AddDataAsync(character.Id, ComponentIds.Button.CharacterAttributes);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentAttributes);

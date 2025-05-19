@@ -3,4 +3,4 @@ using NetStone.Common.DTOs.FreeCompany;
 
 namespace Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompany;
 
-public record FreeCompanyGetFreeCompanyRequest(string LodestoneId, int? MaxAge = null) : IRequest<FreeCompanyDtoV3>;
+public record FreeCompanyGetFreeCompanyRequest(string LodestoneId, int? MaxAge = null) : IRequest<FreeCompanyDto>;

@@ -18,11 +18,11 @@ internal class FreeCompanyService(
     AlyxConfiguration config,
     CachingService cachingService,
     IInteractionDataService interactionDataService)
-    : IDiscordContainerService<FreeCompanyDtoV3>
+    : IDiscordContainerService<FreeCompanyDto>
 {
     public const string Key = "fc";
 
-    public async Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDtoV3 fc,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDto fc,
         CancellationToken cancellationToken = default)
     {
         return new DiscordContainerComponent(await CreateComponentsAsync(fc, true));
@@ -35,7 +35,7 @@ internal class FreeCompanyService(
         return container;
     }
 
-    public async Task<(DiscordContainerComponent, FreeCompanyDtoV3)> RetrieveDataAndCreateContainerAsync(
+    public async Task<(DiscordContainerComponent, FreeCompanyDto)> RetrieveDataAndCreateContainerAsync(
         string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
@@ -45,7 +45,7 @@ internal class FreeCompanyService(
         return (container, fc);
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(FreeCompanyDtoV3 fc, bool cachedFromSheet)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(FreeCompanyDto fc, bool cachedFromSheet)
     {
         var maelstrom = fc.Reputation.First(x => x.GrandCompany is GrandCompany.Maelstrom);
         var flames = fc.Reputation.First(x => x.GrandCompany is GrandCompany.ImmortalFlames);
@@ -164,7 +164,7 @@ internal class FreeCompanyService(
         return c;
     }
 
-    private DiscordTextDisplayComponent CreateFocusComponent(FreeCompanyDtoV3 fc)
+    private DiscordTextDisplayComponent CreateFocusComponent(FreeCompanyDto fc)
     {
         var focusStrings = fc.Focus.Select(x =>
             $"{Formatter.Emoji(cachingService.GetApplicationEmoji(x.Type.ToString().ToLowerInvariant()))} {x.Name}");
@@ -176,19 +176,19 @@ internal class FreeCompanyService(
         return new DiscordTextDisplayComponent(text);
     }
 
-    private async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(FreeCompanyDtoV3 fc)
+    private async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(FreeCompanyDto fc)
     {
         var id = await interactionDataService.AddDataAsync(fc.Id, ComponentIds.Button.CharacterFreeCompany);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentFreeCompany);
     }
 
-    private DiscordButtonComponent CreateFreeCompanyLodestoneButton(FreeCompanyDtoV3 fc)
+    private DiscordButtonComponent CreateFreeCompanyLodestoneButton(FreeCompanyDto fc)
     {
         var link = $"https://eu.finalfantasyxiv.com/lodestone/freecompany/{fc.Id}";
         return new DiscordLinkButtonComponent(link, Messages.Buttons.OpenLodestoneProfile);
     }
 
-    private DiscordButtonComponent CreateFreeCompanyMembersButton(FreeCompanyDtoV3 fc)
+    private DiscordButtonComponent CreateFreeCompanyMembersButton(FreeCompanyDto fc)
     {
         var link = $"https://eu.finalfantasyxiv.com/lodestone/freecompany/{fc.Id}/member";
         return new DiscordLinkButtonComponent(link, Messages.Buttons.FreeCompanyMembers);

@@ -8,7 +8,7 @@ namespace Alyx.Discord.Bot.Extensions;
 
 internal static class FreeCompanyDtoExtensions
 {
-    public static DiscordSectionComponent ToSectionComponent(this FreeCompanyDtoV3 fc, CachingService cachingService)
+    public static DiscordSectionComponent ToSectionComponent(this FreeCompanyDto fc, CachingService cachingService)
     {
         var homeWorldEmoji = cachingService.GetApplicationEmoji("homeWorld");
 

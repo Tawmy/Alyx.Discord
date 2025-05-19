@@ -18,7 +18,7 @@ internal class CharacterGearMeRequestHandler(
     ISender sender,
     AlyxConfiguration alyxConfiguration,
     [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService<CharacterDtoV3> gearService) : IRequestHandler<CharacterGearMeRequest>
+    IDiscordContainerService<CharacterDto> gearService) : IRequestHandler<CharacterGearMeRequest>
 {
     public async Task Handle(CharacterGearMeRequest request, CancellationToken cancellationToken)
     {

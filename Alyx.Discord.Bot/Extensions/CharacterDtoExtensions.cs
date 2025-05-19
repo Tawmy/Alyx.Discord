@@ -8,7 +8,7 @@ namespace Alyx.Discord.Bot.Extensions;
 
 internal static class CharacterDtoExtensions
 {
-    public static DiscordSectionComponent ToSectionComponent(this CharacterDtoV3 character,
+    public static DiscordSectionComponent ToSectionComponent(this CharacterDto character,
         CachingService cachingService, bool fullPortrait = false)
     {
         var jobPrefix = cachingService.TryGetApplicationEmoji(character.ActiveClassJob.ToString(), out var jobIcon)

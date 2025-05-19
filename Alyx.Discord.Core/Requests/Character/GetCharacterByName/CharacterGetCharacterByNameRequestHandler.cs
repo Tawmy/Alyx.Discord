@@ -5,9 +5,9 @@ using NetStone.Common.DTOs.Character;
 namespace Alyx.Discord.Core.Requests.Character.GetCharacterByName;
 
 public class CharacterGetCharacterByNameRequestHandler(INetStoneApiCharacter apiCharacter)
-    : IRequestHandler<CharacterGetCharacterByNameRequest, CharacterDtoV3>
+    : IRequestHandler<CharacterGetCharacterByNameRequest, CharacterDto>
 {
-    public Task<CharacterDtoV3> Handle(CharacterGetCharacterByNameRequest request, CancellationToken cancellationToken)
+    public Task<CharacterDto> Handle(CharacterGetCharacterByNameRequest request, CancellationToken cancellationToken)
     {
         return apiCharacter.GetByNameAsync(request.Name, request.World, cancellationToken);
     }

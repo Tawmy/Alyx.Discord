@@ -16,7 +16,7 @@ internal class ButtonCharacterSheetFreeCompanyHandler(
     IInteractionDataService interactionDataService,
     HttpClient httpClient,
     [FromKeyedServices(FreeCompanyService.Key)]
-    IDiscordContainerService<FreeCompanyDtoV3> fcService) : IComponentInteractionHandler
+    IDiscordContainerService<FreeCompanyDto> fcService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -25,10 +25,10 @@ internal class ButtonCharacterSheetFreeCompanyHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        FreeCompanyDtoV3? freeCompany;
+        FreeCompanyDto? freeCompany;
         try
         {
-            freeCompany = await interactionDataService.GetDataAsync<FreeCompanyDtoV3>(dataId);
+            freeCompany = await interactionDataService.GetDataAsync<FreeCompanyDto>(dataId);
         }
         catch (InvalidOperationException)
         {

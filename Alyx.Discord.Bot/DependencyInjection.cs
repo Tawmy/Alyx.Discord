@@ -30,9 +30,9 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDtoV3>, CharacterGearService>("gear");
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDtoV3>, CharacterAttributesService>("attributes");
-        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDtoV3>, FreeCompanyService>("fc");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>("gear");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>("attributes");
+        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>("fc");
 
         services.AddMediatR(cfg =>
         {

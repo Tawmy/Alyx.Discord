@@ -6,9 +6,9 @@ using NetStone.Common.Enums;
 namespace Alyx.Discord.Core.Requests.Character.GetCharacter;
 
 public class CharacterGetCharacterRequestHandler(INetStoneApiCharacter apiCharacter)
-    : IRequestHandler<CharacterGetCharacterRequest, CharacterDtoV3>
+    : IRequestHandler<CharacterGetCharacterRequest, CharacterDto>
 {
-    public Task<CharacterDtoV3> Handle(CharacterGetCharacterRequest request, CancellationToken cancellationToken)
+    public Task<CharacterDto> Handle(CharacterGetCharacterRequest request, CancellationToken cancellationToken)
     {
         return apiCharacter.GetAsync(request.LodestoneId, request.MaxAge, FallbackType.Any, cancellationToken);
     }

@@ -19,11 +19,11 @@ internal class CharacterGearService(
     AlyxConfiguration config,
     CachingService cachingService,
     IInteractionDataService interactionDataService)
-    : IDiscordContainerService<CharacterDtoV3>
+    : IDiscordContainerService<CharacterDto>
 {
     public const string Key = "gear";
 
-    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDtoV3 character,
+    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDto character,
         CancellationToken cancellationToken = default)
     {
         return new DiscordContainerComponent(await CreateComponentsAsync(character, true));
@@ -36,7 +36,7 @@ internal class CharacterGearService(
         return container;
     }
 
-    public async Task<(DiscordContainerComponent, CharacterDtoV3)> RetrieveDataAndCreateContainerAsync(
+    public async Task<(DiscordContainerComponent, CharacterDto)> RetrieveDataAndCreateContainerAsync(
         string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
@@ -46,7 +46,7 @@ internal class CharacterGearService(
         return (container, character);
     }
 
-    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDto character, bool cachedFromSheet)
     {
         List<DiscordComponent> c =
         [
@@ -168,7 +168,7 @@ internal class CharacterGearService(
         return new DiscordTextDisplayComponent(gearStr);
     }
 
-    private async Task<DiscordButtonComponent> CreateCharacterGearButtonAsync(CharacterDtoV3 character)
+    private async Task<DiscordButtonComponent> CreateCharacterGearButtonAsync(CharacterDto character)
     {
         var id = await interactionDataService.AddDataAsync(character.Id, ComponentIds.Button.CharacterGear);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentGear);

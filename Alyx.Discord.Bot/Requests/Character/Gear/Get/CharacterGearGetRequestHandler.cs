@@ -15,7 +15,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Gear.Get;
 internal class CharacterGearGetRequestHandler(
     ISender sender,
     [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService<CharacterDtoV3> gearService) : IRequestHandler<CharacterGearGetRequest>
+    IDiscordContainerService<CharacterDto> gearService) : IRequestHandler<CharacterGearGetRequest>
 {
     public async Task Handle(CharacterGearGetRequest request, CancellationToken cancellationToken)
     {

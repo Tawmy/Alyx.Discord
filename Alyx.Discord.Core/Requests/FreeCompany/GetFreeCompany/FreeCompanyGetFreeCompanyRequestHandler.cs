@@ -6,9 +6,9 @@ using NetStone.Common.Enums;
 namespace Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompany;
 
 public class FreeCompanyGetFreeCompanyRequestHandler(INetStoneApiFreeCompany apiFc)
-    : IRequestHandler<FreeCompanyGetFreeCompanyRequest, FreeCompanyDtoV3>
+    : IRequestHandler<FreeCompanyGetFreeCompanyRequest, FreeCompanyDto>
 {
-    public Task<FreeCompanyDtoV3> Handle(FreeCompanyGetFreeCompanyRequest request, CancellationToken cancellationToken)
+    public Task<FreeCompanyDto> Handle(FreeCompanyGetFreeCompanyRequest request, CancellationToken cancellationToken)
     {
         return apiFc.GetAsync(request.LodestoneId, request.MaxAge, FallbackType.Any, cancellationToken);
     }

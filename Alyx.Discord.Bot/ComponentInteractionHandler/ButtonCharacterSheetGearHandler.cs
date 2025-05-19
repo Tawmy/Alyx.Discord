@@ -15,7 +15,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 internal class ButtonCharacterSheetGearHandler(
     IInteractionDataService interactionDataService,
     [FromKeyedServices(CharacterGearService.Key)]
-    IDiscordContainerService<CharacterDtoV3> gearService) : IComponentInteractionHandler
+    IDiscordContainerService<CharacterDto> gearService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -24,13 +24,13 @@ internal class ButtonCharacterSheetGearHandler(
 
         await args.Interaction.DeferAsync(true);
 
-        CharacterDtoV3? character = null;
+        CharacterDto? character = null;
         string? lodestoneId = null;
         try
         {
             // full character is cached in version 1.8.0 and onwards, so gear button will show gear from cache
             // doing this will make sure gear shown will match what's shown in sheet
-            character = await interactionDataService.GetDataAsync<CharacterDtoV3>(dataId);
+            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId);
         }
         catch (TypeMismatchException)
         {

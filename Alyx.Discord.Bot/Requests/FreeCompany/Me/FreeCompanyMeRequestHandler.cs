@@ -16,7 +16,7 @@ namespace Alyx.Discord.Bot.Requests.FreeCompany.Me;
 internal class FreeCompanyMeRequestHandler(
     ISender sender,
     [FromKeyedServices(FreeCompanyService.Key)]
-    IDiscordContainerService<FreeCompanyDtoV3> fcService,
+    IDiscordContainerService<FreeCompanyDto> fcService,
     HttpClient httpClient) : IRequestHandler<FreeCompanyMeRequest>
 {
     public async Task Handle(FreeCompanyMeRequest request, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ internal class FreeCompanyMeRequestHandler(
             return;
         }
 
-        CharacterDtoV3 mainCharacter;
+        CharacterDto mainCharacter;
         try
         {
             mainCharacter = await sender.Send(new CharacterGetCharacterRequest(mainCharacterLodestoneId),

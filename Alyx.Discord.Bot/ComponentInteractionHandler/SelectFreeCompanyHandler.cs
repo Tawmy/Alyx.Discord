@@ -10,7 +10,7 @@ using NetStone.Common.DTOs.FreeCompany;
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class SelectFreeCompanyHandler(
-    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDtoV3> fcService) : IComponentInteractionHandler
+    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDto> fcService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs args, string? dataId,
         IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)

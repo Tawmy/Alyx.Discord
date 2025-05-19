@@ -18,7 +18,7 @@ namespace Alyx.Discord.Bot.Requests.FreeCompany.Get;
 internal class FreeCompanyGetRequestHandler(
     ISender sender,
     HttpClient httpClient,
-    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDtoV3> fcService)
+    [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDto> fcService)
     : IRequestHandler<FreeCompanyGetRequest>
 {
     public async Task Handle(FreeCompanyGetRequest request, CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ internal class FreeCompanyGetRequestHandler(
 
     private async Task RequestFromCacheByNameAsync(FreeCompanyGetRequest request, CancellationToken cancellationToken)
     {
-        FreeCompanyDtoV3 freeCompany;
+        FreeCompanyDto freeCompany;
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components();
         try
         {

@@ -71,7 +71,7 @@ internal class CharacterGetRequestHandler(
 
     private async Task RequestFromCacheByNameAsync(CharacterGetRequest request, CancellationToken cancellationToken)
     {
-        CharacterDtoV3 character;
+        CharacterDto character;
         var builder = new DiscordInteractionResponseBuilder();
         try
         {
