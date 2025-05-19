@@ -31,9 +31,18 @@ internal class FreeCompanyService(
     public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
+        var (container, _) = await RetrieveDataAndCreateContainerAsync(lodestoneId, forceRefresh, cancellationToken);
+        return container;
+    }
+
+    public async Task<(DiscordContainerComponent, FreeCompanyDtoV3)> RetrieveDataAndCreateContainerAsync(
+        string lodestoneId, bool forceRefresh = false,
+        CancellationToken cancellationToken = default)
+    {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var fc = await sender.Send(new FreeCompanyGetFreeCompanyRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(await CreateComponentsAsync(fc, false));
+        var container = new DiscordContainerComponent(await CreateComponentsAsync(fc, false));
+        return (container, fc);
     }
 
     private async Task<List<DiscordComponent>> CreateComponentsAsync(FreeCompanyDtoV3 fc, bool cachedFromSheet)

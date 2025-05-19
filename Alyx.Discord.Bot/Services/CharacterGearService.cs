@@ -32,9 +32,18 @@ internal class CharacterGearService(
     public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
+        var (container, _) = await RetrieveDataAndCreateContainerAsync(lodestoneId, forceRefresh, cancellationToken);
+        return container;
+    }
+
+    public async Task<(DiscordContainerComponent, CharacterDtoV3)> RetrieveDataAndCreateContainerAsync(
+        string lodestoneId, bool forceRefresh = false,
+        CancellationToken cancellationToken = default)
+    {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(await CreateComponentsAsync(character, false));
+        var container = new DiscordContainerComponent(await CreateComponentsAsync(character, false));
+        return (container, character);
     }
 
     private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDtoV3 character, bool cachedFromSheet)

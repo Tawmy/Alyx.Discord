@@ -8,4 +8,7 @@ public interface IDiscordContainerService<T>
 
     Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default);
+
+    Task<(DiscordContainerComponent, T)> RetrieveDataAndCreateContainerAsync(string lodestoneId,
+        bool forceRefresh = false, CancellationToken cancellationToken = default);
 }
