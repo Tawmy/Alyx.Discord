@@ -342,7 +342,7 @@ internal static class Messages
         public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
     }
 
-    public static class Ffxiv
+    public static class Xiv
     {
         public static class Attributes
         {

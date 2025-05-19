@@ -70,7 +70,7 @@ internal class CharacterAttributesService(
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("attributes")} {Messages.Ffxiv.Attributes.Same}
+                 ### {cachingService.GetApplicationEmoji("attributes")} {Messages.Xiv.Attributes.Same}
                  ```
                  {CreateLine(CharacterAttribute.Strength.GetDisplayName(), character.Attributes[CharacterAttribute.Strength].ToString())}
                  {CreateLine(CharacterAttribute.Dexterity.GetDisplayName(), character.Attributes[CharacterAttribute.Dexterity].ToString())}
@@ -82,7 +82,7 @@ internal class CharacterAttributesService(
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("offensiveProperties")} {Messages.Ffxiv.Attributes.OffensiveProperties}
+                 ### {cachingService.GetApplicationEmoji("offensiveProperties")} {Messages.Xiv.Attributes.OffensiveProperties}
                  ```
                  {CreateLine(CharacterAttribute.CriticalHitRate.GetDisplayName(), character.Attributes[CharacterAttribute.CriticalHitRate].ToString())}
                  {CreateLine(CharacterAttribute.Determination.GetDisplayName(), character.Attributes[CharacterAttribute.Determination].ToString())}
@@ -92,7 +92,7 @@ internal class CharacterAttributesService(
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("defensiveProperties")} {Messages.Ffxiv.Attributes.DefensiveProperties}
+                 ### {cachingService.GetApplicationEmoji("defensiveProperties")} {Messages.Xiv.Attributes.DefensiveProperties}
                  ```
                  {CreateLine(CharacterAttribute.Defense.GetDisplayName(), character.Attributes[CharacterAttribute.Defense].ToString())}
                  {CreateLine(CharacterAttribute.MagicDefense.GetDisplayName(), character.Attributes[CharacterAttribute.MagicDefense].ToString())}
@@ -101,7 +101,7 @@ internal class CharacterAttributesService(
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("physicalProperties")} {Messages.Ffxiv.Attributes.PhysicalProperties}
+                 ### {cachingService.GetApplicationEmoji("physicalProperties")} {Messages.Xiv.Attributes.PhysicalProperties}
                  ```
                  {CreateLine(CharacterAttribute.AttackPower.GetDisplayName(), character.Attributes[CharacterAttribute.AttackPower].ToString())}
                  {CreateLine(CharacterAttribute.SkillSpeed.GetDisplayName(), character.Attributes[CharacterAttribute.SkillSpeed].ToString())}
@@ -114,7 +114,7 @@ internal class CharacterAttributesService(
         {
             c.Add(new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("crafting")} {Messages.Ffxiv.Attributes.Crafting}
+                 ### {cachingService.GetApplicationEmoji("crafting")} {Messages.Xiv.Attributes.Crafting}
                  ```
                  {CreateLine(CharacterAttribute.Craftsmanship.GetDisplayName(), character.Attributes[CharacterAttribute.Craftsmanship].ToString())}
                  {CreateLine(CharacterAttribute.Control.GetDisplayName(), character.Attributes[CharacterAttribute.Control].ToString())}
@@ -125,7 +125,7 @@ internal class CharacterAttributesService(
         {
             c.Add(new DiscordTextDisplayComponent(
                 $"""
-                 ### {cachingService.GetApplicationEmoji("gathering")} {Messages.Ffxiv.Attributes.Gathering}
+                 ### {cachingService.GetApplicationEmoji("gathering")} {Messages.Xiv.Attributes.Gathering}
                  ```
                  {CreateLine(CharacterAttribute.Gathering.GetDisplayName(), character.Attributes[CharacterAttribute.Gathering].ToString())}
                  {CreateLine(CharacterAttribute.Perception.GetDisplayName(), character.Attributes[CharacterAttribute.Perception].ToString())}
@@ -136,7 +136,7 @@ internal class CharacterAttributesService(
         {
             c.AddRange(new DiscordTextDisplayComponent(
                     $"""
-                     ### {cachingService.GetApplicationEmoji("mentalProperties")} {Messages.Ffxiv.Attributes.MentalProperties}
+                     ### {cachingService.GetApplicationEmoji("mentalProperties")} {Messages.Xiv.Attributes.MentalProperties}
                      ```
                      {CreateLine(CharacterAttribute.AttackMagicPotency.GetDisplayName(), character.Attributes[CharacterAttribute.AttackMagicPotency].ToString())}
                      {CreateLine(CharacterAttribute.HealingMagicPotency.GetDisplayName(), character.Attributes[CharacterAttribute.HealingMagicPotency].ToString())}
@@ -146,7 +146,7 @@ internal class CharacterAttributesService(
                 new DiscordSeparatorComponent(),
                 new DiscordTextDisplayComponent(
                     $"""
-                     ### {cachingService.GetApplicationEmoji("role")} {Messages.Ffxiv.Attributes.Role}
+                     ### {cachingService.GetApplicationEmoji("role")} {Messages.Xiv.Attributes.Role}
                      ```
                      {CreateLine(CharacterAttribute.Tenacity.GetDisplayName(), character.Attributes[CharacterAttribute.Tenacity].ToString())}
                      {CreateLine(CharacterAttribute.Piety.GetDisplayName(), character.Attributes[CharacterAttribute.Piety].ToString())}
@@ -156,9 +156,9 @@ internal class CharacterAttributesService(
                 new DiscordSeparatorComponent(),
                 new DiscordTextDisplayComponent(
                     $"""
-                     ### {cachingService.GetApplicationEmoji("gear")} {Messages.Ffxiv.Attributes.Gear}
+                     ### {cachingService.GetApplicationEmoji("gear")} {Messages.Xiv.Attributes.Gear}
                      ```
-                     {CreateLine(Messages.Ffxiv.Attributes.AverageItemLevel, character.Gear.GetAvarageItemLevel().ToString())}
+                     {CreateLine(Messages.Xiv.Attributes.AverageItemLevel, character.Gear.GetAvarageItemLevel().ToString())}
                      ```
                      """)
             );
