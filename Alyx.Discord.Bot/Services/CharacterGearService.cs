@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Enums;
+using NetStone.Common.Exceptions;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
@@ -102,6 +103,19 @@ internal class CharacterGearService(
             }
         }
 
+        if (character.FallbackUsed)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+            c.Add(new DiscordTextDisplayComponent(
+                $"""
+                 {Messages.Other.RefreshFailed}
+                 -# {Messages.Other.RefreshFailedDescription}
+                 -# {CreateFallbackMessage(character.FallbackReason)}
+                 """
+            ));
+        }
+
         return c;
     }
 
@@ -149,5 +163,17 @@ internal class CharacterGearService(
     {
         var id = await interactionDataService.AddDataAsync(character.Id, ComponentIds.Button.CharacterGear);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentGear);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? Messages.Other.ServiceUnavailableDescription
+            : fallbackReason;
     }
 }

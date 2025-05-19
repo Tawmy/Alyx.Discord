@@ -341,6 +341,8 @@ internal static class Messages
 
         public const string ServiceUnavailableTitle = "Retrieving data failed";
         public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
+        public const string RefreshFailed = "Refreshing Data Failed";
+        public const string RefreshFailedDescription = "Refreshing data from the Lodestone failed.";
     }
 
     public static class Xiv

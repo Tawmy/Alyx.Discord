@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
+using NetStone.Common.Exceptions;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
@@ -138,6 +139,19 @@ internal class FreeCompanyService(
             }
         }
 
+        if (fc.FallbackUsed)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+            c.Add(new DiscordTextDisplayComponent(
+                $"""
+                 {Messages.Other.RefreshFailed}
+                 -# {Messages.Other.RefreshFailedDescription}
+                 -# {CreateFallbackMessage(fc.FallbackReason)}
+                 """
+            ));
+        }
+
         return c;
     }
 
@@ -169,5 +183,17 @@ internal class FreeCompanyService(
     {
         var link = $"https://eu.finalfantasyxiv.com/lodestone/freecompany/{fc.Id}/member";
         return new DiscordLinkButtonComponent(link, Messages.Buttons.FreeCompanyMembers);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? Messages.Other.ServiceUnavailableDescription
+            : fallbackReason;
     }
 }
