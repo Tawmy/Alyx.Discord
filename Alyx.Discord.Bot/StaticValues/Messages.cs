@@ -365,5 +365,6 @@ internal static class Messages
     public static class FileNames
     {
         public const string Crest = "crest";
+        public const string Copypasta = "haveyouheard";
     }
 }
