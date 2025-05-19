@@ -8,11 +8,12 @@ using MediatR;
 using NetStone.Api.Sdk;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Extensions;
 
-internal static class BaseDiscordMessageBuilderExtension
+internal static class BaseDiscordMessageBuilderExtensions
 {
     public static T AddError<T>(this BaseDiscordMessageBuilder<T> builder, string description, string? title = null)
         where T : BaseDiscordMessageBuilder<T>
@@ -122,6 +123,17 @@ internal static class BaseDiscordMessageBuilderExtension
         }
 
         await followupTask(builder);
+    }
+
+    public static async Task<MemoryStream> AddImageAsync<T>(this BaseDiscordMessageBuilder<T> builder, Image image,
+        string fileName, CancellationToken cancellationToken = default) where T : BaseDiscordMessageBuilder<T>
+    {
+        var stream = new MemoryStream();
+        await image.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
+        var fileNameWithExtension = $"{fileName}.webp";
+        builder.AddFile(fileNameWithExtension, stream);
+        return stream;
     }
 
     #region CreateSheetAndSendFollowupAsync

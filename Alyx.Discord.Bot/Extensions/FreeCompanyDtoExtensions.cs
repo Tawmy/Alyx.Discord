@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using NetStone.Common.DTOs.FreeCompany;
@@ -18,6 +19,6 @@ internal static class FreeCompanyDtoExtensions
                  {fc.Tag}
                  -# {Formatter.Emoji(homeWorldEmoji)} {fc.World}
                  """),
-            new DiscordThumbnailComponent("attachment://crest.webp"));
+            new DiscordThumbnailComponent($"attachment://{Messages.FileNames.Crest}.webp"));
     }
 }

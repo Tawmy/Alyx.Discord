@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NetStone.Api.Sdk;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.FreeCompany.Get;
 
@@ -68,10 +67,7 @@ internal class FreeCompanyGetRequestHandler(
             builder.AddContainerComponent(container);
 
             var crest = await first.CrestLayers.DownloadCrestAsync(httpClient);
-            using var stream = new MemoryStream();
-            await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-            stream.Seek(0, SeekOrigin.Begin);
-            builder.AddFile("crest.webp", stream);
+            await using var _ = await builder.AddImageAsync(crest, Messages.FileNames.Crest, cancellationToken);
 
             await request.Ctx.RespondAsync(builder);
 
@@ -102,10 +98,7 @@ internal class FreeCompanyGetRequestHandler(
         builder.AddContainerComponent(container);
 
         var crest = await freeCompany.CrestLayers.DownloadCrestAsync(httpClient);
-        using var stream = new MemoryStream();
-        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
-        builder.AddFile("crest.webp", stream);
+        await using var _ = await builder.AddImageAsync(crest, Messages.FileNames.Crest, cancellationToken);
 
         await request.Ctx.RespondAsync(builder);
 

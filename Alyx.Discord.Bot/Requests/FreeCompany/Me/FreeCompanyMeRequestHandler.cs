@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.FreeCompany.Me;
 
@@ -68,14 +67,11 @@ internal class FreeCompanyMeRequestHandler(
         var container = await fcService.CreateContainerAsync(mainCharacter.FreeCompany.Id,
             cancellationToken: cancellationToken);
 
-        var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
-        using var stream = new MemoryStream();
-        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
+        var builder = new DiscordFollowupMessageBuilder().EnableV2Components().AddContainerComponent(container);
 
-        await request.Ctx.RespondAsync(new DiscordFollowupMessageBuilder()
-            .EnableV2Components()
-            .AddFile("crest.webp", stream)
-            .AddContainerComponent(container));
+        var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
+        await using var _ = await builder.AddImageAsync(crest, Messages.FileNames.Crest, cancellationToken);
+
+        await request.Ctx.RespondAsync(builder);
     }
 }

@@ -9,7 +9,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.FreeCompany;
-using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
@@ -43,10 +42,7 @@ internal class ButtonCharacterSheetFreeCompanyHandler(
         var builder = new DiscordWebhookBuilder().EnableV2Components().AddContainerComponent(container);
 
         var crest = await freeCompany.CrestLayers.DownloadCrestAsync(httpClient);
-        using var stream = new MemoryStream();
-        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        stream.Seek(0, SeekOrigin.Begin);
-        builder.AddFile("crest.webp", stream);
+        await using var _ = await builder.AddImageAsync(crest, Messages.FileNames.Crest, cancellationToken);
 
         await args.Interaction.EditOriginalResponseAsync(builder);
     }

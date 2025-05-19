@@ -361,4 +361,9 @@ internal static class Messages
             public const string AverageItemLevel = "Average Item Level";
         }
     }
+
+    public static class FileNames
+    {
+        public const string Crest = "crest";
+    }
 }
