@@ -1,6 +1,5 @@
 using NetStone.Common.DTOs.FreeCompany;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace Alyx.Discord.Core.Extensions;
@@ -12,17 +11,42 @@ public static class FreeCompanyCrestDtoExtensions
         // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
         // TODO allow 128px crest size.
 
-        var dataTopLayer = await httpClient.GetByteArrayAsync(crest.TopLayer);
-        var dataMiddleLayer = await httpClient.GetByteArrayAsync(crest.MiddleLayer);
-        var dataBottomLayer = await httpClient.GetByteArrayAsync(crest.BottomLayer);
+        List<string> layerUrls = [];
 
-        var topLayer = Image.Load<Rgba32>(dataTopLayer);
-        var middleLayer = Image.Load<Rgba32>(dataMiddleLayer);
-        var bottomLayer = Image.Load<Rgba32>(dataBottomLayer);
+        if (!string.IsNullOrEmpty(crest.BottomLayer))
+        {
+            layerUrls.Add(crest.BottomLayer);
+        }
 
-        bottomLayer.Mutate(x => x.DrawImage(middleLayer, 1));
-        bottomLayer.Mutate(x => x.DrawImage(topLayer, 1));
+        if (!string.IsNullOrEmpty(crest.MiddleLayer))
+        {
+            layerUrls.Add(crest.MiddleLayer);
+        }
 
-        return bottomLayer;
+        if (!string.IsNullOrEmpty(crest.TopLayer))
+        {
+            layerUrls.Add(crest.TopLayer);
+        }
+
+        List<byte[]> layerByteArrays = [];
+
+        foreach (var layerUrl in layerUrls)
+        {
+            layerByteArrays.Add(await httpClient.GetByteArrayAsync(layerUrl));
+        }
+
+        List<Image> layerImages = [];
+
+        foreach (var layerByteArray in layerByteArrays)
+        {
+            layerImages.Add(Image.Load(layerByteArray));
+        }
+
+        foreach (var image in layerImages.Skip(1))
+        {
+            layerImages[0].Mutate(x => x.DrawImage(image, 1));
+        }
+
+        return layerImages[0];
     }
 }
