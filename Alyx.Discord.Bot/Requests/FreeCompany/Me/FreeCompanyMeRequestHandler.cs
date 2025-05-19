@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
+using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using DSharpPlus.Entities;
@@ -9,13 +10,15 @@ using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.FreeCompany.Me;
 
 internal class FreeCompanyMeRequestHandler(
     ISender sender,
     [FromKeyedServices(FreeCompanyService.Key)]
-    IDiscordContainerService<FreeCompanyDtoV3> fcService) : IRequestHandler<FreeCompanyMeRequest>
+    IDiscordContainerService<FreeCompanyDtoV3> fcService,
+    HttpClient httpClient) : IRequestHandler<FreeCompanyMeRequest>
 {
     public async Task Handle(FreeCompanyMeRequest request, CancellationToken cancellationToken)
     {
@@ -65,16 +68,14 @@ internal class FreeCompanyMeRequestHandler(
         var container = await fcService.CreateContainerAsync(mainCharacter.FreeCompany.Id,
             cancellationToken: cancellationToken);
 
-        // https://github.com/discord/discord-api-docs/issues/7529
-        // TODO get full crest once Discord bug fixed
-        // var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
-        // using var stream = new MemoryStream();
-        // await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
-        // stream.Seek(0, SeekOrigin.Begin);
+        var crest = await mainCharacter.FreeCompany.IconLayers.DownloadCrestAsync(httpClient);
+        using var stream = new MemoryStream();
+        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
 
         await request.Ctx.RespondAsync(new DiscordFollowupMessageBuilder()
             .EnableV2Components()
-            // .AddFile("crest.webp", stream)
+            .AddFile("crest.webp", stream)
             .AddContainerComponent(container));
     }
 }

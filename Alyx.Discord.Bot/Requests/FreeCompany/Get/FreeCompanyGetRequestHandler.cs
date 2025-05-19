@@ -1,6 +1,7 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
+using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompanyByName;
 using Alyx.Discord.Core.Requests.FreeCompany.Search;
 using Alyx.Discord.Core.Requests.OptionHistory.Add;
@@ -11,11 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using NetStone.Api.Sdk;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Exceptions;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Alyx.Discord.Bot.Requests.FreeCompany.Get;
 
 internal class FreeCompanyGetRequestHandler(
     ISender sender,
+    HttpClient httpClient,
     [FromKeyedServices("fc")] IDiscordContainerService<FreeCompanyDtoV3> fcService)
     : IRequestHandler<FreeCompanyGetRequest>
 {
@@ -63,7 +66,14 @@ internal class FreeCompanyGetRequestHandler(
 
             var container = await fcService.CreateContainerAsync(first.Id, cancellationToken: cancellationToken);
             builder.AddContainerComponent(container);
-            await request.Ctx.FollowupAsync(builder);
+
+            var crest = await first.CrestLayers.DownloadCrestAsync(httpClient);
+            using var stream = new MemoryStream();
+            await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+            stream.Seek(0, SeekOrigin.Begin);
+            builder.AddFile("crest.webp", stream);
+
+            await request.Ctx.RespondAsync(builder);
 
             // cache recent search for discord user
             await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.FreeCompany, first.Name),
@@ -90,7 +100,14 @@ internal class FreeCompanyGetRequestHandler(
 
         var container = await fcService.CreateContainerAsync(freeCompany, cancellationToken);
         builder.AddContainerComponent(container);
-        await request.Ctx.FollowupAsync(builder);
+
+        var crest = await freeCompany.CrestLayers.DownloadCrestAsync(httpClient);
+        using var stream = new MemoryStream();
+        await crest.SaveAsync(stream, new WebpEncoder(), cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
+        builder.AddFile("crest.webp", stream);
+
+        await request.Ctx.RespondAsync(builder);
 
         // cache recent search for discord user
         await sender.Send(new OptionHistoryAddRequest(request.Ctx.User.Id, HistoryType.FreeCompany, freeCompany.Name),
