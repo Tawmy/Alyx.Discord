@@ -12,11 +12,6 @@ services:
     environment:
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
       STATUS_MESSAGE: "New: Protected from Lodestone outages!"
-      NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
-      NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
-      NETSTONE_MAX_AGE_MINIONS: "1080" # 18 hours
-      NETSTONE_MAX_AGE_MOUNTS: "1080" # 18 hours
-      NETSTONE_MAX_FREE_COMPANY: "10080" # one week
     volumes:
       - /root/cert/alyx-discord:/mnt/cert
     networks:
