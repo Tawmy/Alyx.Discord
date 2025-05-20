@@ -18,10 +18,10 @@ namespace Alyx.Discord.Db.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "history_type", new[] { "character" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "history_type", new[] { "character", "free_company" });
             NpgsqlModelBuilderExtensions.UseIdentityAlwaysColumns(modelBuilder);
 
             modelBuilder.Entity("Alyx.Discord.Db.Models.Character", b =>
@@ -87,10 +87,9 @@ namespace Alyx.Discord.Db.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character(32)")
-                        .HasColumnName("key")
-                        .IsFixedLength();
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("key");
 
                     b.Property<string>("Type")
                         .IsRequired()

@@ -8,6 +8,8 @@ using Alyx.Discord.Core.Requests.Character.SetLastForceRefresh;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
 using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
@@ -15,7 +17,8 @@ namespace Alyx.Discord.Bot.Requests.Character.Gear.Me;
 internal class CharacterGearMeRequestHandler(
     ISender sender,
     AlyxConfiguration alyxConfiguration,
-    CharacterGearService gearService) : IRequestHandler<CharacterGearMeRequest>
+    [FromKeyedServices(CharacterGearService.Key)]
+    IDiscordContainerService<CharacterDto> gearService) : IRequestHandler<CharacterGearMeRequest>
 {
     public async Task Handle(CharacterGearMeRequest request, CancellationToken cancellationToken)
     {
@@ -56,8 +59,7 @@ internal class CharacterGearMeRequestHandler(
 
         await request.Ctx.DeferResponseAsync(request.IsPrivate);
 
-        var container =
-            await gearService.CreateGearContainerAsync(lodestoneId, request.ForceRefresh, cancellationToken);
+        var container = await gearService.CreateContainerAsync(lodestoneId, request.ForceRefresh, cancellationToken);
         await request.Ctx.FollowupAsync(new DiscordFollowupMessageBuilder().EnableV2Components()
             .AddContainerComponent(container));
 

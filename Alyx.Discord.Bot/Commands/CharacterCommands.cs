@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using Alyx.Discord.Bot.AutoCompleteProviders;
+using Alyx.Discord.Bot.Requests.Character.Attributes.Get;
+using Alyx.Discord.Bot.Requests.Character.Attributes.Me;
 using Alyx.Discord.Bot.Requests.Character.Claim;
 using Alyx.Discord.Bot.Requests.Character.Gear.Get;
 using Alyx.Discord.Bot.Requests.Character.Gear.Me;
@@ -94,6 +96,36 @@ internal class CharacterCommands(ISender sender)
             bool isPrivate = false)
         {
             return sender.Send(new CharacterGearMeRequest(ctx, forceRefresh, isPrivate));
+        }
+    }
+
+    [Command("attributes")]
+    internal class Attributes(ISender sender)
+    {
+        [Command("get")]
+        [Description(Messages.Commands.Character.Attributes.AttributesGet.Description)]
+        public Task GetAsync(SlashCommandContext ctx,
+            [SlashAutoCompleteProvider<CharacterAutoCompleteProvider>]
+            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            string name,
+            [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
+            [Description(Messages.Commands.Parameters.CharacterWorld)]
+            string world,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterAttributesGetRequest(ctx, name, world, isPrivate));
+        }
+
+        [Command("me")]
+        [Description(Messages.Commands.Character.Attributes.AttributesMe.Description)]
+        public Task MeAsync(SlashCommandContext ctx,
+            [Description(Messages.Commands.Parameters.ForceRefresh)]
+            bool forceRefresh = false,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterAttributesMeRequest(ctx, forceRefresh, isPrivate));
         }
     }
 }

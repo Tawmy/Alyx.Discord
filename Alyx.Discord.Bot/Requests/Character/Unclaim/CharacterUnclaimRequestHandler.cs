@@ -38,7 +38,7 @@ internal class CharacterUnclaimRequestHandler(ISender sender, CachingService cac
         await request.Ctx.FollowupAsync(builder);
     }
 
-    private DiscordFollowupMessageBuilder CreateConfirmationBuiler(CharacterDtoV3 character)
+    private DiscordFollowupMessageBuilder CreateConfirmationBuiler(CharacterDto character)
     {
         var builder = new DiscordFollowupMessageBuilder().EnableV2Components();
         builder.AddContainerComponent(new DiscordContainerComponent([

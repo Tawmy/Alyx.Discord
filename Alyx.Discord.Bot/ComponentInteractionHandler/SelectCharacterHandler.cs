@@ -10,8 +10,7 @@ namespace Alyx.Discord.Bot.ComponentInteractionHandler;
 
 internal class SelectCharacterHandler(
     ISender sender,
-    IInteractionDataService interactionDataService)
-    : IComponentInteractionHandler
+    IInteractionDataService interactionDataService) : IComponentInteractionHandler
 {
     public async Task HandleAsync(DiscordClient discordClient, ComponentInteractionCreatedEventArgs args,
         string? dataId, IReadOnlyDictionary<ulong, Command> commands, CancellationToken cancellationToken = default)
@@ -19,9 +18,9 @@ internal class SelectCharacterHandler(
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
 
-        var builder = new DiscordFollowupMessageBuilder();
+        var builder = new DiscordWebhookBuilder();
         await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, selectedLodestoneId, false,
-            async b => await args.Interaction.CreateFollowupMessageAsync((DiscordFollowupMessageBuilder)b),
+            async b => await args.Interaction.EditOriginalResponseAsync((DiscordWebhookBuilder)b),
             cancellationToken);
     }
 }

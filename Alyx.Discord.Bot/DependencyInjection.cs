@@ -14,6 +14,8 @@ using DSharpPlus.Commands.Processors.UserCommands;
 using DSharpPlus.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetStone.Common.DTOs.Character;
+using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
@@ -28,7 +30,9 @@ public static class DependencyInjection
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddSingleton<CharacterGearService>();
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>("gear");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>("attributes");
+        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>("fc");
 
         services.AddMediatR(cfg =>
         {
@@ -52,6 +56,7 @@ public static class DependencyInjection
 
                 x.AddCommands<GeneralCommands>();
                 x.AddCommands<CharacterCommands>();
+                x.AddCommands<FreeCompanyCommands>();
                 x.AddCommands<FfxivCommands>();
 
                 // using generic type does not work if class isn't a command
@@ -75,13 +80,28 @@ public static class DependencyInjection
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterHandler>(ComponentIds.Select.Character);
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForGearHandler>(ComponentIds.Select
             .CharacterForGear);
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForAttributesHandler>(ComponentIds.Select
+            .CharacterForAttributes);
+
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectFreeCompanyHandler>(ComponentIds.Select
+            .FreeCompany);
 
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmClaimHandler>(ComponentIds.Button
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
             .ConfirmUnclaim);
-        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetGearHandler>(ComponentIds.Button
             .CharacterSheetGear);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button
+            .CharacterSheetAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetFreeCompanyHandler>(ComponentIds
+            .Button.CharacterSheetFreeCompany);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
+            .CharacterGear);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
+            .CharacterAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonFreeCompanyHandler>(ComponentIds.Button
+            .CharacterFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button
             .CharacterSheetMetadata);
     }

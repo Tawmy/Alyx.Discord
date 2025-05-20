@@ -27,6 +27,14 @@ internal static class Messages
                 "Character name. Options above show your recent searches.";
 
             public const string CharacterWorld = "Character's home world.";
+
+            public const string FreeCompanyName = "Free Company name.";
+
+            public const string FreeCompanyNameWithCompletion =
+                "Free Company name. Options above show your recent searches.";
+
+            public const string FreeCompanyWorld = "Free Company's home world.";
+
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
         }
@@ -62,7 +70,16 @@ internal static class Messages
 
                 public static string CharacterNotFound(string name, string world)
                 {
-                    return $"Could not find {name} on {world}.";
+                    return $"Could not find **{name}** on **{world}**.";
+                }
+
+                public static string CharacterNotFoundInCache(string name, string world)
+                {
+                    return $"""
+                            {CharacterNotFound(name, world)}
+
+                            Search is unavailable (is the Lodestone down?), and this character was not searched for before. It cannot be loaded from the cache.
+                            """;
                 }
             }
 
@@ -98,6 +115,19 @@ internal static class Messages
                 public static class GearMe
                 {
                     public const string Description = "Get information about your character's gear.";
+                }
+            }
+
+            public static class Attributes
+            {
+                public static class AttributesGet
+                {
+                    public const string Description = "Get a character's attributes.";
+                }
+
+                public static class AttributesMe
+                {
+                    public const string Description = "Get your character's attributes.";
                 }
             }
 
@@ -196,6 +226,40 @@ internal static class Messages
             }
         }
 
+        public static class FreeCompany
+        {
+            public static class Get
+            {
+                public const string Description = "Get information about a free company.";
+
+                public static string FreeCompanyNotFound(string name, string world)
+                {
+                    return $"Could not find **{name}** on **{world}**.";
+                }
+
+                public static string FreeCompanyNotFoundInCache(string name, string world)
+                {
+                    return $"""
+                            {FreeCompanyNotFound(name, world)}
+
+                            Search is unavailable (is the Lodestone down?), and this free company was not searched for before. It cannot be loaded from the cache.
+                            """;
+                }
+            }
+
+            public static class Me
+            {
+                public const string Description = "Get information about your free company.";
+
+                public const string MainCharacterNotInFreeCompanyTitle = "No Free Company";
+
+                public static string MainCharacterNotInFreeCompanyDescription(string name, string world)
+                {
+                    return $"Your main character **{name}** ({world}) is not a member of a free company.";
+                }
+            }
+        }
+
         public static class Ffxiv
         {
             public static class Copypasta
@@ -236,11 +300,18 @@ internal static class Messages
 
     public static class InteractionData
     {
-        public const string NotPersisted = """
-                                           Data for this interaction has already been cleared. Please start over and run the command again.
+        public const string NotPersisted =
+            """
+            Data for this interaction has already been cleared. Please start over and run the command again.
 
-                                           This error should never show up for commands run from version 1.3.0 onwards.
-                                           """;
+            This error should never show up for commands run from version 1.3.0 onwards.
+            """;
+
+        public static string CachedFromSheet(string item, bool plural = false)
+        {
+            return
+                $"{item} {(plural ? "are" : "is")} from character sheet. {(plural ? "They" : "It")} might be outdated.";
+        }
     }
 
     public static class Buttons
@@ -251,13 +322,49 @@ internal static class Messages
         public const string ConfirmUnclaim = "Confirm Unclaim";
         public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Gear = "Gear";
+        public const string Attributes = "Attributes";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
+        public const string FreeCompany = "Free Company";
+        public const string FreeCompanyMembers = "Members";
+        public const string CurrentGear = "Show current gear";
+        public const string CurrentAttributes = "Show current attributes";
+        public const string CurrentFreeCompany = "Show current Free Company";
     }
 
     public static class Other
     {
+        public const string NetStoneApiServerErrorTitle = "Parsing failed";
+
+        public const string NetStoneApiServerErrorDescription =
+            "The parser failed unexpectedly. Please try again later.";
+
         public const string ServiceUnavailableTitle = "Retrieving data failed";
         public const string ServiceUnavailableDescription = "Profile set to private or Lodestone under maintenance.";
+        public const string RefreshFailed = "Refreshing Data Failed";
+        public const string RefreshFailedDescription = "Refreshing data from the Lodestone failed.";
+    }
+
+    public static class Xiv
+    {
+        public static class Attributes
+        {
+            public const string Same = "Attributes";
+            public const string OffensiveProperties = "Offensive Properties";
+            public const string DefensiveProperties = "Defensive Properties";
+            public const string PhysicalProperties = "Physical Properties";
+            public const string Crafting = "Crafting";
+            public const string Gathering = "Gathering";
+            public const string MentalProperties = "Mental Properties";
+            public const string Role = "Role";
+            public const string Gear = "Gear";
+            public const string AverageItemLevel = "Average Item Level";
+        }
+    }
+
+    public static class FileNames
+    {
+        public const string Crest = "crest";
+        public const string Copypasta = "haveyouheard";
     }
 }

@@ -1,5 +1,6 @@
 using System.Numerics;
 using Alyx.Discord.Core.Enums;
+using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.StaticValues;
 using Alyx.Discord.Core.Structs;
 using NetStone.Common.DTOs.Character;
@@ -30,11 +31,11 @@ internal class CharacterSheetService
         _image = _externalResourceService.GetCharacterSheetImage(CharacterSheetImage.TemplateBase);
     }
 
-    public async Task<Image> CreateCharacterSheetAsync(CharacterDtoV3 character,
-        CharacterClassJobOuterDtoV3? classJobs = null,
-        CollectionDtoV3<CharacterMinionDto>? minions = null,
-        CollectionDtoV3<CharacterMountDto>? mounts = null,
-        FreeCompanyDtoV3? freeCompany = null)
+    public async Task<Image> CreateCharacterSheetAsync(CharacterDto character,
+        CharacterClassJobOuterDto? classJobs = null,
+        CollectionDto<CharacterMinionDto>? minions = null,
+        CollectionDto<CharacterMountDto>? mounts = null,
+        FreeCompanyDto? freeCompany = null)
     {
         await AddCharacterPortraitAsync(character);
         AddPortraitFrame();
@@ -76,7 +77,7 @@ internal class CharacterSheetService
         return _image;
     }
 
-    private async Task AddCharacterPortraitAsync(CharacterDtoV3 character)
+    private async Task AddCharacterPortraitAsync(CharacterDto character)
     {
         // get portrait as byte[]
         var result = await _httpClient.GetByteArrayAsync(character.Portrait);
@@ -102,7 +103,7 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
-    private void AddJobIcon(CharacterDtoV3 character)
+    private void AddJobIcon(CharacterDto character)
     {
         var imgJob = _externalResourceService.GetJobIcon(character.ActiveClassJob);
         if (imgJob.Width > 64)
@@ -120,7 +121,7 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
-    private void AddActiveJobLevel(CharacterDtoV3 character)
+    private void AddActiveJobLevel(CharacterDto character)
     {
         var circle = new EllipsePolygon(CharacterSheetCoordinates.Other.ActiveJobLevelBackground,
             CharacterSheetValues.ActiveJobLevelRadius);
@@ -141,7 +142,7 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(textOptions, text, Color.White));
     }
 
-    private void AddCharacterName(CharacterDtoV3 character)
+    private void AddCharacterName(CharacterDto character)
     {
         var family = _externalResourceService.GetFontFamily(CharacterSheetFont.Vollkorn);
         var nameProperties = new NameProperties(character.Title);
@@ -177,7 +178,7 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(optionsTitle, character.Title!, Color.Black));
     }
 
-    private void AddHomeWorld(CharacterDtoV3 character)
+    private void AddHomeWorld(CharacterDto character)
     {
         var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeHomeWorld, FontStyle.Regular);
@@ -192,8 +193,8 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(options, character.Server, Color.White));
     }
 
-    private void AddILvlMinionsMounts(CharacterDtoV3 character, CollectionDtoV3<CharacterMinionDto>? minions,
-        CollectionDtoV3<CharacterMountDto>? mounts)
+    private void AddILvlMinionsMounts(CharacterDto character, CollectionDto<CharacterMinionDto>? minions,
+        CollectionDto<CharacterMountDto>? mounts)
     {
         var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(CharacterSheetValues.FontSizeMiMo, FontStyle.Regular);
@@ -226,7 +227,7 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawText(optionsMi, $"{minionsPercentage}%", Color.White));
     }
 
-    private void AddJobLevels(CharacterClassJobOuterDtoV3 classJobs)
+    private void AddJobLevels(CharacterClassJobOuterDto classJobs)
     {
         var family = _externalResourceService.GetFontFamily(CharacterSheetFont.OpenSans);
         var font = family.CreateFont(28, FontStyle.Regular);
@@ -256,7 +257,7 @@ internal class CharacterSheetService
         }
     }
 
-    private bool AddGrandCompany(CharacterDtoV3 character)
+    private bool AddGrandCompany(CharacterDto character)
     {
         if (character.GrandCompany == GrandCompany.NoAffiliation)
         {
@@ -313,14 +314,14 @@ internal class CharacterSheetService
         _image.Mutate(x => x.DrawImage(crest, coords, 1));
     }
 
-    private async Task<bool> AddFreeCompanyAsync(FreeCompanyDtoV3? freeCompany)
+    private async Task<bool> AddFreeCompanyAsync(FreeCompanyDto? freeCompany)
     {
         if (freeCompany is null)
         {
             return false;
         }
 
-        var crest = await DownloadFreeCompanyCrestAsync(freeCompany);
+        var crest = await freeCompany.CrestLayers.DownloadCrestAsync(_httpClient);
         crest.Mutate(x => x.Resize(CharacterSheetValues.DimensionsGcFcCrest, CharacterSheetValues.DimensionsGcFcCrest,
             KnownResamplers.Lanczos3));
         var fullName = $"{freeCompany.Name} {freeCompany.Tag}";
@@ -328,25 +329,7 @@ internal class CharacterSheetService
         return true;
     }
 
-    private async Task<Image> DownloadFreeCompanyCrestAsync(FreeCompanyDtoV3 freeCompany)
-    {
-        // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
-
-        var dataTopLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.TopLayer);
-        var dataMiddleLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.MiddleLayer);
-        var dataBottomLayer = await _httpClient.GetByteArrayAsync(freeCompany.CrestLayers.BottomLayer);
-
-        var topLayer = Image.Load<Rgba32>(dataTopLayer);
-        var middleLayer = Image.Load<Rgba32>(dataMiddleLayer);
-        var bottomLayer = Image.Load<Rgba32>(dataBottomLayer);
-
-        bottomLayer.Mutate(x => x.DrawImage(middleLayer, 1));
-        bottomLayer.Mutate(x => x.DrawImage(topLayer, 1));
-
-        return bottomLayer;
-    }
-
-    private void AddAttributes(CharacterDtoV3 character)
+    private void AddAttributes(CharacterDto character)
     {
         var attributes = character.ActiveClassJob.GetDisplayAttributes();
 
@@ -358,7 +341,7 @@ internal class CharacterSheetService
             false);
     }
 
-    private void PrintAttributes(CharacterDtoV3 character, Font font,
+    private void PrintAttributes(CharacterDto character, Font font,
         IEnumerable<CharacterAttribute> attributes, Point origin, bool primary)
     {
         var options = new RichTextOptions(font)

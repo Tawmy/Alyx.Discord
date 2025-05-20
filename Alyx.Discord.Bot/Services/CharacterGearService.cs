@@ -1,5 +1,7 @@
 using System.Text;
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using DSharpPlus;
@@ -7,25 +9,49 @@ using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Enums;
+using NetStone.Common.Exceptions;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
 
-internal class CharacterGearService(ISender sender, AlyxConfiguration config, CachingService cachingService)
+internal class CharacterGearService(
+    ISender sender,
+    AlyxConfiguration config,
+    CachingService cachingService,
+    IInteractionDataService interactionDataService)
+    : IDiscordContainerService<CharacterDto>
 {
-    public async Task<DiscordContainerComponent> CreateGearContainerAsync(string lodestoneId, bool forceRefresh = false,
+    public const string Key = "gear";
+
+    public async Task<DiscordContainerComponent> CreateContainerAsync(CharacterDto character,
+        CancellationToken cancellationToken = default)
+    {
+        return new DiscordContainerComponent(await CreateComponentsAsync(character, true));
+    }
+
+    public async Task<DiscordContainerComponent> CreateContainerAsync(string lodestoneId, bool forceRefresh = false,
+        CancellationToken cancellationToken = default)
+    {
+        var (container, _) = await RetrieveDataAndCreateContainerAsync(lodestoneId, forceRefresh, cancellationToken);
+        return container;
+    }
+
+    public async Task<(DiscordContainerComponent, CharacterDto)> RetrieveDataAndCreateContainerAsync(
+        string lodestoneId, bool forceRefresh = false,
         CancellationToken cancellationToken = default)
     {
         var maxAge = forceRefresh ? 0 : config.NetStone.MaxAgeCharacter;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAge), cancellationToken);
-        return new DiscordContainerComponent(CreateComponents(character));
+        var container = new DiscordContainerComponent(await CreateComponentsAsync(character, false));
+        return (container, character);
     }
 
-    private List<DiscordComponent> CreateComponents(CharacterDtoV3 character)
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(CharacterDto character, bool cachedFromSheet)
     {
         List<DiscordComponent> c =
         [
             character.ToSectionComponent(cachingService, true),
+            new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordTextDisplayComponent($"### Avg. Item Level: {character.Gear.GetAvarageItemLevel()}"),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large)
         ];
@@ -62,12 +88,41 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
 
         c.Add(CreateGearTextDisplayComponent(gear3));
 
-        c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
-
         if (character.LastUpdated is not null)
         {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}";
+
+            var maxAgeCharacter = TimeSpan.FromMinutes(config.NetStone.MaxAgeCharacter);
+            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
+            {
+                c.Add(new DiscordSectionComponent(
+                    new DiscordTextDisplayComponent(
+                        $"""
+                         -# {Messages.InteractionData.CachedFromSheet("Gear")}
+                         {lastUpdatedStr}
+                         """),
+                    await CreateCharacterGearButtonAsync(character)
+                ));
+            }
+            else
+            {
+                c.Add(new DiscordTextDisplayComponent(lastUpdatedStr));
+            }
+        }
+
+        if (character.FallbackUsed)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
             c.Add(new DiscordTextDisplayComponent(
-                $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}"));
+                $"""
+                 {Messages.Other.RefreshFailed}
+                 -# {Messages.Other.RefreshFailedDescription}
+                 -# {CreateFallbackMessage(character.FallbackReason)}
+                 """
+            ));
         }
 
         return c;
@@ -111,5 +166,23 @@ internal class CharacterGearService(ISender sender, AlyxConfiguration config, Ca
     {
         var gearStr = string.Join('\n', gears.Where(x => x is not null));
         return new DiscordTextDisplayComponent(gearStr);
+    }
+
+    private async Task<DiscordButtonComponent> CreateCharacterGearButtonAsync(CharacterDto character)
+    {
+        var id = await interactionDataService.AddDataAsync(character.Id, ComponentIds.Button.CharacterGear);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentGear);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? Messages.Other.ServiceUnavailableDescription
+            : fallbackReason;
     }
 }
