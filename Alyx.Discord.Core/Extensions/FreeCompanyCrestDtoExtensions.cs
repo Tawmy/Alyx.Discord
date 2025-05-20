@@ -8,24 +8,21 @@ public static class FreeCompanyCrestDtoExtensions
 {
     public static async Task<Image> DownloadCrestAsync(this FreeCompanyCrestDto crest, HttpClient httpClient)
     {
-        // TODO validate if free companies may skip one of these layers. If so, will prob throw exception.
-        // TODO allow 128px crest size.
-
         List<string> layerUrls = [];
 
         if (!string.IsNullOrEmpty(crest.BottomLayer))
         {
-            layerUrls.Add(crest.BottomLayer);
+            layerUrls.Add(GetHighestQualityLayerUrls(crest.BottomLayer));
         }
 
         if (!string.IsNullOrEmpty(crest.MiddleLayer))
         {
-            layerUrls.Add(crest.MiddleLayer);
+            layerUrls.Add(GetHighestQualityLayerUrls(crest.MiddleLayer));
         }
 
         if (!string.IsNullOrEmpty(crest.TopLayer))
         {
-            layerUrls.Add(crest.TopLayer);
+            layerUrls.Add(GetHighestQualityLayerUrls(crest.TopLayer));
         }
 
         List<byte[]> layerByteArrays = [];
@@ -48,5 +45,13 @@ public static class FreeCompanyCrestDtoExtensions
         }
 
         return layerImages[0];
+    }
+
+    private static string GetHighestQualityLayerUrls(string url)
+    {
+        return url.EndsWith("40x40.png", StringComparison.OrdinalIgnoreCase) ||
+               url.EndsWith("64x64.png", StringComparison.OrdinalIgnoreCase)
+            ? $"{url[..^9]}128x128.png"
+            : url;
     }
 }
