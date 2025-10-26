@@ -2,11 +2,12 @@ using Alyx.Discord.Db;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Alyx.Discord.Core.Requests.Character.SetLastForceRefresh;
+namespace Alyx.Discord.Core.Requests.Character.SetLastForceRefreshCharacter;
 
-public class SetLastForceRefreshRequestHandler(DatabaseContext context) : IRequestHandler<SetLastForceRefreshRequest>
+public class SetLastForceRefreshRequestCharacterHandler(DatabaseContext context)
+    : IRequestHandler<SetLastForceRefreshCharacterRequest>
 {
-    public async Task Handle(SetLastForceRefreshRequest request, CancellationToken cancellationToken)
+    public async Task Handle(SetLastForceRefreshCharacterRequest request, CancellationToken cancellationToken)
     {
         var character = await context.Characters.FirstAsync(x =>
             x.LodestoneId == request.LodestoneId && x.Confirmed, cancellationToken);

@@ -36,9 +36,11 @@ public class FreeCompanyCommands(ISender sender)
     [Command("me")]
     [Description(Messages.Commands.FreeCompany.Me.Description)]
     public Task MeAsync(SlashCommandContext ctx,
+        [Description(Messages.Commands.Parameters.ForceRefresh)]
+        bool forceRefresh = false,
         [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
         bool isPrivate = false)
     {
-        return sender.Send(new FreeCompanyMeRequest(ctx, isPrivate));
+        return sender.Send(new FreeCompanyMeRequest(ctx, forceRefresh, isPrivate));
     }
 }

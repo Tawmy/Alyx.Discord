@@ -257,6 +257,15 @@ internal static class Messages
                 {
                     return $"Your main character **{name}** ({world}) is not a member of a free company.";
                 }
+
+                public static string ForceRefreshErrorDescription(string lastRefresh, string allowedInRelative,
+                    string allowedInAbsolute)
+                {
+                    return $"""
+                            Last force refresh was {lastRefresh}.
+                            You can force refresh again {allowedInRelative}, at {allowedInAbsolute}.
+                            """;
+                }
             }
         }
 
