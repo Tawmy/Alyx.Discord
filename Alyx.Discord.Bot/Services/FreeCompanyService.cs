@@ -1,3 +1,4 @@
+using System.Text;
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
@@ -91,12 +92,19 @@ internal class FreeCompanyService(
 
         if (fc.RankingWeekly is not null || fc.RankingMonthly is not null)
         {
-            c.Add(new DiscordTextDisplayComponent(
-                $"""
-                 ### Ranking
-                 Weekly Rank: {fc.RankingWeekly}
-                 Monthly Rank: {fc.RankingMonthly}
-                 """));
+            var rankingBuilder = new StringBuilder("### Ranking\n");
+
+            if (fc.RankingWeekly is not null)
+            {
+                rankingBuilder.AppendLine($"Weekly Rank: {fc.RankingWeekly}");
+            }
+
+            if (fc.RankingMonthly is not null)
+            {
+                rankingBuilder.AppendLine($"Monthly Rank: {fc.RankingMonthly}");
+            }
+
+            c.Add(new DiscordTextDisplayComponent(rankingBuilder.ToString()));
             c.Add(new DiscordSeparatorComponent());
         }
 
