@@ -1,3 +1,4 @@
+using System.Text;
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
@@ -45,14 +46,20 @@ internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDat
 
         foreach (var entry in metadata)
         {
-            var message = $"{Formatter.Timestamp(entry.LastUpdated)}";
+            var message = new StringBuilder($"{Formatter.Timestamp(entry.LastUpdated)}\n");
+
+            if (entry.Duration != TimeSpan.Zero)
+            {
+                message.AppendLine($"Took {entry.Duration.TotalSeconds:F1} seconds");
+            }
+            
             if (entry.FallbackUsed)
             {
-                message += "\r*Cache Fallback*";
-                message += $"\r{new string(entry.FallbackReason?.Take(140).ToArray())}";
+                message.AppendLine("*Cache Fallback*");
+                message.AppendLine($"{new string(entry.FallbackReason?.Take(140).ToArray())}");
             }
 
-            builder.AddField(entry.Title, message, !entry.FallbackUsed);
+            builder.AddField(entry.Title, message.ToString(), !entry.FallbackUsed);
         }
 
         return builder.Build();
