@@ -7,6 +7,7 @@ using Alyx.Discord.Bot.Requests.Character.Gear.Get;
 using Alyx.Discord.Bot.Requests.Character.Gear.Me;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Requests.Character.Jobs.Get;
+using Alyx.Discord.Bot.Requests.Character.Jobs.Me;
 using Alyx.Discord.Bot.Requests.Character.Me;
 using Alyx.Discord.Bot.Requests.Character.Unclaim;
 using Alyx.Discord.Bot.Services.CharacterJobs;
@@ -149,6 +150,19 @@ internal class CharacterCommands(ISender sender)
             bool isPrivate = false)
         {
             return sender.Send(new CharacterJobsGetRequest(ctx, role, name, world, isPrivate));
+        }
+
+        [Command("me")]
+        [Description(Messages.Commands.Character.Jobs.JobsMe.Description)]
+        public Task MeAsync(SlashCommandContext ctx,
+            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            Role role,
+            [Description(Messages.Commands.Parameters.ForceRefresh)]
+            bool forceRefresh = false,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterJobsMeRequest(ctx, role, forceRefresh, isPrivate));
         }
     }
 }
