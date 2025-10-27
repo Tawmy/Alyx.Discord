@@ -347,12 +347,18 @@ internal static class Messages
         public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Gear = "Gear";
         public const string Attributes = "Attributes";
+        public const string ClassJobsTanksHealers = "Tanks & Healers";
+        public const string ClassJobsDpsMelee = "Melee DPS";
+        public const string ClassJobsDpsRanged = "Ranged DPS (Physical & Magical)";
+        public const string ClassJobsDiscipleHand = "Disciples of the Hand";
+        public const string ClassJobsDiscipleLand = "Disciples of the Land";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
         public const string FreeCompany = "Free Company";
         public const string FreeCompanyMembers = "Members";
         public const string CurrentGear = "Show current gear";
         public const string CurrentAttributes = "Show current attributes";
+        public const string CurrentJobs = "Show current jobs";
         public const string CurrentFreeCompany = "Show current Free Company";
     }
 

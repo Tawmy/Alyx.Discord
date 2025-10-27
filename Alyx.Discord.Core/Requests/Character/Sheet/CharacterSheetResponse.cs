@@ -1,4 +1,4 @@
-using Alyx.Discord.Core.Structs;
+using Alyx.Discord.Core.Records;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
 using SixLabors.ImageSharp;
@@ -11,4 +11,5 @@ public record CharacterSheetResponse(
     bool MinionsPublic,
     bool MountsPublic,
     CharacterDto Character,
+    CharacterClassJobOuterDto ClassJobs,
     FreeCompanyDto? FreeCompany);

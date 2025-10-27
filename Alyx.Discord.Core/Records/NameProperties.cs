@@ -1,4 +1,4 @@
-namespace Alyx.Discord.Core.Structs;
+namespace Alyx.Discord.Core.Records;
 
 internal readonly record struct NameProperties
 {

@@ -1,4 +1,4 @@
-using Alyx.Discord.Core.Structs;
+using Alyx.Discord.Core.Records;
 using Alyx.Discord.Db;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

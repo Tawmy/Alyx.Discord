@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Alyx.Discord.Core.Configuration;
+using Alyx.Discord.Core.Records;
 using Alyx.Discord.Core.Services;
-using Alyx.Discord.Core.Structs;
 using MediatR;
 using NetStone.Api.Sdk.Abstractions;
 using NetStone.Common.DTOs.FreeCompany;
@@ -127,7 +127,7 @@ internal class CharacterSheetRequestHandler(
         }
 
         return new CharacterSheetResponse(image, metadata, !taskMinions.IsFaulted, !taskMounts.IsFaulted,
-            taskCharacter.Result, freeCompany);
+            taskCharacter.Result, taskClassJobs.Result, freeCompany);
     }
 
     private static string? CreateFallbackMessage(string? fallbackReason)

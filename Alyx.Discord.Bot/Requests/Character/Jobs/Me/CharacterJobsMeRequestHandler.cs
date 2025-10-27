@@ -19,7 +19,7 @@ internal class CharacterJobsMeRequestHandler(
     ISender sender,
     AlyxConfiguration config,
     [FromKeyedServices(CharacterClassJobsService.Key)]
-    IDiscordContainerServiceCustom<CharacterClassJobOuterDto, Role> jobsService)
+    IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role> jobsService)
     : IRequestHandler<CharacterJobsMeRequest>
 {
     public async Task Handle(CharacterJobsMeRequest request, CancellationToken cancellationToken)

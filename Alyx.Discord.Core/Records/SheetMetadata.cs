@@ -1,6 +1,6 @@
-namespace Alyx.Discord.Core.Structs;
+namespace Alyx.Discord.Core.Records;
 
-public readonly record struct SheetMetadata(
+public record SheetMetadata(
     string Title,
     TimeSpan Duration,
     DateTime LastUpdated,

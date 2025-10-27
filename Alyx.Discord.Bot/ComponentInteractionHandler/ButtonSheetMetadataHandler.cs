@@ -2,7 +2,7 @@ using System.Text;
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
-using Alyx.Discord.Core.Structs;
+using Alyx.Discord.Core.Records;
 using DSharpPlus;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;

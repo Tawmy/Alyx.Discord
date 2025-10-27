@@ -16,7 +16,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Jobs.Get;
 internal class CharacterJobsGetRequestHandler(
     ISender sender,
     [FromKeyedServices(CharacterClassJobsService.Key)]
-    IDiscordContainerServiceCustom<CharacterClassJobOuterDto, Role> classJobsService)
+    IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role> classJobsService)
     : IRequestHandler<CharacterJobsGetRequest>
 {
     public async Task Handle(CharacterJobsGetRequest request, CancellationToken cancellationToken)

@@ -38,7 +38,7 @@ public static class DependencyInjection
             CharacterAttributesService.Key);
         services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>(
             FreeCompanyService.Key);
-        services.AddKeyedSingleton<IDiscordContainerServiceCustom<CharacterClassJobOuterDto, Role>,
+        services.AddKeyedSingleton<IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role>,
             CharacterClassJobsService>(CharacterClassJobsService.Key);
 
         services.AddMediatR(cfg =>
@@ -101,12 +101,16 @@ public static class DependencyInjection
             .CharacterSheetGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button
             .CharacterSheetAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetClassJobsHandler>(ComponentIds.Button
+            .CharacterSheetClassJobs);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetFreeCompanyHandler>(ComponentIds
             .Button.CharacterSheetFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
             .CharacterGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
             .CharacterAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterClassJobsHandler>(ComponentIds.Button
+            .CharacterClassJobs);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonFreeCompanyHandler>(ComponentIds.Button
             .CharacterFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button

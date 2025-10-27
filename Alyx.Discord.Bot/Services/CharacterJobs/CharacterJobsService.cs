@@ -1,13 +1,18 @@
 using System.Text;
+using Alyx.Discord.Bot.ComponentInteractionHandler;
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using Alyx.Discord.Core.Requests.Character.GetCharacterClassJobs;
+using DSharpPlus;
 using DSharpPlus.Commands.Processors.SlashCommands.ArgumentModifiers;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Enums;
+using NetStone.Common.Exceptions;
 using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services.CharacterJobs;
@@ -16,29 +21,31 @@ internal class CharacterClassJobsService(
     ISender sender,
     AlyxConfiguration config,
     CachingService cachingService,
-    ProgressBarService progressBarService)
-    : IDiscordContainerServiceCustom<CharacterClassJobOuterDto, Role>
+    ProgressBarService progressBarService,
+    IInteractionDataService interactionDataService)
+    : IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role>
 {
     public const string Key = "jobs";
     private const short ProgressBarLength = 15;
 
-    public Task<DiscordContainerComponent> CreateContainerAsync(Role role, CharacterClassJobOuterDto entity,
-        CancellationToken cancellationToken = default)
+    public async Task<DiscordContainerComponent> CreateContainerAsync(Role role,
+        (CharacterDto, CharacterClassJobOuterDto) entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return new DiscordContainerComponent(await CreateComponentsAsync(role, entity.Item1, entity.Item2, true));
     }
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(Role role, string lodestoneId,
         bool forceRefresh = false, CancellationToken cancellationToken = default)
     {
-        var (container, _) =
-            await RetrieveDataAndCreateContainerAsync(role, lodestoneId, forceRefresh, cancellationToken);
+        var (container, _) = await RetrieveDataAndCreateContainerAsync(role, lodestoneId, forceRefresh,
+            cancellationToken);
         return container;
     }
 
-    public async Task<(DiscordContainerComponent, CharacterClassJobOuterDto)> RetrieveDataAndCreateContainerAsync(
-        Role role, string lodestoneId, bool forceRefresh = false,
-        CancellationToken cancellationToken = default)
+    public async Task<(DiscordContainerComponent, (CharacterDto, CharacterClassJobOuterDto))>
+        RetrieveDataAndCreateContainerAsync(
+            Role role, string lodestoneId, bool forceRefresh = false,
+            CancellationToken cancellationToken = default)
     {
         var maxAgeCharacter = forceRefresh ? 0 : config.NetStone.MaxAgeClassJobs;
         var character = await sender.Send(new CharacterGetCharacterRequest(lodestoneId, maxAgeCharacter),
@@ -47,10 +54,10 @@ internal class CharacterClassJobsService(
         var classJobs = await sender.Send(new CharacterGetCharacterClassJobsRequest(lodestoneId, maxAgeClassJobs),
             cancellationToken);
         var container = new DiscordContainerComponent(await CreateComponentsAsync(role, character, classJobs, false));
-        return (container, classJobs);
+        return (container, (character, classJobs));
     }
 
-    private Task<List<DiscordComponent>> CreateComponentsAsync(Role role, CharacterDto character,
+    private async Task<List<DiscordComponent>> CreateComponentsAsync(Role role, CharacterDto character,
         CharacterClassJobOuterDto classJobs, bool cachedFromSheet)
     {
         List<DiscordComponent> c =
@@ -79,7 +86,44 @@ internal class CharacterClassJobsService(
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         });
 
-        return Task.FromResult(c);
+        if (character.LastUpdated is not null)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}";
+
+            var maxAgeCharacter = TimeSpan.FromMinutes(config.NetStone.MaxAgeCharacter);
+            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
+            {
+                c.Add(new DiscordSectionComponent(
+                    new DiscordTextDisplayComponent(
+                        $"""
+                         -# {Messages.InteractionData.CachedFromSheet("Jobs", true)}
+                         {lastUpdatedStr}
+                         """),
+                    await CreateCharacterClassJobsButtonAsync(character, role)
+                ));
+            }
+            else
+            {
+                c.Add(new DiscordTextDisplayComponent(lastUpdatedStr));
+            }
+        }
+
+        if (character.FallbackUsed)
+        {
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+
+            c.Add(new DiscordTextDisplayComponent(
+                $"""
+                 {Messages.Other.RefreshFailed}
+                 -# {Messages.Other.RefreshFailedDescription}
+                 -# {CreateFallbackMessage(character.FallbackReason)}
+                 """
+            ));
+        }
+
+        return c;
     }
 
     private DiscordTextDisplayComponent CreateTanksComponent(CharacterClassJobOuterDto classJobs)
@@ -211,6 +255,30 @@ internal class CharacterClassJobsService(
                 _ => $"{n - 5000000:#,,,.##}B"
             };
         }
+    }
+
+    private async Task<DiscordButtonComponent> CreateCharacterClassJobsButtonAsync(CharacterDto character, Role role)
+    {
+        var interactionData = new ClassJobInteractionDataRefresh
+        {
+            Role = role,
+            LodestoneId = character.Id
+        };
+
+        var id = await interactionDataService.AddDataAsync(interactionData, ComponentIds.Button.CharacterClassJobs);
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, Messages.Buttons.CurrentJobs);
+    }
+
+    private static string? CreateFallbackMessage(string? fallbackReason)
+    {
+        if (fallbackReason is null)
+        {
+            return null;
+        }
+
+        return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
+            ? Messages.Other.ServiceUnavailableDescription
+            : fallbackReason;
     }
 }
 
