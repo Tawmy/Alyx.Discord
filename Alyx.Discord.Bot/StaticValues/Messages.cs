@@ -35,6 +35,8 @@ internal static class Messages
 
             public const string FreeCompanyWorld = "Free Company's home world.";
 
+            public const string Role = "Role to list jobs for.";
+
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
         }
@@ -128,6 +130,19 @@ internal static class Messages
                 public static class AttributesMe
                 {
                     public const string Description = "Get your character's attributes.";
+                }
+            }
+
+            public static class Jobs
+            {
+                public static class JobsGet
+                {
+                    public const string Description = "Get a character's jobs.";
+                }
+
+                public static class JobsMe
+                {
+                    public const string Description = "Get your character's jobs.";
                 }
             }
 

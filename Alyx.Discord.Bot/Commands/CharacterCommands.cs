@@ -6,8 +6,10 @@ using Alyx.Discord.Bot.Requests.Character.Claim;
 using Alyx.Discord.Bot.Requests.Character.Gear.Get;
 using Alyx.Discord.Bot.Requests.Character.Gear.Me;
 using Alyx.Discord.Bot.Requests.Character.Get;
+using Alyx.Discord.Bot.Requests.Character.Jobs.Get;
 using Alyx.Discord.Bot.Requests.Character.Me;
 using Alyx.Discord.Bot.Requests.Character.Unclaim;
+using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
 using DSharpPlus.Commands;
 using DSharpPlus.Commands.Processors.SlashCommands;
@@ -126,6 +128,27 @@ internal class CharacterCommands(ISender sender)
             bool isPrivate = false)
         {
             return sender.Send(new CharacterAttributesMeRequest(ctx, forceRefresh, isPrivate));
+        }
+    }
+
+    [Command("jobs")]
+    internal class Jobs(ISender sender)
+    {
+        [Command("get")]
+        [Description(Messages.Commands.Character.Jobs.JobsGet.Description)]
+        public Task GetAsync(SlashCommandContext ctx,
+            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            Role role,
+            [SlashAutoCompleteProvider<CharacterAutoCompleteProvider>]
+            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            string name,
+            [SlashAutoCompleteProvider<ServerAutoCompleteProvider>]
+            [Description(Messages.Commands.Parameters.CharacterWorld)]
+            string world,
+            [Parameter("private")] [Description(Messages.Commands.Parameters.Private)]
+            bool isPrivate = false)
+        {
+            return sender.Send(new CharacterJobsGetRequest(ctx, role, name, world, isPrivate));
         }
     }
 }

@@ -18,7 +18,8 @@ internal class FreeCompanyService(
     ISender sender,
     AlyxConfiguration config,
     CachingService cachingService,
-    IInteractionDataService interactionDataService)
+    IInteractionDataService interactionDataService,
+    ProgressBarService progressBarService)
     : IDiscordContainerService<FreeCompanyDto>
 {
     public const string Key = "fc";
@@ -112,19 +113,19 @@ internal class FreeCompanyService(
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("maelstrom"))} {maelstrom.GrandCompany.GetDisplayName()}
-                 -# {GetFcAffinityEmoji(maelstrom.Progress)}   {maelstrom.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, maelstrom.Progress)}   {maelstrom.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("adders"))} {adders.GrandCompany.GetDisplayName()}
-                 -# {GetFcAffinityEmoji(adders.Progress)}   {adders.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, adders.Progress)}   {adders.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("flames"))} {flames.GrandCompany.GetDisplayName()}
-                 -# {GetFcAffinityEmoji(flames.Progress)}   {flames.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, flames.Progress)}   {flames.Rank}
                  """),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordActionRowComponent([
@@ -212,49 +213,5 @@ internal class FreeCompanyService(
         return fallbackReason.Equals(nameof(ParsingFailedException), StringComparison.OrdinalIgnoreCase)
             ? Messages.Other.ServiceUnavailableDescription
             : fallbackReason;
-    }
-
-    private string GetFcAffinityEmoji(short progress)
-    {
-        var es = cachingService.GetApplicationEmoji("fcAffinityEmptyStart");
-        var em = cachingService.GetApplicationEmoji("fcAffinityEmptyMiddle");
-        var ee = cachingService.GetApplicationEmoji("fcAffinityEmptyEnd");
-        var fs = cachingService.GetApplicationEmoji("fcAffinityFilledStart");
-        var fm = cachingService.GetApplicationEmoji("fcAffinityFilledMiddle");
-        var fe = cachingService.GetApplicationEmoji("fcAffinityFilledEnd");
-
-        var percentage = decimal.Divide(progress, 100);
-        var filledEmoji = decimal.Multiply(percentage, 15);
-        var filledEmojiRounded = Math.Round(filledEmoji);
-        var filledEmojiAdded = 0;
-
-        var sb = new StringBuilder();
-
-        sb.Append(filledEmoji > 0 ? fs : es);
-        filledEmojiAdded++;
-
-        for (var i = 0; i < filledEmojiRounded - 2; i++)
-        {
-            sb.Append(fm);
-            filledEmojiAdded++;
-        }
-
-        if (filledEmojiRounded > 1)
-        {
-            sb.Append(fe);
-            filledEmojiAdded++;
-        }
-
-        for (var i = 0; i < 15 - filledEmojiAdded - 1; i++)
-        {
-            sb.Append(em);
-        }
-
-        if (filledEmojiRounded < 15)
-        {
-            sb.Append(ee);
-        }
-
-        return sb.ToString();
     }
 }

@@ -4,6 +4,7 @@ using Alyx.Discord.Bot.EventHandlers;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus;
@@ -29,10 +30,16 @@ public static class DependencyInjection
     {
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
+        services.AddSingleton<ProgressBarService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>("gear");
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>("attributes");
-        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>("fc");
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>(
+            CharacterGearService.Key);
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>(
+            CharacterAttributesService.Key);
+        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>(
+            FreeCompanyService.Key);
+        services.AddKeyedSingleton<IDiscordContainerServiceCustom<CharacterClassJobOuterDto, Role>,
+            CharacterClassJobsService>(CharacterClassJobsService.Key);
 
         services.AddMediatR(cfg =>
         {
