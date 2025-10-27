@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose.yml = compose.yml
 		compose.local.yml = compose.local.yml
 		compose.dev.yml = compose.dev.yml
+		.github\workflows\build-and-push.yml = .github\workflows\build-and-push.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alyx.Discord.Core", "Alyx.Discord.Core\Alyx.Discord.Core.csproj", "{5D589618-0C30-41D1-9EC2-5F9DE85FC00A}"
