@@ -14,7 +14,7 @@
       retries: 5
   
   bot:
-    image: ghcr.io/tawmy/alyx.discord:main # TODO TEMPORARY, CHANGE TO 1.9.0 BEFORE RELEASE
+    image: ghcr.io/tawmy/alyx.discord:1.9.0
     environment:
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
       BOT_TOKEN: ${BOT_TOKEN}
