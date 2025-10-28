@@ -1,4 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
+using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
@@ -15,6 +16,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Jobs.Get;
 
 internal class CharacterJobsGetRequestHandler(
     ISender sender,
+    IInteractionDataService interactionDataService,
     [FromKeyedServices(CharacterClassJobsService.Key)]
     IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role> classJobsService)
     : IRequestHandler<CharacterJobsGetRequest>
@@ -39,7 +41,9 @@ internal class CharacterJobsGetRequestHandler(
 
         if (request.IsPrivate && searchDtos.Count > 1)
         {
-            var select = searchDtos.AsSelectComponent(ComponentIds.Select.CharacterForAttributes);
+            var componentId = await interactionDataService.AddDataAsync(request.Role,
+                ComponentIds.Select.CharacterForClassJobs);
+            var select = searchDtos.AsSelectComponent(componentId);
             builder = new DiscordInteractionResponseBuilder().AddTieBreakerSelect(select, searchDtos.Count);
             await request.Ctx.FollowupAsync(builder);
             return;

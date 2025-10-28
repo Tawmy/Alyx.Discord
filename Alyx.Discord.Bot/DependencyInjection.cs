@@ -89,6 +89,8 @@ public static class DependencyInjection
             .CharacterForGear);
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForAttributesHandler>(ComponentIds.Select
             .CharacterForAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForClassJobsHandler>(ComponentIds.Select
+            .CharacterForClassJobs);
 
         services.AddKeyedScoped<IComponentInteractionHandler, SelectFreeCompanyHandler>(ComponentIds.Select
             .FreeCompany);
