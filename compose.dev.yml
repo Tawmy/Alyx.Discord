@@ -4,6 +4,7 @@ services:
     restart: unless-stopped
 
   bot:
+    image: ghcr.io/tawmy/alyx.discord:main
     container_name: alyx-discord
     restart: unless-stopped
     depends_on:
@@ -24,7 +25,6 @@ services:
 volumes:
   postgres_data:
     name: alyx-discord-db
-    external: true
 
 networks:
   caddy:

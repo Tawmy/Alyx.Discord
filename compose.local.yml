@@ -5,6 +5,10 @@ services:
       - dev.orbstack.domains=db.alyx.discord.local
 
   bot:
+    image: alyx.discord
+    build:
+      context: .
+      dockerfile: Alyx.Discord.Api/Dockerfile
     environment:
       DEBUG_GUILD_ID: 1284800895967559711
       STATUS_MESSAGE: "I'm in development!"
