@@ -210,15 +210,23 @@ internal class CharacterClassJobsService(
 
     private string CreateClassJobString(CharacterClassJobOuterDto dto, ClassJob classJob)
     {
+        var baseClass = classJob.GetClass();
         var unlocked = dto.Unlocked.FirstOrDefault(x => x.ClassJob == classJob);
-        var emoji = cachingService.GetApplicationEmoji(classJob.ToString());
+
+        if (unlocked is null && baseClass is not null)
+        {
+            unlocked = dto.Unlocked.FirstOrDefault(x => x.ClassJob == baseClass);
+        }
+
+        var emoji = GetDiscordEmoji();
+        var jobAbbreviation = GetJobAbbreviation();
 
         var sb = new StringBuilder();
 
         if (unlocked is null)
         {
             sb.AppendLine(progressBarService.CreateProgressBar(ProgressBarStyle.ClassJobLevel, ProgressBarLength, 0));
-            sb.Append($"-# {emoji} `{classJob.GetShortName()}  -`");
+            sb.Append($"-# {emoji} `{jobAbbreviation}  -`");
         }
         else
         {
@@ -231,10 +239,22 @@ internal class CharacterClassJobsService(
             var expCurrent = FormatExp(unlocked.ExpCurrent);
             var expMax = FormatExp(unlocked.ExpMax);
             sb.Append(
-                $"-# {emoji} `{classJob.GetShortName()}  Lv {GetLevelStr(unlocked.Level)}  EXP {expCurrent}/{expMax}`");
+                $"-# {emoji} `{jobAbbreviation}  Lv {GetLevelStr(unlocked.Level)}  EXP {expCurrent}/{expMax}`");
         }
 
         return sb.ToString();
+
+        DiscordEmoji GetDiscordEmoji()
+        {
+            var emojiName = unlocked?.ClassJob.ToString() ?? baseClass?.ToString() ?? classJob.ToString();
+            return cachingService.GetApplicationEmoji(emojiName);
+        }
+
+        string GetJobAbbreviation()
+        {
+            var job = unlocked?.ClassJob ?? baseClass ?? classJob;
+            return job.GetShortName();
+        }
 
         static string GetLevelStr(short level)
         {
