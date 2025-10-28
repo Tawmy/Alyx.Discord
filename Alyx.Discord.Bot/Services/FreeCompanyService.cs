@@ -23,6 +23,7 @@ internal class FreeCompanyService(
     : IDiscordContainerService<FreeCompanyDto>
 {
     public const string Key = "fc";
+    private const short ProgressBarLength = 15;
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDto fc,
         CancellationToken cancellationToken = default)
@@ -113,19 +114,19 @@ internal class FreeCompanyService(
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("maelstrom"))} {maelstrom.GrandCompany.GetDisplayName()}
-                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, maelstrom.Progress)}   {maelstrom.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, maelstrom.Progress)}   {maelstrom.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("adders"))} {adders.GrandCompany.GetDisplayName()}
-                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, adders.Progress)}   {adders.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, adders.Progress)}   {adders.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
                  {Formatter.Emoji(cachingService.GetApplicationEmoji("flames"))} {flames.GrandCompany.GetDisplayName()}
-                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, 15, flames.Progress)}   {flames.Rank}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, flames.Progress)}   {flames.Rank}
                  """),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordActionRowComponent([
