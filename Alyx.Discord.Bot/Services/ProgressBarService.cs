@@ -19,26 +19,26 @@ internal class ProgressBarService(CachingService cachingService)
         var percentage = decimal.Divide(progress, 100);
         var filledEmoji = decimal.Multiply(percentage, length);
         var filledEmojiRounded = Math.Round(filledEmoji);
-        var filledEmojiAdded = 0;
+        var emojiAdded = 0;
 
         var sb = new StringBuilder();
 
         sb.Append(filledEmoji > 0 ? emoji.FilledStart : emoji.EmptyStart);
-        filledEmojiAdded++;
+        emojiAdded++;
 
         for (var i = 0; i < filledEmojiRounded - 2; i++)
         {
             sb.Append(emoji.FilledMiddle);
-            filledEmojiAdded++;
+            emojiAdded++;
         }
 
         if (filledEmojiRounded > 1)
         {
             sb.Append(emoji.FilledEnd);
-            filledEmojiAdded++;
+            emojiAdded++;
         }
 
-        for (var i = 0; i < length - filledEmojiAdded - 1; i++)
+        for (var i = 0; i < length - emojiAdded - 1; i++)
         {
             sb.Append(emoji.EmptyMiddle);
         }
