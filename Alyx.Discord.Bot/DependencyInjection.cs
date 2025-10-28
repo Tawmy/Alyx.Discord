@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddSingleton<CachingService>();
         services.AddSingleton<ProgressBarService>();
         services.AddSingleton<CharacterClaimService>();
+        services.AddSingleton<CharacterSheetService>();
         services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>(
             CharacterGearService.Key);
         services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>(

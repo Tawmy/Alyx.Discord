@@ -1,5 +1,4 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
@@ -15,10 +14,8 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 
 internal class CharacterMeRequestHandler(
     ISender sender,
-    IInteractionDataService interactionDataService,
-    CachingService cachingService,
-    AlyxConfiguration alyxConfiguration)
-    : IRequestHandler<CharacterMeRequest>
+    CharacterSheetService sheetService,
+    AlyxConfiguration alyxConfiguration) : IRequestHandler<CharacterMeRequest>
 {
     public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
     {
@@ -60,8 +57,8 @@ internal class CharacterMeRequestHandler(
 
         var builder = new DiscordInteractionResponseBuilder();
 
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, cachingService, lodestoneId,
-            request.ForceRefresh, async b => await request.Ctx.RespondAsync(b), cancellationToken);
+        await sheetService.CreateSheetAndSendFollowupAsync(builder, lodestoneId, request.ForceRefresh,
+            async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
         if (request.ForceRefresh)
         {
