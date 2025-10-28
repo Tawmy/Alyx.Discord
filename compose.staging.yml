@@ -9,7 +9,6 @@ services:
         condition: service_healthy
     environment:
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
-      NETSTONE_API_ROOT_URI: https://netstone.api.staging.tawmy.net
     ports:
       - "1337:8080"
     volumes:
