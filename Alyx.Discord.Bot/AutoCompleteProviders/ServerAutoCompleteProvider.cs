@@ -1,10 +1,10 @@
+using Alyx.Discord.Core.Requests.Character.GetCharacter;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.SlashCommands.ArgumentModifiers;
 using DSharpPlus.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NetStone.Api.Sdk.Abstractions;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.Enums;
 using NetStone.Common.Exceptions;
@@ -13,7 +13,6 @@ namespace Alyx.Discord.Bot.AutoCompleteProviders;
 
 internal class ServerAutoCompleteProvider(
     ISender sender,
-    INetStoneApiCharacter character,
     ILogger<ServerAutoCompleteProvider> logger) : IAutoCompleteProvider
 {
     public async ValueTask<IEnumerable<DiscordAutoCompleteChoice>> AutoCompleteAsync(AutoCompleteContext context)
@@ -33,9 +32,10 @@ internal class ServerAutoCompleteProvider(
             CharacterDto? mainCharacter = null;
             try
             {
-                var request = new GetMainCharacterIdRequest(context.User.Id);
-                var mainCharacterId = await sender.Send(request);
-                mainCharacter = await character.GetAsync(mainCharacterId, useFallback: FallbackType.Any);
+                var mainCharacterIdRequest = new GetMainCharacterIdRequest(context.User.Id);
+                var mainCharacterId = await sender.Send(mainCharacterIdRequest);
+                var mainCharacterRequest = new CharacterGetCharacterRequest(mainCharacterId);
+                mainCharacter = await sender.Send(mainCharacterRequest);
             }
             catch (NotFoundException)
             {
