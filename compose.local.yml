@@ -1,6 +1,5 @@
 services:
   db:
-    restart: on-failure
     labels:
       - dev.orbstack.domains=db.alyx.discord.local
 
@@ -13,6 +12,12 @@ services:
       DEBUG_GUILD_ID: 1284800895967559711
       STATUS_MESSAGE: "I'm in development!"
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/alyx-discord
+      AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
+      AUTH_AUDIENCE: alyx-discord
+      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
+      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
+      NETSTONE_API_SCOPES: basic
+      NETSTONE_API_CLIENT_ID: alyx-discord
     volumes:
       - /Users/tawmy/Desktop/cert/alyx-discord:/mnt/cert
     labels:

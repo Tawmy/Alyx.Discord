@@ -1,0 +1,30 @@
+services:
+  db:
+    container_name: alyx.discord-db
+  
+  bot:
+    container_name: alyx.discord
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
+    ports:
+      - "1337:8080"
+    volumes:
+      - /root/cert/alyx-discord:/mnt/cert
+    networks:
+      - default
+      - reverse-proxy
+    labels:
+      caddy: alyx.tawmy.net
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+
+volumes:
+  postgres_data:
+    name: alyx.discord-db
+    external: true
+
+networks:
+  reverse-proxy:
+    external: true
