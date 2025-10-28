@@ -1,8 +1,8 @@
 using System.Numerics;
 using Alyx.Discord.Core.Enums;
 using Alyx.Discord.Core.Extensions;
+using Alyx.Discord.Core.Records;
 using Alyx.Discord.Core.StaticValues;
-using Alyx.Discord.Core.Structs;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
@@ -165,13 +165,13 @@ internal class CharacterSheetService
             return;
         }
 
-        var fontTitle = family.CreateFont(nameProperties.Title.Value.Size, FontStyle.Regular);
+        var fontTitle = family.CreateFont(nameProperties.Title.Size, FontStyle.Regular);
 
         var optionsTitle = new RichTextOptions(fontTitle)
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            Origin = new Vector2(nameProperties.Title.Value.X, nameProperties.Title.Value.Y)
+            Origin = new Vector2(nameProperties.Title.X, nameProperties.Title.Y)
         };
 
         // print character title

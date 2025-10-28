@@ -1,17 +1,21 @@
 services:
   db:
     container_name: alyx-discord-db
-    restart: unless-stopped
 
   bot:
+    image: ghcr.io/tawmy/alyx.discord:main
     container_name: alyx-discord
-    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     environment:
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
-      STATUS_MESSAGE: "New: Protected from Lodestone outages!"
+      AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
+      AUTH_AUDIENCE: alyx-discord
+      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
+      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
+      NETSTONE_API_SCOPES: basic
+      NETSTONE_API_CLIENT_ID: alyx-discord
     volumes:
       - /root/cert/alyx-discord:/mnt/cert
     networks:
@@ -24,7 +28,6 @@ services:
 volumes:
   postgres_data:
     name: alyx-discord-db
-    external: true
 
 networks:
   caddy:

@@ -7,20 +7,20 @@ namespace Alyx.Discord.Bot.Services;
 
 internal class InteractionDataService(ISender sender) : IInteractionDataService
 {
-    public async Task<Guid> AddDataAsync<T>(T data)
+    public async Task<Guid> AddDataAsync<T>(T data, CancellationToken cancellationToken = default)
     {
         if (data is null)
         {
             throw new ArgumentNullException(nameof(data));
         }
 
-        var response = await sender.Send(new InteractionDataAddRequest<T>(data, typeof(T)));
+        var response = await sender.Send(new InteractionDataAddRequest<T>(data, typeof(T)), cancellationToken);
         return response.Key;
     }
 
-    public async Task<string> AddDataAsync<T>(T data, string componentId)
+    public async Task<string> AddDataAsync<T>(T data, string componentId, CancellationToken cancellationToken = default)
     {
-        var dataId = await AddDataAsync(data);
+        var dataId = await AddDataAsync(data, cancellationToken);
         return CreateNewDataComponentId(componentId, dataId.ToString());
     }
 
@@ -30,12 +30,12 @@ internal class InteractionDataService(ISender sender) : IInteractionDataService
         return CreateNewDataComponentId(newComponentId, dataId);
     }
 
-    public Task<T> GetDataAsync<T>(string key)
+    public Task<T> GetDataAsync<T>(string key, CancellationToken cancellationToken = default)
     {
-        return sender.Send(new InteractionDataGetRequest<T>(key, typeof(T)));
+        return sender.Send(new InteractionDataGetRequest<T>(key, typeof(T)), cancellationToken);
     }
 
-    public Task<T> ParseStringAndGetData<T>(string componentString)
+    public Task<T> ParseStringAndGetData<T>(string componentString, CancellationToken cancellationToken = default)
     {
         var split = componentString.Split('/');
         if (split.Length != 2)
@@ -43,7 +43,7 @@ internal class InteractionDataService(ISender sender) : IInteractionDataService
             throw new ArgumentException("Format for given component string is not valid.");
         }
 
-        return GetDataAsync<T>(split[1]);
+        return GetDataAsync<T>(split[1], cancellationToken);
     }
 
     private static string CreateNewDataComponentId(string componentId, string dataId)

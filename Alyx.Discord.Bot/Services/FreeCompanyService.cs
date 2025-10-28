@@ -1,3 +1,4 @@
+using System.Text;
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
@@ -17,10 +18,12 @@ internal class FreeCompanyService(
     ISender sender,
     AlyxConfiguration config,
     CachingService cachingService,
-    IInteractionDataService interactionDataService)
+    IInteractionDataService interactionDataService,
+    ProgressBarService progressBarService)
     : IDiscordContainerService<FreeCompanyDto>
 {
     public const string Key = "fc";
+    private const short ProgressBarLength = 15;
 
     public async Task<DiscordContainerComponent> CreateContainerAsync(FreeCompanyDto fc,
         CancellationToken cancellationToken = default)
@@ -91,32 +94,39 @@ internal class FreeCompanyService(
 
         if (fc.RankingWeekly is not null || fc.RankingMonthly is not null)
         {
-            c.Add(new DiscordTextDisplayComponent(
-                $"""
-                 ### Ranking
-                 Weekly Rank: {fc.RankingWeekly}
-                 Monthly Rank: {fc.RankingMonthly}
-                 """));
+            var rankingBuilder = new StringBuilder("### Ranking\n");
+
+            if (fc.RankingWeekly is not null)
+            {
+                rankingBuilder.AppendLine($"Weekly Rank: {fc.RankingWeekly}");
+            }
+
+            if (fc.RankingMonthly is not null)
+            {
+                rankingBuilder.AppendLine($"Monthly Rank: {fc.RankingMonthly}");
+            }
+
+            c.Add(new DiscordTextDisplayComponent(rankingBuilder.ToString()));
             c.Add(new DiscordSeparatorComponent());
         }
 
         c.AddRange(new DiscordTextDisplayComponent("### Reputation"),
             new DiscordTextDisplayComponent(
                 $"""
-                 -# {Formatter.Emoji(cachingService.GetApplicationEmoji("maelstrom"))} {maelstrom.GrandCompany.GetDisplayName()}
-                 {maelstrom.Rank}
+                 {Formatter.Emoji(cachingService.GetApplicationEmoji("maelstrom"))} {maelstrom.GrandCompany.GetDisplayName()}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, maelstrom.Progress)}   {maelstrom.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 -# {Formatter.Emoji(cachingService.GetApplicationEmoji("adders"))} {adders.GrandCompany.GetDisplayName()}
-                 {adders.Rank}
+                 {Formatter.Emoji(cachingService.GetApplicationEmoji("adders"))} {adders.GrandCompany.GetDisplayName()}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, adders.Progress)}   {adders.Rank}
                  """),
             new DiscordSeparatorComponent(),
             new DiscordTextDisplayComponent(
                 $"""
-                 -# {Formatter.Emoji(cachingService.GetApplicationEmoji("flames"))} {flames.GrandCompany.GetDisplayName()}
-                 {flames.Rank}
+                 {Formatter.Emoji(cachingService.GetApplicationEmoji("flames"))} {flames.GrandCompany.GetDisplayName()}
+                 -# {progressBarService.CreateProgressBar(ProgressBarStyle.GrandCompanyAffinity, ProgressBarLength, flames.Progress)}   {flames.Rank}
                  """),
             new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large),
             new DiscordActionRowComponent([

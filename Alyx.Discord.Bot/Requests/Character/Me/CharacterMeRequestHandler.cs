@@ -1,10 +1,10 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetLastForceRefresh;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
-using Alyx.Discord.Core.Requests.Character.SetLastForceRefresh;
+using Alyx.Discord.Core.Requests.Character.SetLastForceRefreshCharacter;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
@@ -14,9 +14,8 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 
 internal class CharacterMeRequestHandler(
     ISender sender,
-    IInteractionDataService interactionDataService,
-    AlyxConfiguration alyxConfiguration)
-    : IRequestHandler<CharacterMeRequest>
+    CharacterSheetService sheetService,
+    AlyxConfiguration alyxConfiguration) : IRequestHandler<CharacterMeRequest>
 {
     public async Task Handle(CharacterMeRequest request, CancellationToken cancellationToken)
     {
@@ -39,10 +38,11 @@ internal class CharacterMeRequestHandler(
             var lastForceRefresh = await sender.Send(new GetLastForceRefreshRequest(lodestoneId), cancellationToken);
             var allowedBefore = DateTime.Now.AddMinutes(-1 * alyxConfiguration.NetStone.ForceRefreshCooldown);
 
-            if (lastForceRefresh > allowedBefore)
+            if (lastForceRefresh.LastForceRefreshCharacter > allowedBefore)
             {
-                var formattedLastRefresh = Formatter.Timestamp(lastForceRefresh.Value);
-                var allowedAfter = lastForceRefresh.Value.AddMinutes(alyxConfiguration.NetStone.ForceRefreshCooldown);
+                var formattedLastRefresh = Formatter.Timestamp(lastForceRefresh.LastForceRefreshCharacter.Value);
+                var allowedAfter = lastForceRefresh.LastForceRefreshCharacter.Value.AddMinutes(
+                    alyxConfiguration.NetStone.ForceRefreshCooldown);
                 var formattedAllowedAfterRel = Formatter.Timestamp(allowedAfter);
                 var formattedAllowedAfterAbs = Formatter.Timestamp(allowedAfter, TimestampFormat.ShortDateTime);
                 var errorBuilder = new DiscordInteractionResponseBuilder()
@@ -57,12 +57,13 @@ internal class CharacterMeRequestHandler(
 
         var builder = new DiscordInteractionResponseBuilder();
 
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, request.ForceRefresh,
+        await sheetService.CreateSheetAndSendFollowupAsync(builder, lodestoneId, request.ForceRefresh,
             async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
         if (request.ForceRefresh)
         {
-            await sender.Send(new SetLastForceRefreshRequest(lodestoneId, DateTime.UtcNow), cancellationToken);
+            await sender.Send(new SetLastForceRefreshCharacterRequest(lodestoneId, DateTime.UtcNow),
+                cancellationToken);
         }
     }
 }

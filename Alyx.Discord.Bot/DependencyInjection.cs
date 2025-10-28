@@ -4,6 +4,7 @@ using Alyx.Discord.Bot.EventHandlers;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.Requests.Character.Get;
 using Alyx.Discord.Bot.Services;
+using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
 using DSharpPlus;
@@ -29,10 +30,17 @@ public static class DependencyInjection
     {
         services.AddSingleton<IInteractionDataService, InteractionDataService>();
         services.AddSingleton<CachingService>();
+        services.AddSingleton<ProgressBarService>();
         services.AddSingleton<CharacterClaimService>();
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>("gear");
-        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>("attributes");
-        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>("fc");
+        services.AddSingleton<CharacterSheetService>();
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>(
+            CharacterGearService.Key);
+        services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>(
+            CharacterAttributesService.Key);
+        services.AddKeyedSingleton<IDiscordContainerService<FreeCompanyDto>, FreeCompanyService>(
+            FreeCompanyService.Key);
+        services.AddKeyedSingleton<IDiscordContainerServiceCustom<(CharacterDto, CharacterClassJobOuterDto), Role>,
+            CharacterClassJobsService>(CharacterClassJobsService.Key);
 
         services.AddMediatR(cfg =>
         {
@@ -82,6 +90,8 @@ public static class DependencyInjection
             .CharacterForGear);
         services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForAttributesHandler>(ComponentIds.Select
             .CharacterForAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, SelectCharacterForClassJobsHandler>(ComponentIds.Select
+            .CharacterForClassJobs);
 
         services.AddKeyedScoped<IComponentInteractionHandler, SelectFreeCompanyHandler>(ComponentIds.Select
             .FreeCompany);
@@ -90,16 +100,22 @@ public static class DependencyInjection
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
             .ConfirmUnclaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetMoreHandler>(ComponentIds.Button
+            .CharacterSheetMore);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetGearHandler>(ComponentIds.Button
             .CharacterSheetGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button
             .CharacterSheetAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetClassJobsHandler>(ComponentIds.Button
+            .CharacterSheetClassJobs);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetFreeCompanyHandler>(ComponentIds
             .Button.CharacterSheetFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterGearHandler>(ComponentIds.Button
             .CharacterGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterAttributesHandler>(ComponentIds.Button
             .CharacterAttributes);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterClassJobsHandler>(ComponentIds.Button
+            .CharacterClassJobs);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonFreeCompanyHandler>(ComponentIds.Button
             .CharacterFreeCompany);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonSheetMetadataHandler>(ComponentIds.Button

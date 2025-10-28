@@ -52,6 +52,10 @@ namespace Alyx.Discord.Db.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_main_character");
 
+                    b.Property<DateTime?>("LastFcForceRefresh")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_fc_force_refresh");
+
                     b.Property<DateTime?>("LastForceRefresh")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_force_refresh");

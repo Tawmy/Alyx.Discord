@@ -26,7 +26,7 @@ internal class ButtonCharacterSheetAttributesHandler(
         CharacterDto? character;
         try
         {
-            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId);
+            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId, cancellationToken);
         }
         catch (InvalidOperationException)
         {

@@ -1,6 +1,7 @@
 ﻿services:
   db:
-    image: postgres:16.4-alpine
+    image: postgres:16.8-alpine
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -14,21 +15,20 @@
       retries: 5
   
   bot:
-    image: alyx.discord
-    build:
-      context: .
-      dockerfile: Alyx.Discord.Api/Dockerfile
+    image: ghcr.io/tawmy/alyx.discord:1.9.0
+    restart: unless-stopped
     environment:
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
       BOT_TOKEN: ${BOT_TOKEN}
+      STATUS_MESSAGE: "Add me to your apps!"
       
       # NetStone API and Alyx API split into separate configurations to allow for different Keycloak realms
       # authorizing with NetStone API
-      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
-      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      NETSTONE_API_CLIENT_ID: alyx-discord
+      NETSTONE_API_ROOT_URI: https://netstone.api.tawmy.net
+      NETSTONE_API_AUTHORITY: https://auth.tawmy.net/realms/xiv
+      NETSTONE_API_CLIENT_ID: ${NETSTONE_API_CLIENT_ID}
       NETSTONE_API_CLIENT_SECRET: ${NETSTONE_API_CLIENT_SECRET}
-      NETSTONE_API_SCOPES: basic
+      NETSTONE_API_SCOPES: netstone.api
       
       NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
       NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
@@ -37,10 +37,11 @@
       NETSTONE_MAX_FREE_COMPANY: "10080" # one week
       
       # JWT token validation in API
-      AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      AUTH_AUDIENCE: alyx-discord
+      AUTH_AUTHORITY: https://auth.tawmy.net/realms/xiv
+      AUTH_AUDIENCE: alyx.discord
       
       LOGGING__LOGLEVEL__DEFAULT: Information
       LOGGING__LOGLEVEL__ASPNETCORE: Warning
       LOGGING__LOGLEVEL__MICROSOFT.ENTITYFRAMEWORKCORE: Warning
       LOGGING__LOGLEVEL__SYSTEM.NET.HTTP.HTTPCLIENT: Warning
+      LOGGING__LOGLEVEL__POLLY: Warning

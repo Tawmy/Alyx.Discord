@@ -1,7 +1,8 @@
+using System.Text;
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
-using Alyx.Discord.Core.Structs;
+using Alyx.Discord.Core.Records;
 using DSharpPlus;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Entities;
@@ -19,7 +20,8 @@ internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDat
         IEnumerable<SheetMetadata> sheetMetadata;
         try
         {
-            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
+            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId,
+                cancellationToken);
         }
         catch (InvalidOperationException)
         {
@@ -45,14 +47,20 @@ internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDat
 
         foreach (var entry in metadata)
         {
-            var message = $"{Formatter.Timestamp(entry.LastUpdated)}";
-            if (entry.FallbackUsed)
+            var message = new StringBuilder($"{Formatter.Timestamp(entry.LastUpdated)}\n");
+
+            if (entry.Duration != TimeSpan.Zero)
             {
-                message += "\r*Cache Fallback*";
-                message += $"\r{new string(entry.FallbackReason?.Take(140).ToArray())}";
+                message.AppendLine($"Took {entry.Duration.TotalSeconds:F1} seconds");
             }
 
-            builder.AddField(entry.Title, message, !entry.FallbackUsed);
+            if (entry.FallbackUsed)
+            {
+                message.AppendLine("*Cache Fallback*");
+                message.AppendLine($"{new string(entry.FallbackReason?.Take(140).ToArray())}");
+            }
+
+            builder.AddField(entry.Title, message.ToString(), !entry.FallbackUsed);
         }
 
         return builder.Build();

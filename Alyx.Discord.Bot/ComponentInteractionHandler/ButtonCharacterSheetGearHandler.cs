@@ -30,12 +30,12 @@ internal class ButtonCharacterSheetGearHandler(
         {
             // full character is cached in version 1.8.0 and onwards, so gear button will show gear from cache
             // doing this will make sure gear shown will match what's shown in sheet
-            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId);
+            character = await interactionDataService.GetDataAsync<CharacterDto>(dataId, cancellationToken);
         }
         catch (TypeMismatchException)
         {
             // version 1.7.0 used NetStone API to retrieve character again, which would cause gear to be refreshed
-            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId, cancellationToken);
         }
         catch (InvalidOperationException)
         {

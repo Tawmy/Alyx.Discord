@@ -15,4 +15,6 @@ public class Character
     public bool IsMainCharacter { get; set; }
 
     public DateTime? LastForceRefresh { get; set; }
+
+    public DateTime? LastFcForceRefresh { get; set; }
 }
