@@ -23,7 +23,7 @@ internal static class ComponentIds
         public const string CharacterSheetMetadata = "BUTTON_CHARACTER_SHEET_METADATA";
         public const string CharacterGear = "BUTTON_CHARACTER_GEAR";
         public const string CharacterAttributes = "BUTTON_CHARACTER_ATTRIBUTES";
-        public const string CharacterClassJobs = "BUTTON_CHARACTER_CLASS_JOBS_TANKS_HEALERS";
+        public const string CharacterClassJobs = "BUTTON_CHARACTER_CLASS_JOBS";
         public const string CharacterFreeCompany = "BUTTON_CHARACTER_FREE_COMPANY";
     }
 }
