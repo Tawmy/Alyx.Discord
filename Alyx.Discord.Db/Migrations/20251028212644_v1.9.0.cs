@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Alyx.Discord.Db.Migrations
 {
     /// <inheritdoc />
-    public partial class LastForceRefreshFreeCompany : Migration
+    public partial class v190 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
