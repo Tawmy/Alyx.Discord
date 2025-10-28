@@ -1,7 +1,6 @@
 using System.Net;
-using Alyx.Discord.Bot.ComponentInteractionHandler;
 using Alyx.Discord.Bot.Interfaces;
-using Alyx.Discord.Bot.Services.CharacterJobs;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Records;
 using Alyx.Discord.Core.Requests.Character.Sheet;
@@ -50,7 +49,7 @@ internal static class BaseDiscordMessageBuilderExtensions
     }
 
     public static async Task CreateSheetAndSendFollowupAsync<T>(this BaseDiscordMessageBuilder<T> builder,
-        ISender sender, IInteractionDataService interactionDataService,
+        ISender sender, IInteractionDataService interactionDataService, CachingService cachingService,
         string lodestoneId, bool forceRefresh, Func<BaseDiscordMessageBuilder<T>, Task> respondTask,
         CancellationToken cancellationToken = default)
         where T : BaseDiscordMessageBuilder<T>
@@ -93,37 +92,15 @@ internal static class BaseDiscordMessageBuilderExtensions
             builder.AddContainerComponent(fallbackContainer);
         }
 
-        var buttonGear = await CreateGearButtonAsync(interactionDataService, sheet.Character);
-        var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
-            ComponentIds.Button.CharacterSheetAttributes);
-        var buttonAttributes = CreateAttributesButton(buttonAttributesId);
-        var buttonsJobs = await CreateClassJobsButtonsAsync(interactionDataService, sheet.Character, sheet.ClassJobs);
-
-        List<DiscordButtonComponent> buttonsLine1 = [buttonGear, buttonAttributes];
-
-        if (sheet.MountsPublic)
-        {
-            buttonsLine1.Add(CreateLodestoneMountsButton(lodestoneId));
-        }
-
-        if (sheet.MinionsPublic)
-        {
-            buttonsLine1.Add(CreateLodestoneMinionsButton(lodestoneId));
-        }
-
-        if (sheet.FreeCompany is { } freeCompany)
-        {
-            buttonsLine1.Add(await CreateFreeCompanyButtonAsync(interactionDataService, freeCompany));
-        }
-
-        List<DiscordButtonComponent> buttonsLine3 =
+        List<DiscordButtonComponent> buttons =
         [
+            await CreateMoreButtonAsync(interactionDataService, cachingService, sheet.MountsPublic, sheet.MinionsPublic,
+                sheet.Character, sheet.ClassJobs, sheet.FreeCompany),
             CreateLodestoneLinkButton(lodestoneId),
             await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata)
         ];
 
-        builder.AddActionRowComponent(buttonsLine1).AddActionRowComponent(buttonsJobs)
-            .AddActionRowComponent(buttonsLine3);
+        builder.AddActionRowComponent(buttons);
 
         await respondTask(builder);
     }
@@ -141,75 +118,30 @@ internal static class BaseDiscordMessageBuilderExtensions
 
     #region CreateSheetAndSendFollowupAsync
 
+    private static async Task<DiscordButtonComponent> CreateMoreButtonAsync(
+        IInteractionDataService interactionDataService, CachingService cachingService, bool mountsPublic,
+        bool minionsPublic, CharacterDto character, CharacterClassJobOuterDto classJobs, FreeCompanyDto? freeCompany)
+    {
+        var sheetCache = new SheetCache
+        {
+            MountsPublic = mountsPublic,
+            MinionsPublic = minionsPublic,
+            Character = character,
+            ClassJobs = classJobs,
+            FreeCompany = freeCompany
+        };
+
+        var componentId = await interactionDataService.AddDataAsync(sheetCache, ComponentIds.Button.CharacterSheetMore);
+        var emoji = cachingService.GetApplicationEmoji("sheetMore");
+
+        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
+            Messages.Buttons.CharacterSheetMore, emoji: new DiscordComponentEmoji(emoji));
+    }
+
     private static DiscordLinkButtonComponent CreateLodestoneLinkButton(string characterId)
     {
         var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}";
         return new DiscordLinkButtonComponent(url, Messages.Buttons.OpenLodestoneProfile);
-    }
-
-    private static async Task<DiscordButtonComponent> CreateGearButtonAsync(
-        IInteractionDataService interactionDataService,
-        CharacterDto character)
-    {
-        var componentId = await interactionDataService.AddDataAsync(character,
-            ComponentIds.Button.CharacterSheetGear);
-        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Gear);
-    }
-
-    private static DiscordButtonComponent CreateAttributesButton(string componentId)
-    {
-        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Attributes);
-    }
-
-    private static async Task<IEnumerable<DiscordButtonComponent>> CreateClassJobsButtonsAsync(
-        IInteractionDataService interactionDataService,
-        CharacterDto character,
-        CharacterClassJobOuterDto classJobs)
-    {
-        var buttons = new List<DiscordButtonComponent>();
-
-        var interactionData = new ClassJobInteractionData
-        {
-            Role = Role.TanksHealers,
-            Character = character,
-            ClassJobs = classJobs
-        };
-
-        var idTanksHealers = await interactionDataService.AddDataAsync(interactionData,
-            ComponentIds.Button.CharacterSheetClassJobs);
-        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idTanksHealers,
-            Messages.Buttons.ClassJobsTanksHealers));
-
-        var idDpsMelee = await interactionDataService.AddDataAsync(interactionData with { Role = Role.DpsMelee },
-            ComponentIds.Button.CharacterSheetClassJobs);
-        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDpsMelee,
-            Messages.Buttons.ClassJobsDpsMelee));
-
-        var idDpsRanged = await interactionDataService.AddDataAsync(interactionData with { Role = Role.DpsRanged },
-            ComponentIds.Button.CharacterSheetClassJobs);
-        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDpsRanged,
-            Messages.Buttons.ClassJobsDpsRanged));
-
-        var idDiscipleHand = await interactionDataService.AddDataAsync(
-            interactionData with { Role = Role.DiscipleHand }, ComponentIds.Button.CharacterSheetClassJobs);
-        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDiscipleHand,
-            Messages.Buttons.ClassJobsDiscipleHand));
-
-        var idDiscipleLand = await interactionDataService.AddDataAsync(
-            interactionData with { Role = Role.DiscipleLand }, ComponentIds.Button.CharacterSheetClassJobs);
-        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDiscipleLand,
-            Messages.Buttons.ClassJobsDiscipleLand));
-
-        return buttons;
-    }
-
-    private static async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(
-        IInteractionDataService interactionDataService,
-        FreeCompanyDto freeCompany)
-    {
-        var componentId = await interactionDataService.AddDataAsync(freeCompany,
-            ComponentIds.Button.CharacterSheetFreeCompany);
-        return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.FreeCompany);
     }
 
     private static async Task<DiscordButtonComponent> CreateMetadataButtonAsync(
@@ -219,18 +151,6 @@ internal static class BaseDiscordMessageBuilderExtensions
             await interactionDataService.AddDataAsync(metadata, ComponentIds.Button.CharacterSheetMetadata);
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId,
             Messages.Buttons.CharacterSheetMetadata);
-    }
-
-    private static DiscordLinkButtonComponent CreateLodestoneMountsButton(string characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/mount";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.Mounts);
-    }
-
-    private static DiscordLinkButtonComponent CreateLodestoneMinionsButton(string characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/minion";
-        return new DiscordLinkButtonComponent(url, Messages.Buttons.Minions);
     }
 
     private static DiscordContainerComponent? CreateFallbackContainerIfApplicable(IEnumerable<SheetMetadata> metadata)

@@ -17,6 +17,7 @@ internal static class ComponentIds
         public const string ConfirmClaim = "BUTTON_CONFIRM_CLAIM";
         public const string ConfirmUnclaim = "BUTTON_CONFIRM_UNCLAIM";
         public const string CharacterSheetGear = "BUTTON_CHARACTER_SHEET_GEAR";
+        public const string CharacterSheetMore = "BUTTON_CHARACTER_SHEET_MORE";
         public const string CharacterSheetAttributes = "BUTTON_CHARACTER_SHEET_ATTRIBUTES";
         public const string CharacterSheetClassJobs = "BUTTON_CHARACTER_SHEET_CLASS_JOBS";
         public const string CharacterSheetFreeCompany = "BUTTON_CHARACTER_SHEET_FREE_COMPANY";

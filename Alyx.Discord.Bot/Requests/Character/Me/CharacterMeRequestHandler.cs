@@ -1,5 +1,6 @@
 using Alyx.Discord.Bot.Extensions;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetLastForceRefresh;
@@ -15,6 +16,7 @@ namespace Alyx.Discord.Bot.Requests.Character.Me;
 internal class CharacterMeRequestHandler(
     ISender sender,
     IInteractionDataService interactionDataService,
+    CachingService cachingService,
     AlyxConfiguration alyxConfiguration)
     : IRequestHandler<CharacterMeRequest>
 {
@@ -58,8 +60,8 @@ internal class CharacterMeRequestHandler(
 
         var builder = new DiscordInteractionResponseBuilder();
 
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, request.ForceRefresh,
-            async b => await request.Ctx.RespondAsync(b), cancellationToken);
+        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, cachingService, lodestoneId,
+            request.ForceRefresh, async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
         if (request.ForceRefresh)
         {

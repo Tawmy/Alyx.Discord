@@ -344,6 +344,7 @@ internal static class Messages
         public const string EditLodestoneProfile = "Open Lodestone";
         public const string ValidateCode = "Validate Code";
         public const string ConfirmUnclaim = "Confirm Unclaim";
+        public const string CharacterSheetMore = "More Details";
         public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Gear = "Gear";
         public const string Attributes = "Attributes";
