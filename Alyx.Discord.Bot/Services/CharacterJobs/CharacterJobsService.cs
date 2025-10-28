@@ -86,14 +86,14 @@ internal class CharacterClassJobsService(
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         });
 
-        if (character.LastUpdated is not null)
+        if (classJobs.LastUpdated is not null)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
 
-            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(character.LastUpdated.Value)}";
+            var lastUpdatedStr = $"-# Last updated {Formatter.Timestamp(classJobs.LastUpdated.Value)}";
 
-            var maxAgeCharacter = TimeSpan.FromMinutes(config.NetStone.MaxAgeCharacter);
-            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeCharacter) > character.LastUpdated)
+            var maxAgeClassJobs = TimeSpan.FromMinutes(config.NetStone.MaxAgeClassJobs);
+            if (cachedFromSheet && DateTime.Now.Subtract(maxAgeClassJobs) > classJobs.LastUpdated)
             {
                 c.Add(new DiscordSectionComponent(
                     new DiscordTextDisplayComponent(
@@ -110,7 +110,7 @@ internal class CharacterClassJobsService(
             }
         }
 
-        if (character.FallbackUsed)
+        if (classJobs.FallbackUsed)
         {
             c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
 
@@ -236,7 +236,7 @@ internal class CharacterClassJobsService(
 
         return sb.ToString();
 
-        string GetLevelStr(short level)
+        static string GetLevelStr(short level)
         {
             return level < 100 ? $"{level} " : level.ToString();
         }
