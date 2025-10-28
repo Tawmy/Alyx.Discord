@@ -1,5 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetCharacterByName;
 using Alyx.Discord.Core.Requests.Character.Search;
@@ -13,9 +13,7 @@ using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.Character.Get;
 
-internal class CharacterGetRequestHandler(
-    ISender sender,
-    IInteractionDataService interactionDataService)
+internal class CharacterGetRequestHandler(ISender sender, CharacterSheetService sheetService)
     : IRequestHandler<CharacterGetRequest>
 {
     public async Task Handle(CharacterGetRequest request, CancellationToken cancellationToken)
@@ -60,7 +58,7 @@ internal class CharacterGetRequestHandler(
                 x.Name.Equals(request.Name, StringComparison.InvariantCultureIgnoreCase)) ?? searchDtos.First();
 
             builder = new DiscordInteractionResponseBuilder();
-            await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, first.Id, false,
+            await sheetService.CreateSheetAndSendFollowupAsync(builder, first.Id, false,
                 async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
             // cache recent search for discord user
@@ -86,7 +84,7 @@ internal class CharacterGetRequestHandler(
             return;
         }
 
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, character.Id, false,
+        await sheetService.CreateSheetAndSendFollowupAsync(builder, character.Id, false,
             async b => await request.Ctx.RespondAsync(b), cancellationToken);
 
         // cache recent search for discord user

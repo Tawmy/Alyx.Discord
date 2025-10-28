@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddSingleton<CachingService>();
         services.AddSingleton<ProgressBarService>();
         services.AddSingleton<CharacterClaimService>();
+        services.AddSingleton<CharacterSheetService>();
         services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterGearService>(
             CharacterGearService.Key);
         services.AddKeyedSingleton<IDiscordContainerService<CharacterDto>, CharacterAttributesService>(
@@ -99,6 +100,8 @@ public static class DependencyInjection
             .ConfirmClaim);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonConfirmUnclaimHandler>(ComponentIds.Button
             .ConfirmUnclaim);
+        services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetMoreHandler>(ComponentIds.Button
+            .CharacterSheetMore);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetGearHandler>(ComponentIds.Button
             .CharacterSheetGear);
         services.AddKeyedScoped<IComponentInteractionHandler, ButtonCharacterSheetAttributesHandler>(ComponentIds.Button

@@ -1,5 +1,5 @@
 using Alyx.Discord.Bot.Extensions;
-using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.GetMainCharacterId;
 using DSharpPlus.Entities;
@@ -8,9 +8,8 @@ using NetStone.Common.Exceptions;
 
 namespace Alyx.Discord.Bot.Requests.UserContextMenu.CharacterSheet;
 
-internal class UserContextMenuCharacterSheetRequestHandler(
-    ISender sender,
-    IInteractionDataService interactionDataService) : IRequestHandler<UserContextMenuCharacterSheetRequest>
+internal class UserContextMenuCharacterSheetRequestHandler(ISender sender, CharacterSheetService sheetService)
+    : IRequestHandler<UserContextMenuCharacterSheetRequest>
 {
     public async Task Handle(UserContextMenuCharacterSheetRequest request, CancellationToken cancellationToken)
     {
@@ -31,7 +30,7 @@ internal class UserContextMenuCharacterSheetRequestHandler(
         await request.Ctx.DeferResponseAsync();
 
         var builder = new DiscordInteractionResponseBuilder();
-        await builder.CreateSheetAndSendFollowupAsync(sender, interactionDataService, lodestoneId, false,
+        await sheetService.CreateSheetAndSendFollowupAsync(builder, lodestoneId, false,
             async b => await request.Ctx.RespondAsync(b), cancellationToken);
     }
 }
