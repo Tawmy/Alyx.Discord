@@ -20,7 +20,8 @@ internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDat
         IEnumerable<SheetMetadata> sheetMetadata;
         try
         {
-            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId);
+            sheetMetadata = await interactionDataService.GetDataAsync<IEnumerable<SheetMetadata>>(dataId,
+                cancellationToken);
         }
         catch (InvalidOperationException)
         {
@@ -52,7 +53,7 @@ internal class ButtonSheetMetadataHandler(IInteractionDataService interactionDat
             {
                 message.AppendLine($"Took {entry.Duration.TotalSeconds:F1} seconds");
             }
-            
+
             if (entry.FallbackUsed)
             {
                 message.AppendLine("*Cache Fallback*");

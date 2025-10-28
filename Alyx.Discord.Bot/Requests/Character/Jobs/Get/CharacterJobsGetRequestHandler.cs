@@ -42,7 +42,7 @@ internal class CharacterJobsGetRequestHandler(
         if (request.IsPrivate && searchDtos.Count > 1)
         {
             var componentId = await interactionDataService.AddDataAsync(request.Role,
-                ComponentIds.Select.CharacterForClassJobs);
+                ComponentIds.Select.CharacterForClassJobs, cancellationToken);
             var select = searchDtos.AsSelectComponent(componentId);
             builder = new DiscordInteractionResponseBuilder().AddTieBreakerSelect(select, searchDtos.Count);
             await request.Ctx.FollowupAsync(builder);

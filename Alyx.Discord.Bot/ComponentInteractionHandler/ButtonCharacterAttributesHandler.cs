@@ -26,7 +26,7 @@ internal class ButtonCharacterAttributesHandler(
         string lodestoneId;
         try
         {
-            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId);
+            lodestoneId = await interactionDataService.GetDataAsync<string>(dataId, cancellationToken);
         }
         catch (InvalidOperationException)
         {

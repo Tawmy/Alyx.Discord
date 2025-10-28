@@ -23,7 +23,7 @@ internal class SelectCharacterForClassJobsHandler(
 
         await args.Interaction.DeferAsync(true);
         var selectedLodestoneId = args.Values.First();
-        var role = await interactionDataService.GetDataAsync<Role>(dataId);
+        var role = await interactionDataService.GetDataAsync<Role>(dataId, cancellationToken);
 
         var container = await classJobsService.CreateContainerAsync(role, selectedLodestoneId,
             cancellationToken: cancellationToken);

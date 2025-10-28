@@ -34,7 +34,7 @@ internal interface IInteractionDataService
     /// <summary>
     ///     Get data for given ID and remove from cache.
     /// </summary>
-    /// <param name="key">Key previously returned by <see cref="AddDataAsync{T}(T)" />.</param>
+    /// <param name="key">Key previously returned by <see cref="AddDataAsync{T}(T,CancellationToken)" />.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <typeparam name="T">Data type. Data is serialized and saved to database as json.</typeparam>
     /// <returns>Data from database.</returns>

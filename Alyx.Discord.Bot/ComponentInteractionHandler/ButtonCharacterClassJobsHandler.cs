@@ -28,7 +28,8 @@ internal class ButtonCharacterClassJobsHandler(
         ClassJobInteractionDataRefresh interactionData;
         try
         {
-            interactionData = await interactionDataService.GetDataAsync<ClassJobInteractionDataRefresh>(dataId);
+            interactionData = await interactionDataService.GetDataAsync<ClassJobInteractionDataRefresh>(dataId,
+                cancellationToken);
         }
         catch (InvalidOperationException)
         {

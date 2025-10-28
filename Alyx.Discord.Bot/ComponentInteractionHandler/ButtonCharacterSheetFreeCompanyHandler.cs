@@ -28,7 +28,7 @@ internal class ButtonCharacterSheetFreeCompanyHandler(
         FreeCompanyDto? freeCompany;
         try
         {
-            freeCompany = await interactionDataService.GetDataAsync<FreeCompanyDto>(dataId);
+            freeCompany = await interactionDataService.GetDataAsync<FreeCompanyDto>(dataId, cancellationToken);
         }
         catch (InvalidOperationException)
         {
