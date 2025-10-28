@@ -35,6 +35,8 @@ internal static class Messages
 
             public const string FreeCompanyWorld = "Free Company's home world.";
 
+            public const string Role = "Role(s) to list jobs levels for.";
+
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";
         }
@@ -128,6 +130,19 @@ internal static class Messages
                 public static class AttributesMe
                 {
                     public const string Description = "Get your character's attributes.";
+                }
+            }
+
+            public static class Jobs
+            {
+                public static class JobsGet
+                {
+                    public const string Description = "Get a character's jobs.";
+                }
+
+                public static class JobsMe
+                {
+                    public const string Description = "Get your character's jobs.";
                 }
             }
 
@@ -332,12 +347,18 @@ internal static class Messages
         public const string CharacterSheetMetadata = "Sheet Metadata";
         public const string Gear = "Gear";
         public const string Attributes = "Attributes";
+        public const string ClassJobsTanksHealers = "Tanks & Healers";
+        public const string ClassJobsDpsMelee = "Melee DPS";
+        public const string ClassJobsDpsRanged = "Ranged DPS (Physical & Magical)";
+        public const string ClassJobsDiscipleHand = "Disciples of the Hand";
+        public const string ClassJobsDiscipleLand = "Disciples of the Land";
         public const string Minions = "Minions";
         public const string Mounts = "Mounts";
         public const string FreeCompany = "Free Company";
         public const string FreeCompanyMembers = "Members";
         public const string CurrentGear = "Show current gear";
         public const string CurrentAttributes = "Show current attributes";
+        public const string CurrentJobs = "Show current jobs";
         public const string CurrentFreeCompany = "Show current Free Company";
     }
 

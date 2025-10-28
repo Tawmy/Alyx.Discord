@@ -1,8 +1,10 @@
 using System.Net;
+using Alyx.Discord.Bot.ComponentInteractionHandler;
 using Alyx.Discord.Bot.Interfaces;
+using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
+using Alyx.Discord.Core.Records;
 using Alyx.Discord.Core.Requests.Character.Sheet;
-using Alyx.Discord.Core.Structs;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Api.Sdk;
@@ -95,6 +97,7 @@ internal static class BaseDiscordMessageBuilderExtensions
         var buttonAttributesId = interactionDataService.CreateDataComponentIdFromExisting(buttonGear.CustomId,
             ComponentIds.Button.CharacterSheetAttributes);
         var buttonAttributes = CreateAttributesButton(buttonAttributesId);
+        var buttonsJobs = await CreateClassJobsButtonsAsync(interactionDataService, sheet.Character, sheet.ClassJobs);
 
         List<DiscordButtonComponent> buttonsLine1 = [buttonGear, buttonAttributes];
 
@@ -113,13 +116,14 @@ internal static class BaseDiscordMessageBuilderExtensions
             buttonsLine1.Add(await CreateFreeCompanyButtonAsync(interactionDataService, freeCompany));
         }
 
-        List<DiscordButtonComponent> buttonsLine2 =
+        List<DiscordButtonComponent> buttonsLine3 =
         [
             CreateLodestoneLinkButton(lodestoneId),
             await CreateMetadataButtonAsync(interactionDataService, sheet.SheetMetadata)
         ];
 
-        builder.AddActionRowComponent(buttonsLine1).AddActionRowComponent(buttonsLine2);
+        builder.AddActionRowComponent(buttonsLine1).AddActionRowComponent(buttonsJobs)
+            .AddActionRowComponent(buttonsLine3);
 
         await respondTask(builder);
     }
@@ -155,6 +159,48 @@ internal static class BaseDiscordMessageBuilderExtensions
     private static DiscordButtonComponent CreateAttributesButton(string componentId)
     {
         return new DiscordButtonComponent(DiscordButtonStyle.Secondary, componentId, Messages.Buttons.Attributes);
+    }
+
+    private static async Task<IEnumerable<DiscordButtonComponent>> CreateClassJobsButtonsAsync(
+        IInteractionDataService interactionDataService,
+        CharacterDto character,
+        CharacterClassJobOuterDto classJobs)
+    {
+        var buttons = new List<DiscordButtonComponent>();
+
+        var interactionData = new ClassJobInteractionData
+        {
+            Role = Role.TanksHealers,
+            Character = character,
+            ClassJobs = classJobs
+        };
+
+        var idTanksHealers = await interactionDataService.AddDataAsync(interactionData,
+            ComponentIds.Button.CharacterSheetClassJobs);
+        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idTanksHealers,
+            Messages.Buttons.ClassJobsTanksHealers));
+
+        var idDpsMelee = await interactionDataService.AddDataAsync(interactionData with { Role = Role.DpsMelee },
+            ComponentIds.Button.CharacterSheetClassJobs);
+        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDpsMelee,
+            Messages.Buttons.ClassJobsDpsMelee));
+
+        var idDpsRanged = await interactionDataService.AddDataAsync(interactionData with { Role = Role.DpsRanged },
+            ComponentIds.Button.CharacterSheetClassJobs);
+        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDpsRanged,
+            Messages.Buttons.ClassJobsDpsRanged));
+
+        var idDiscipleHand = await interactionDataService.AddDataAsync(
+            interactionData with { Role = Role.DiscipleHand }, ComponentIds.Button.CharacterSheetClassJobs);
+        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDiscipleHand,
+            Messages.Buttons.ClassJobsDiscipleHand));
+
+        var idDiscipleLand = await interactionDataService.AddDataAsync(
+            interactionData with { Role = Role.DiscipleLand }, ComponentIds.Button.CharacterSheetClassJobs);
+        buttons.Add(new DiscordButtonComponent(DiscordButtonStyle.Secondary, idDiscipleLand,
+            Messages.Buttons.ClassJobsDiscipleLand));
+
+        return buttons;
     }
 
     private static async Task<DiscordButtonComponent> CreateFreeCompanyButtonAsync(

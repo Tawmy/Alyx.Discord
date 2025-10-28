@@ -1,6 +1,6 @@
-namespace Alyx.Discord.Core.Structs;
+namespace Alyx.Discord.Core.Records;
 
-internal readonly record struct NameProperties
+internal record NameProperties
 {
     public readonly FontProperties Name;
     public readonly FontProperties? Title;
@@ -21,4 +21,4 @@ internal readonly record struct NameProperties
     }
 }
 
-internal readonly record struct FontProperties(int X, int Y, int Size);
+internal record FontProperties(int X, int Y, int Size);
