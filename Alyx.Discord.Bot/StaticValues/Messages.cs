@@ -35,7 +35,7 @@ internal static class Messages
 
             public const string FreeCompanyWorld = "Free Company's home world.";
 
-            public const string Role = "Role to list jobs for.";
+            public const string Role = "Role(s) to list jobs levels for.";
 
             public const string ForceRefresh = "Whether to force a refresh from the Lodestone.";
             public const string Private = "Whether response is visible only to you.";

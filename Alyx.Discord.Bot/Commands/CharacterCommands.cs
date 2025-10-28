@@ -138,7 +138,7 @@ internal class CharacterCommands(ISender sender)
         [Command("get")]
         [Description(Messages.Commands.Character.Jobs.JobsGet.Description)]
         public Task GetAsync(SlashCommandContext ctx,
-            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            [Description(Messages.Commands.Parameters.Role)]
             Role role,
             [SlashAutoCompleteProvider<CharacterAutoCompleteProvider>]
             [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
@@ -155,7 +155,7 @@ internal class CharacterCommands(ISender sender)
         [Command("me")]
         [Description(Messages.Commands.Character.Jobs.JobsMe.Description)]
         public Task MeAsync(SlashCommandContext ctx,
-            [Description(Messages.Commands.Parameters.CharacterNameWithCompletion)]
+            [Description(Messages.Commands.Parameters.Role)]
             Role role,
             [Description(Messages.Commands.Parameters.ForceRefresh)]
             bool forceRefresh = false,
