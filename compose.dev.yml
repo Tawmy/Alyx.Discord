@@ -20,7 +20,7 @@ services:
       - /root/cert/alyx-discord:/mnt/cert
     networks:
       - default
-      - caddy
+      - reverse-proxy
     labels:
       caddy: alyx.tawmy.dev
       caddy.reverse_proxy: "{{upstreams 8080}}"
@@ -30,5 +30,5 @@ volumes:
     name: alyx-discord-db
 
 networks:
-  caddy:
+  reverse-proxy:
     external: true
