@@ -1,0 +1,17 @@
+<Solution>
+    <Folder Name="/Solution Items/">
+        <File Path=".github/workflows/build-and-push.yml"/>
+        <File Path="compose.dev.yml"/>
+        <File Path="compose.local.yml"/>
+        <File Path="compose.prod.yml"/>
+        <File Path="compose.staging.yml"/>
+        <File Path="compose.yml"/>
+    </Folder>
+    <Project Path="Alyx.Discord.Api/Alyx.Discord.Api.csproj"/>
+    <Project Path="Alyx.Discord.Bot/Alyx.Discord.Bot.csproj"/>
+    <Project Path="Alyx.Discord.Core/Alyx.Discord.Core.csproj"/>
+    <Project Path="Alyx.Discord.Db/Alyx.Discord.Db.csproj"/>
+    <Project Path="Alyx.Discord.External/Alyx.Discord.External/Alyx.Discord.External.csproj"/>
+    <Project Path="NetStone.Api.Sdk/NetStone.Api.Sdk/NetStone.Api.Sdk.csproj"/>
+    <Project Path="NetStone.Api.Sdk/NetStone.Common/NetStone.Common/NetStone.Common.csproj"/>
+</Solution>
