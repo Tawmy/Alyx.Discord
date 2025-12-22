@@ -13,7 +13,7 @@ services:
       NETSTONE_API_ROOT_URI: https://netstone.tawmy.dev
       NETSTONE_API_AUTHORITY: https://dev.ffxiv.id/realms/eorzea
     volumes:
-      - /root/cert/alyx-discord:/mnt/cert
+      - /opt/certificates/alyx-discord:/mnt/cert
     networks:
       - default
       - reverse-proxy

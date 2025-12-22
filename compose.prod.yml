@@ -10,7 +10,7 @@ services:
     ports:
       - "1337:8080" # monitoring
     volumes:
-      - /root/cert/alyx-discord:/mnt/cert
+      - /opt/certificates/netstone-api:/mnt/cert
     networks:
       - default
       - reverse-proxy
