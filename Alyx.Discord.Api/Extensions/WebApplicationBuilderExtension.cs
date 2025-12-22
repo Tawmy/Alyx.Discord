@@ -1,9 +1,9 @@
 using System.Security.Cryptography.X509Certificates;
 using Alyx.Discord.Db;
+using AspNetCoreExtensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Api.Extensions;
 

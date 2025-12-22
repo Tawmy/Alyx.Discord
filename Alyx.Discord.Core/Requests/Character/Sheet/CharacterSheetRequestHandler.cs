@@ -26,25 +26,25 @@ internal class CharacterSheetRequestHandler(
         ConcurrentDictionary<Task, Stopwatch> tasks = [];
 
         var taskCharacter = apiCharacter.GetAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeCharacter,
-            FallbackType.Any, cancellationToken);
+            FallbackTypeV4.Any, cancellationToken);
         var stopwatchCharacter = new Stopwatch();
         stopwatchCharacter.Start();
         tasks.GetOrAdd(taskCharacter, stopwatchCharacter);
 
         var taskClassJobs = apiCharacter.GetClassJobsAsync(id,
-            request.ForceRefresh ? 0 : config.NetStone.MaxAgeClassJobs, FallbackType.Any, cancellationToken);
+            request.ForceRefresh ? 0 : config.NetStone.MaxAgeClassJobs, FallbackTypeV4.Any, cancellationToken);
         var stopwatchClassJobs = new Stopwatch();
         stopwatchClassJobs.Start();
         tasks.GetOrAdd(taskClassJobs, stopwatchClassJobs);
 
         var taskMinions = apiCharacter.GetMinionsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMinions,
-            FallbackType.Any, cancellationToken);
+            FallbackTypeV4.Any, cancellationToken);
         var stopwatchMinions = new Stopwatch();
         stopwatchMinions.Start();
         tasks.GetOrAdd(taskMinions, stopwatchMinions);
 
         var taskMounts = apiCharacter.GetMountsAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeMounts,
-            FallbackType.Any, cancellationToken);
+            FallbackTypeV4.Any, cancellationToken);
         var stopwatchMounts = new Stopwatch();
         stopwatchMounts.Start();
         tasks.GetOrAdd(taskMounts, stopwatchMounts);
@@ -75,7 +75,8 @@ internal class CharacterSheetRequestHandler(
                 // returning tag of cached fc is not a good idea either because it might be outdated
                 freeCompanyStopwatch.Start();
                 freeCompany = await apiFreeCompany.GetAsync(taskCharacter.Result.FreeCompany.Id,
-                    request.ForceRefresh ? 0 : config.NetStone.MaxAgeFreeCompany, FallbackType.Any, cancellationToken);
+                    request.ForceRefresh ? 0 : config.NetStone.MaxAgeFreeCompany, FallbackTypeV4.Any,
+                    cancellationToken);
             }
             catch (NotFoundException)
             {

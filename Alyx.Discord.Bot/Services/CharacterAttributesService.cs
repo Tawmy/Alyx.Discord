@@ -4,6 +4,7 @@ using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.Character.GetCharacter;
+using AspNetCoreExtensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;

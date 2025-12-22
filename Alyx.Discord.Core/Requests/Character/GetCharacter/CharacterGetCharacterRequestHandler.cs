@@ -10,6 +10,6 @@ public class CharacterGetCharacterRequestHandler(INetStoneApiCharacter apiCharac
 {
     public Task<CharacterDto> Handle(CharacterGetCharacterRequest request, CancellationToken cancellationToken)
     {
-        return apiCharacter.GetAsync(request.LodestoneId, request.MaxAge, FallbackType.Any, cancellationToken);
+        return apiCharacter.GetAsync(request.LodestoneId, request.MaxAge, FallbackTypeV4.Any, cancellationToken);
     }
 }

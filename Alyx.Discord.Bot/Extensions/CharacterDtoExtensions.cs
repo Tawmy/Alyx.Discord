@@ -1,8 +1,8 @@
 using Alyx.Discord.Bot.Services;
+using AspNetCoreExtensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using NetStone.Common.DTOs.Character;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Extensions;
 

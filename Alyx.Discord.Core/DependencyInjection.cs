@@ -1,10 +1,10 @@
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Services;
+using AspNetCoreExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetStone.Api.Sdk;
 using NetStone.Api.Sdk.DependencyInjection;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Core;
 
@@ -26,13 +26,22 @@ public static class DependencyInjection
         var apiRootUri = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiRootUri));
         var authAuthority = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiAuthority));
         var authClientId = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientId);
-        var authClientSecret = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientSecret);
         var authScopes = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiScopes);
-        var authScopesArray =
-            authScopes.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var authScopesArray = authScopes.Split(" ",
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var certDir = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientSignedJwtCert);
+        var certPath = $"{certDir}.pem";
+        var keyPath = $"{certDir}.key";
 
-        var options = new NetStoneApiOptions(apiRootUri, authAuthority, authClientId, authClientSecret,
-            authScopesArray);
+        var options = new NetStoneApiOptions
+        {
+            ApiBaseAddress = apiRootUri,
+            AuthAuthority = authAuthority,
+            AuthClientId = authClientId,
+            CertificatePath = certPath,
+            PrivateKeyPath = keyPath,
+            AuthScopes = authScopesArray
+        };
 
         services.AddNetStoneApi(options);
     }

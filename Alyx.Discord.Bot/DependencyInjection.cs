@@ -7,6 +7,7 @@ using Alyx.Discord.Bot.Services;
 using Alyx.Discord.Bot.Services.CharacterJobs;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Requests.Character.Search;
+using AspNetCoreExtensions;
 using DSharpPlus;
 using DSharpPlus.Commands;
 using DSharpPlus.Commands.Processors.MessageCommands;
@@ -17,7 +18,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetStone.Common.DTOs.Character;
 using NetStone.Common.DTOs.FreeCompany;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot;
 

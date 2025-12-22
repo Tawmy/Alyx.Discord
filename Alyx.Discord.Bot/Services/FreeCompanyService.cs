@@ -4,13 +4,13 @@ using Alyx.Discord.Bot.Interfaces;
 using Alyx.Discord.Bot.StaticValues;
 using Alyx.Discord.Core.Configuration;
 using Alyx.Discord.Core.Requests.FreeCompany.GetFreeCompany;
+using AspNetCoreExtensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using MediatR;
 using NetStone.Common.DTOs.FreeCompany;
 using NetStone.Common.Enums;
 using NetStone.Common.Exceptions;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Bot.Services;
 

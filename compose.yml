@@ -20,15 +20,16 @@
     environment:
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
       BOT_TOKEN: ${BOT_TOKEN}
+      DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
       STATUS_MESSAGE: "Add me to your apps!"
       
       # NetStone API and Alyx API split into separate configurations to allow for different Keycloak realms
       # authorizing with NetStone API
-      NETSTONE_API_ROOT_URI: https://netstone.api.tawmy.net
-      NETSTONE_API_AUTHORITY: https://auth.tawmy.net/realms/xiv
-      NETSTONE_API_CLIENT_ID: ${NETSTONE_API_CLIENT_ID}
-      NETSTONE_API_CLIENT_SECRET: ${NETSTONE_API_CLIENT_SECRET}
-      NETSTONE_API_SCOPES: netstone.api
+      NETSTONE_API_ROOT_URI: https://netstone.eorzea.online
+      NETSTONE_API_AUTHORITY: https://ffxiv.id/realms/eorzea
+      NETSTONE_API_CLIENT_ID: alyx-discord
+      NETSTONE_API_SCOPES: netstone-api
+      NETSTONE_API_CLIENT_SIGNED_JWT_CERTIFICATE: /mnt/cert/signed-jwt
       
       NETSTONE_MAX_AGE_CHARACTER: "60" # one hour
       NETSTONE_MAX_AGE_CLASS_JOBS: "60" # one hour
@@ -37,8 +38,8 @@
       NETSTONE_MAX_FREE_COMPANY: "10080" # one week
       
       # JWT token validation in API
-      AUTH_AUTHORITY: https://auth.tawmy.net/realms/xiv
-      AUTH_AUDIENCE: alyx.discord
+      AUTH_AUTHORITY: https://ffxiv.id/realms/eorzea
+      AUTH_AUDIENCE: alyx-discord
       
       LOGGING__LOGLEVEL__DEFAULT: Information
       LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE: Warning
