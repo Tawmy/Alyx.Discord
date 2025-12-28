@@ -38,8 +38,8 @@ public static class DependencyInjection
             ApiBaseAddress = apiRootUri,
             AuthAuthority = authAuthority,
             AuthClientId = authClientId,
-            CertificatePath = certPath,
-            PrivateKeyPath = keyPath,
+            AuthCertificatePath = certPath,
+            AuthPrivateKeyPath = keyPath,
             AuthScopes = authScopesArray
         };
 

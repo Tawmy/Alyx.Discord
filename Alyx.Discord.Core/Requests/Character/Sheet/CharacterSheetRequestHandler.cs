@@ -26,7 +26,7 @@ internal class CharacterSheetRequestHandler(
         ConcurrentDictionary<Task, Stopwatch> tasks = [];
 
         var taskCharacter = apiCharacter.GetAsync(id, request.ForceRefresh ? 0 : config.NetStone.MaxAgeCharacter,
-            FallbackTypeV4.Any, cancellationToken);
+            true, FallbackTypeV4.Any, cancellationToken);
         var stopwatchCharacter = new Stopwatch();
         stopwatchCharacter.Start();
         tasks.GetOrAdd(taskCharacter, stopwatchCharacter);

@@ -17,13 +17,17 @@ internal static class CharacterDtoExtensions
         var job = character.ActiveClassJob.GetSpaceSeparatedDisplayString();
         var homeWorldEmoji = cachingService.GetApplicationEmoji("homeWorld");
 
+        var imageUrl = fullPortrait
+            ? character.PortraitS3 ?? character.Portrait
+            : character.AvatarS3 ?? character.Avatar;
+
         return new DiscordSectionComponent(
             new DiscordTextDisplayComponent($"""
                                              # {character.Name}
                                              {jobPrefix}{job} • Lv. {character.ActiveClassJobLevel}
                                              -# {Formatter.Emoji(homeWorldEmoji)} {character.Server}
                                              """),
-            new DiscordThumbnailComponent(fullPortrait ? character.Portrait : character.Avatar)
+            new DiscordThumbnailComponent(imageUrl)
         );
     }
 }
