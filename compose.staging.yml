@@ -1,4 +1,8 @@
 services:
   bot:
+    environment:
+      NETSTONE_API_ROOT_URI: https://netstone.staging.eorzea.online
+      NETSTONE_API_AUTHORITY: https://staging.ffxiv.id/realms/eorzea
+      AUTH_AUTHORITY: https://staging.ffxiv.id/realms/eorzea
     labels:
       caddy: alyx.staging.tawmy.net
