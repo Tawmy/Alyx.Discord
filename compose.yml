@@ -15,7 +15,7 @@
       retries: 5
   
   bot:
-    image: ghcr.io/tawmy/alyx.discord:1.9.0
+    image: ghcr.io/tawmy/alyx.discord:1.10.0
     restart: unless-stopped
     environment:
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
