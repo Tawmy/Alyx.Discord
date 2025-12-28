@@ -5,4 +5,4 @@ services:
       NETSTONE_API_AUTHORITY: https://staging.ffxiv.id/realms/eorzea
       AUTH_AUTHORITY: https://staging.ffxiv.id/realms/eorzea
     labels:
-      caddy: alyx.staging.tawmy.net
+      caddy: alyx.staging.eorzea.online

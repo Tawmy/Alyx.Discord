@@ -79,6 +79,8 @@ internal class AboutRequestHandler(ISender sender, CachingService cachingService
              -# {Formatter.MaskedUrl("FluentValidation", new Uri("https://github.com/FluentValidation/FluentValidation"))} • Apache-2.0 License
              -# {Formatter.MaskedUrl("ImageSharp.Drawing", new Uri("https://github.com/SixLabors/ImageSharp.Drawing"))} • Six Labors Split License
              -# {Formatter.MaskedUrl("MediatR", new Uri("https://github.com/jbogard/MediatR"))} • Apache-2.0 License
+             -# {Formatter.MaskedUrl("NetStone.Api.Sdk", new Uri("https://github.com/Tawmy/NetStone.Api.Sdk"))} • Apache-2.0 License
+             -# {Formatter.MaskedUrl("Swashbuckle.AspNetCore", new Uri("https://github.com/domaindrivendev/Swashbuckle.AspNetCore"))} • MIT License
 
              Built on top of .NET and many Microsoft libraries
              -# All licensed under the MIT License

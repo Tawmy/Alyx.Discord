@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02554"/>
-        <PackageReference Include="DSharpPlus.Commands" Version="5.0.0-nightly-02554"/>
+        <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02566"/>
+        <PackageReference Include="DSharpPlus.Commands" Version="5.0.0-nightly-02566"/>
         <PackageReference Include="MediatR" Version="12.5.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1"/>
