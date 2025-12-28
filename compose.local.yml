@@ -9,7 +9,6 @@ services:
       context: .
       dockerfile: Alyx.Discord.Api/Dockerfile
     environment:
-      DEBUG_GUILD_ID: 1284800895967559711
       STATUS_MESSAGE: "I'm in development!"
       AUTH_AUTHORITY: https://id.ffxiv.local/realms/eorzea-dev
       NETSTONE_API_ROOT_URI: https://api.netstone.local

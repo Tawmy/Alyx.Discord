@@ -55,7 +55,6 @@ public static class DependencyInjection
             x.LogUnknownEvents = false;
         });
 
-        var debugGuildId = configuration.GetOptionalConfiguration<ulong>(EnvironmentVariables.DebugGuildId) ?? 0;
         services.AddCommandsExtension((_, x) =>
             {
                 x.AddProcessor<SlashCommandProcessor>();
@@ -70,7 +69,7 @@ public static class DependencyInjection
                 // using generic type does not work if class isn't a command
                 x.AddCommands(typeof(UserContextMenuCommands));
             },
-            new CommandsConfiguration { DebugGuildId = debugGuildId, RegisterDefaultCommandProcessors = false });
+            new CommandsConfiguration { RegisterDefaultCommandProcessors = false });
 
         services.AddComponentInteractionHandlers();
         services.ConfigureEventHandlers(x =>
