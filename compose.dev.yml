@@ -9,18 +9,14 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
-      AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      AUTH_AUDIENCE: alyx-discord
-      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
-      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      NETSTONE_API_SCOPES: basic
-      NETSTONE_API_CLIENT_ID: alyx-discord
+      AUTH_AUTHORITY: https://dev.ffxiv.id/realms/eorzea
+      NETSTONE_API_ROOT_URI: https://netstone.tawmy.dev
+      NETSTONE_API_AUTHORITY: https://dev.ffxiv.id/realms/eorzea
     volumes:
-      - /root/cert/alyx-discord:/mnt/cert
+      - /opt/certificates/alyx-discord:/mnt/cert
     networks:
       - default
-      - caddy
+      - reverse-proxy
     labels:
       caddy: alyx.tawmy.dev
       caddy.reverse_proxy: "{{upstreams 8080}}"
@@ -30,5 +26,5 @@ volumes:
     name: alyx-discord-db
 
 networks:
-  caddy:
+  reverse-proxy:
     external: true

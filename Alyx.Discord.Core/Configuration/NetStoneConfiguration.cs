@@ -1,5 +1,5 @@
+using AspNetCoreExtensions;
 using Microsoft.Extensions.Configuration;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Core.Configuration;
 

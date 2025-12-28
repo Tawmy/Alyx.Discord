@@ -1,25 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="12.0.0"/>
+        <PackageReference Include="FluentValidation" Version="12.1.1"/>
         <PackageReference Include="MediatR" Version="12.5.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10"/>
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.10"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1"/>
+        <PackageReference Include="NetStone.Api.Sdk" Version="4.1.0"/>
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Alyx.Discord.Db\Alyx.Discord.Db.csproj"/>
-        <ProjectReference Include="..\NetStone.Api.Sdk\NetStone.Api.Sdk\NetStone.Api.Sdk.csproj"/>
-        <ProjectReference Include="..\NetStone.Api.Sdk\NetStone.Common\NetStone.Common\NetStone.Common.csproj"/>
     </ItemGroup>
 
 </Project>

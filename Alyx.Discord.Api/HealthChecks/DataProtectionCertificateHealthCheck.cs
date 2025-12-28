@@ -1,6 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
+using AspNetCoreExtensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using NetStone.Common.Extensions;
 
 namespace Alyx.Discord.Api.HealthChecks;
 

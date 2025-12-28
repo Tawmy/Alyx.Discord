@@ -11,6 +11,7 @@ public class CharacterGetCharacterClassJobsRequestHandler(INetStoneApiCharacter 
     public Task<CharacterClassJobOuterDto> Handle(CharacterGetCharacterClassJobsRequest request,
         CancellationToken cancellationToken)
     {
-        return apiCharacter.GetClassJobsAsync(request.LodestoneId, request.MaxAge, FallbackType.Any, cancellationToken);
+        return apiCharacter.GetClassJobsAsync(request.LodestoneId, request.MaxAge, FallbackTypeV4.Any,
+            cancellationToken);
     }
 }

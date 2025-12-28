@@ -10,6 +10,6 @@ public class FreeCompanyGetFreeCompanyRequestHandler(INetStoneApiFreeCompany api
 {
     public Task<FreeCompanyDto> Handle(FreeCompanyGetFreeCompanyRequest request, CancellationToken cancellationToken)
     {
-        return apiFc.GetAsync(request.LodestoneId, request.MaxAge, FallbackType.Any, cancellationToken);
+        return apiFc.GetAsync(request.LodestoneId, request.MaxAge, FallbackTypeV4.Any, cancellationToken);
     }
 }

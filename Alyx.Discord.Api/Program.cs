@@ -7,6 +7,7 @@ using Alyx.Discord.Core;
 using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.HealthChecks;
 using Alyx.Discord.Db;
+using AspNetCoreExtensions.Keycloak;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,7 @@ app.UseAuthorization();
 app.UseHealthChecks();
 
 app.MapControllers();
+app.MapJwksEndpoint();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 

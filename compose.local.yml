@@ -9,22 +9,15 @@ services:
       context: .
       dockerfile: Alyx.Discord.Api/Dockerfile
     environment:
-      DEBUG_GUILD_ID: 1284800895967559711
       STATUS_MESSAGE: "I'm in development!"
-      DATA_PROTECTION_CERTIFICATE: /mnt/cert/alyx-discord
-      AUTH_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      AUTH_AUDIENCE: alyx-discord
-      NETSTONE_API_ROOT_URI: https://api.netstone.tawmy.dev
-      NETSTONE_API_AUTHORITY: https://auth.tawmy.dev/realms/xiv
-      NETSTONE_API_SCOPES: basic
-      NETSTONE_API_CLIENT_ID: alyx-discord
+      AUTH_AUTHORITY: https://id.ffxiv.local/realms/eorzea-dev
+      NETSTONE_API_ROOT_URI: https://api.netstone.local
+      NETSTONE_API_AUTHORITY: https://id.ffxiv.local/realms/eorzea-dev
     volumes:
-      - /Users/tawmy/Desktop/cert/alyx-discord:/mnt/cert
+      - /Users/tawmy/Desktop/asp-keys/alyx-discord:/mnt/cert
     labels:
       - dev.orbstack.domains=alyx.discord.local
-    ports:
-      - "8086:8080"
 
 volumes:
   postgres_data:
-    name: alyx-postgres
+    name: alyx-db
