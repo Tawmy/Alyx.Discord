@@ -1,4 +1,4 @@
 services:
   bot:
     labels:
-      caddy: alyx.staging.tawmy.net
+      caddy: alyx.staging.eorzea.online

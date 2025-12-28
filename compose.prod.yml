@@ -10,12 +10,12 @@ services:
     ports:
       - "1337:8080" # monitoring
     volumes:
-      - /opt/certificates/netstone-api:/mnt/cert
+      - /opt/certificates/alyx-discord:/mnt/cert
     networks:
       - default
       - reverse-proxy
     labels:
-      caddy: alyx.tawmy.net
+      caddy: alyx.eorzea.online
       caddy.reverse_proxy: "{{upstreams 8080}}"
 
 volumes:
