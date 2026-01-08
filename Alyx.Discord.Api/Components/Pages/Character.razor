@@ -1,0 +1,39 @@
+@inject ISender Sender
+@page "/Character/{lodestoneId}"
+@using Alyx.Discord.Core.Requests.Character.Sheet
+@using MediatR
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Webp
+
+@if (_characterSheetResponse is not null)
+{
+    <HeadContent>
+        <meta property="og:title"
+              content="@_characterSheetResponse.Character.Name (@_characterSheetResponse.Character.Server"/>
+        <meta property="og:image" content="@_imageSource"/>
+    </HeadContent>
+}
+
+@if (_imageSource is not null)
+{
+    <img src="@_imageSource" alt="Character Sheet"/>
+}
+
+@code {
+    [Parameter] public string? LodestoneId { get; set; }
+    private CharacterSheetResponse? _characterSheetResponse;
+    private string? _imageSource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LodestoneId is null)
+        {
+            return;
+        }
+
+        _characterSheetResponse = await Sender.Send(new CharacterSheetRequest(LodestoneId, false));
+        var image = _characterSheetResponse.Image;
+        _imageSource = image.ToBase64String(WebpFormat.Instance);
+    }
+
+}
