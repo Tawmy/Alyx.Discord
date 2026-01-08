@@ -14,19 +14,7 @@
 {
     <div>No character data provided.</div>
 }
-else if (!_loaded)
-{
-    <div>Loading...</div>
-}
-else if (LodestoneId is null)
-{
-    <div>Character not found.</div>
-}
-else if (_characterSheetResponse is null)
-{
-    <div>Error loading character sheet.</div>
-}
-else
+else if (!RendererInfo.IsInteractive && _characterSheetResponse is not null)
 {
     <HeadContent>
         <meta property="og:title"
@@ -39,8 +27,19 @@ else
         <meta name="twitter:image:src" content="@(NavManager.BaseUri)api/sheet/@LodestoneId">
     </HeadContent>
 }
-
-@if (_imageSource is not null)
+else if (!_loaded)
+{
+    <div>Loading...</div>
+}
+else if (LodestoneId is null)
+{
+    <div>Character not found.</div>
+}
+else if (_characterSheetResponse is null)
+{
+    <div>Error loading character sheet.</div>
+}
+else if (_imageSource is not null)
 {
     <img src="@_imageSource" alt="Character Sheet"/>
 }
@@ -88,6 +87,38 @@ else
         await LoadCharacterAsync(LodestoneId);
         _loaded = true;
         await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (RendererInfo.IsInteractive)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(LodestoneId))
+        {
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Server))
+            {
+                return;
+            }
+
+            try
+            {
+                await SearchCharacterAsync(Name, Server);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        if (LodestoneId is null)
+        {
+            return;
+        }
+
+        await LoadCharacterAsync(LodestoneId);
     }
 
     private async Task SearchCharacterAsync(string name, string world)
