@@ -1,16 +1,17 @@
 @inject ISender Sender
-@page "/Character/{lodestoneId}"
+@inject NavigationManager NavManager
+@page "/character/{lodestoneId}"
 @using Alyx.Discord.Core.Requests.Character.Sheet
 @using MediatR
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Webp
 
-@if (_characterSheetResponse is not null)
+@if (LodestoneId is not null && _characterSheetResponse is not null)
 {
     <HeadContent>
         <meta property="og:title"
-              content="@_characterSheetResponse.Character.Name (@_characterSheetResponse.Character.Server"/>
-        <meta property="og:image" content="@_imageSource"/>
+              content="@_characterSheetResponse.Character.Name (@_characterSheetResponse.Character.Server)"/>
+        <meta property="og:image" content="@(NavManager.BaseUri)api/sheet/{@LodestoneId}"/>
     </HeadContent>
 }
 

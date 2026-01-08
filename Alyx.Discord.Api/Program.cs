@@ -8,17 +8,18 @@ using Alyx.Discord.Core.Extensions;
 using Alyx.Discord.Core.HealthChecks;
 using Alyx.Discord.Db;
 using AspNetCoreExtensions.Keycloak;
+using FastEndpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.AddGenericRequestHandlers();
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var version = typeof(Program).Assembly.GetName().Version!;
 builder.Services.AddSingleton(version);
+builder.Services.AddFastEndpoints();
 
 builder.Services.AddDataProtection(builder.Configuration);
 
@@ -55,8 +56,8 @@ app.UseAntiforgery();
 app.UseAuthorization();
 app.UseHealthChecks();
 
-app.MapControllers();
 app.MapJwksEndpoint();
+app.MapFastEndpoints();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
