@@ -18,6 +18,7 @@
     image: ghcr.io/tawmy/alyx.discord:1.10.0
     restart: unless-stopped
     environment:
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
       BOT_TOKEN: ${BOT_TOKEN}
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
