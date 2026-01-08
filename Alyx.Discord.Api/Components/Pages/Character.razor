@@ -1,12 +1,32 @@
 @inject ISender Sender
 @inject NavigationManager NavManager
+@page "/character"
 @page "/character/{lodestoneId}"
+@page "/character/{server}/{name}"
+@using Alyx.Discord.Core.Requests.Character.Search
 @using Alyx.Discord.Core.Requests.Character.Sheet
 @using MediatR
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Webp
+@rendermode InteractiveServer
 
-@if (LodestoneId is not null && _characterSheetResponse is not null)
+@if (string.IsNullOrWhiteSpace(LodestoneId) && (string.IsNullOrWhiteSpace(Server) || string.IsNullOrWhiteSpace(Name)))
+{
+    <div>No character data provided.</div>
+}
+else if (!_loaded)
+{
+    <div>Loading...</div>
+}
+else if (LodestoneId is null)
+{
+    <div>Character not found.</div>
+}
+else if (_characterSheetResponse is null)
+{
+    <div>Error loading character sheet.</div>
+}
+else
 {
     <HeadContent>
         <meta property="og:title"
@@ -27,17 +47,74 @@
 
 @code {
     [Parameter] public string? LodestoneId { get; set; }
+    [Parameter] public string? Server { get; set; }
+    [Parameter] public string? Name { get; set; }
+    private bool _loaded;
     private CharacterSheetResponse? _characterSheetResponse;
     private string? _imageSource;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (LodestoneId is null)
+        if (!firstRender)
         {
             return;
         }
 
-        _characterSheetResponse = await Sender.Send(new CharacterSheetRequest(LodestoneId, false));
+        if (string.IsNullOrWhiteSpace(LodestoneId))
+        {
+            if (string.IsNullOrWhiteSpace(Server) || string.IsNullOrWhiteSpace(Name))
+            {
+                _loaded = true;
+                return;
+            }
+
+            try
+            {
+                await SearchCharacterAsync(Name, Server);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        if (LodestoneId is null)
+        {
+            _loaded = true;
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        await LoadCharacterAsync(LodestoneId);
+        _loaded = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SearchCharacterAsync(string name, string world)
+    {
+        world = $"{char.ToUpper(world[0])}{world[1..]}";
+
+        var results = await Sender.Send(new CharacterSearchRequest(name, world));
+
+        if (!results.Any())
+        {
+            return;
+        }
+
+        LodestoneId = results.First().Id;
+    }
+
+    private async Task LoadCharacterAsync(string lodestoneId)
+    {
+        try
+        {
+            _characterSheetResponse = await Sender.Send(new CharacterSheetRequest(lodestoneId, false));
+        }
+        catch
+        {
+            return;
+        }
+
         var image = _characterSheetResponse.Image;
         _imageSource = image.ToBase64String(WebpFormat.Instance);
     }
