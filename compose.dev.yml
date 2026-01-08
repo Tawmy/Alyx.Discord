@@ -3,7 +3,7 @@ services:
     container_name: alyx-discord-db
 
   bot:
-    image: ghcr.io/tawmy/alyx.discord:main
+    image: ghcr.io/tawmy/alyx.discord:feature-character-page
     container_name: alyx-discord
     depends_on:
       db:
