@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+ARG TARGETARCH
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+COPY publish/${TARGETARCH} .
+ENTRYPOINT ["dotnet", "Alyx.Discord.Api.dll"]
