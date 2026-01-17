@@ -10,15 +10,15 @@
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d alyx -U alyx" ]
-      interval: 10s
-      timeout: 5s
+      interval: 5s
+      timeout: 3s
       retries: 5
   
   bot:
     image: ghcr.io/tawmy/alyx.discord:1.10.0
     restart: unless-stopped
     environment:
-      DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD}
+      DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD};GSS Encryption Mode=Disable
       BOT_TOKEN: ${BOT_TOKEN}
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
       STATUS_MESSAGE: "Add me to your apps!"
