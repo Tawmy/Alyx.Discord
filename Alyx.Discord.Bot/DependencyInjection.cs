@@ -49,7 +49,7 @@ public static class DependencyInjection
         });
 
         var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
-        services.AddDiscordClient(token, DiscordIntents.AllUnprivileged).Configure<DiscordConfiguration>(x =>
+        services.AddDiscordClient(token, DiscordIntents.None).Configure<DiscordConfiguration>(x =>
         {
             x.LogUnknownAuditlogs = false;
             x.LogUnknownEvents = false;
