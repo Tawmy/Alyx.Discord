@@ -65,6 +65,14 @@ internal class CharacterGearService(
         c.Add(CreateGearTextDisplayComponent(gear1));
         c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
 
+        if (character.Gear.Any(x => x.Slot == GearSlot.Facewear))
+        {
+            c.Add(CreateGearTextDisplayComponent([
+                CreateGearString(character.Gear, GearSlot.Facewear, "Facewear")
+            ]));
+            c.Add(new DiscordSeparatorComponent(true, DiscordSeparatorSpacing.Large));
+        }
+
         string?[] gear2 =
         [
             CreateGearString(character.Gear, GearSlot.Head, "head"),
@@ -149,11 +157,14 @@ internal class CharacterGearService(
             : gear.StrippedItemName ?? gear.ItemName);
         sb.Append("**");
 
-        sb.AppendLine($" • {gear.ItemLevel}");
+        sb.AppendLine(slot != GearSlot.Facewear ? $" • {gear.ItemLevel}" : string.Empty);
 
         if (!string.IsNullOrEmpty(gear.GlamourName))
         {
-            var pfx = $"{Formatter.Emoji(cachingService.GetApplicationEmoji("glamour"))} ";
+            var pfx = slot != GearSlot.Facewear
+                ? $"{Formatter.Emoji(cachingService.GetApplicationEmoji("glamour"))} "
+                : string.Empty;
+
             sb.AppendLine(gear.GlamourDatabaseLink is not null
                 ? $"{pfx}{Formatter.MaskedUrl(gear.GlamourName, new Uri(gear.GlamourDatabaseLink))}"
                 : $"{pfx}{gear.GlamourName}");
