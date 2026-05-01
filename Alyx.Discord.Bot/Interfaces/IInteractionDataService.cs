@@ -5,7 +5,7 @@ namespace Alyx.Discord.Bot.Interfaces;
 internal interface IInteractionDataService
 {
     /// <summary>
-    ///     Add data to cache. A new key identifying the object in the database will be returned.
+    /// Add data to cache. A new key identifying the object in the database will be returned.
     /// </summary>
     /// <param name="data">Data to cache.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -13,7 +13,7 @@ internal interface IInteractionDataService
     /// <returns>Newly generated key identifying the object in the database.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <see cref="data" /> is null.</exception>
     /// <exception cref="UniqueConstraintException">
-    ///     Thrown if data for key already exists. Should never happen as key is automatically generated.
+    /// Thrown if data for key already exists. Should never happen as key is automatically generated.
     /// </exception>
     Task<Guid> AddDataAsync<T>(T data, CancellationToken cancellationToken = default);
 
@@ -23,8 +23,8 @@ internal interface IInteractionDataService
     Task<string> AddDataAsync<T>(T data, string componentId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Creates a new component ID by replacing an existing data component ID's component ID with a new one.
-    ///     Allows referencing the same cached data multiple times.
+    /// Creates a new component ID by replacing an existing data component ID's component ID with a new one.
+    /// Allows referencing the same cached data multiple times.
     /// </summary>
     /// <param name="existingDataComponentId">The existing data component ID.</param>
     /// <param name="newComponentId">The new component ID to combine with the existing one.</param>
@@ -32,7 +32,7 @@ internal interface IInteractionDataService
     string CreateDataComponentIdFromExisting(string existingDataComponentId, string newComponentId);
 
     /// <summary>
-    ///     Get data for given ID and remove from cache.
+    /// Get data for given ID and remove from cache.
     /// </summary>
     /// <param name="key">Key previously returned by <see cref="AddDataAsync{T}(T,CancellationToken)" />.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -43,7 +43,7 @@ internal interface IInteractionDataService
     Task<T> GetDataAsync<T>(string key, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Parse component string and return data.
+    /// Parse component string and return data.
     /// </summary>
     /// <param name="componentString">Component string with Component ID and Data key. Format: ComponentId/DataKey</param>
     /// <param name="cancellationToken">Cancellation token.</param>

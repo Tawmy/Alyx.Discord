@@ -11,11 +11,11 @@ public static class EnvironmentVariables
     public const string NetStoneApiScopes = "NETSTONE_API_SCOPES";
 
     /// <summary>
-    ///     ECDSA P-256 PEM formatted certificate to sign JWTs with.
+    /// ECDSA P-256 PEM formatted certificate to sign JWTs with.
     /// </summary>
     /// <remarks>
-    ///     Use path + file name WITHOUT extension. .pem and .key extensions for both files will be added automatically.
-    ///     See compose.yml for reference.
+    /// Use path + file name WITHOUT extension. .pem and .key extensions for both files will be added automatically.
+    /// See compose.yml for reference.
     /// </remarks>
     public const string NetStoneApiClientSignedJwtCert = "NETSTONE_API_CLIENT_SIGNED_JWT_CERTIFICATE";
 
