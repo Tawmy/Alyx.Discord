@@ -170,6 +170,26 @@ internal class CharacterGearService(
                 : $"{pfx}{gear.GlamourName}");
         }
 
+        if (gear.Dye1 is not null || gear.Dye2 is not null)
+        {
+            if (gear.Dye1 is not null)
+            {
+                sb.Append($"-# Dye 1: {gear.Dye1.Name}");
+            }
+
+            if (gear.Dye1 is not null && gear.Dye2 is not null)
+            {
+                sb.Append(Environment.NewLine);
+            }
+
+            if (gear.Dye2 is not null)
+            {
+                sb.Append($"-# Dye 2: {gear.Dye2.Name}");
+            }
+
+            sb.AppendLine();
+        }
+
         return sb.ToString();
     }
 
