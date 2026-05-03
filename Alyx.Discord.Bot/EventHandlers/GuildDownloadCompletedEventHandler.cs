@@ -6,7 +6,7 @@ using DSharpPlus.EventArgs;
 namespace Alyx.Discord.Bot.EventHandlers;
 
 /// <summary>
-///     Event is fired when bot is fully ready.
+/// Event is fired when bot is fully ready.
 /// </summary>
 internal class GuildDownloadCompletedEventHandler(AlyxConfiguration config)
     : IEventHandler<GuildDownloadCompletedEventArgs>

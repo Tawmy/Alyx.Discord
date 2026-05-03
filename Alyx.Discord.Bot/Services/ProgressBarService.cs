@@ -6,7 +6,7 @@ namespace Alyx.Discord.Bot.Services;
 internal class ProgressBarService(CachingService cachingService)
 {
     /// <summary>
-    ///     Create a progress bar with the given style.
+    /// Create a progress bar with the given style.
     /// </summary>
     /// <param name="style">The emoji used depend on this progress bar style.</param>
     /// <param name="length">Length of the progress bar in emoji</param>

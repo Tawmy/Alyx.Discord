@@ -105,7 +105,7 @@ internal class CharacterClaimRequestHandler(DatabaseContext context, INetStoneAp
 
 
     /// <summary>
-    ///     Check whether code has been added to Lodestone profile.
+    /// Check whether code has been added to Lodestone profile.
     /// </summary>
     /// <param name="lodestoneId">Lodestone ID of character.</param>
     /// <param name="code">Code that user was supposed to add to character's Lodestone profile.</param>
