@@ -21,7 +21,7 @@
       DB_CONNECTION_STRING: Host=db;Database=alyx;Username=alyx;Password=${DB_PASSWORD};GSS Encryption Mode=Disable
       BOT_TOKEN: ${BOT_TOKEN}
       DATA_PROTECTION_CERTIFICATE: /mnt/cert/data-protection
-      STATUS_MESSAGE: "Add me to your apps!"
+      STATUS_MESSAGE: "Just updated!"
       
       # NetStone API and Alyx API split into separate configurations to allow for different Keycloak realms
       # authorizing with NetStone API
