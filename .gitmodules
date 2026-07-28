@@ -1,3 +1,3 @@
 [submodule "Alyx.Discord.External"]
 	path = Alyx.Discord.External
-	url = https://github.com/Tawmy/Alyx.Discord.External
+	url = git@github.com:Tawmy/Alyx.Discord.External.git
