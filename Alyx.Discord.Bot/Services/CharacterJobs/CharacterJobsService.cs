@@ -159,6 +159,7 @@ internal class CharacterClassJobsService(
         sb.AppendLine(CreateClassJobString(classJobs, ClassJob.Samurai));
         sb.AppendLine(CreateClassJobString(classJobs, ClassJob.Reaper));
         sb.AppendLine(CreateClassJobString(classJobs, ClassJob.Viper));
+        sb.AppendLine(CreateClassJobString(classJobs, ClassJob.Beastmaster));
         return new DiscordTextDisplayComponent(sb.ToString());
     }
 
