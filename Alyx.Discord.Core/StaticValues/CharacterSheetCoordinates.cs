@@ -47,6 +47,7 @@ internal static class CharacterSheetCoordinates
                 ClassJob.Dancer => new Vector2(Get(ClassJob.Machinist).X + DistHorizontal, Get(ClassJob.Monk).Y),
 
                 ClassJob.BlueMage => new Vector2(Get(ClassJob.Dancer).X + DistCatLine2, Get(ClassJob.Monk).Y),
+                ClassJob.Beastmaster => new Vector2(Get(ClassJob.BlueMage).X + DistHorizontal, Get(ClassJob.Monk).Y),
 
                 ClassJob.Carpenter => new Vector2(Get(ClassJob.Paladin).X, Get(ClassJob.Monk).Y + DistVertical),
                 ClassJob.Blacksmith => new Vector2(Get(ClassJob.Carpenter).X + DistHorizontal,

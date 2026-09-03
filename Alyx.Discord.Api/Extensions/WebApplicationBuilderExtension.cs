@@ -18,8 +18,8 @@ internal static class WebApplicationBuilderExtension
             })
             .AddJwtBearer(options =>
             {
-                options.Authority = builder.Configuration.GetGuardedConfiguration(EnvironmentVariables.AuthAuthority);
-                options.Audience = builder.Configuration.GetGuardedConfiguration(EnvironmentVariables.AuthAudience);
+                options.Authority = builder.Configuration.GetRequiredConfiguration(EnvironmentVariables.AuthAuthority);
+                options.Audience = builder.Configuration.GetRequiredConfiguration(EnvironmentVariables.AuthAudience);
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -34,7 +34,7 @@ internal static class WebApplicationBuilderExtension
 
     public static void AddDataProtection(this IServiceCollection services, IConfiguration configuration)
     {
-        var certificatePath = configuration.GetGuardedConfiguration(EnvironmentVariables.DataProtectionCertificate);
+        var certificatePath = configuration.GetRequiredConfiguration(EnvironmentVariables.DataProtectionCertificate);
         var certificate = X509Certificate2.CreateFromPemFile($"{certificatePath}.pem", $"{certificatePath}.key");
 
         X509Certificate2[] decryptionCertificates;

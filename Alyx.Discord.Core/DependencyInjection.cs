@@ -23,13 +23,13 @@ public static class DependencyInjection
 
     private static void AddNetStoneApi(this IServiceCollection services, IConfiguration configuration)
     {
-        var apiRootUri = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiRootUri));
-        var authAuthority = new Uri(configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiAuthority));
-        var authClientId = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientId);
-        var authScopes = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiScopes);
+        var apiRootUri = new Uri(configuration.GetRequiredConfiguration(EnvironmentVariables.NetStoneApiRootUri));
+        var authAuthority = new Uri(configuration.GetRequiredConfiguration(EnvironmentVariables.NetStoneApiAuthority));
+        var authClientId = configuration.GetRequiredConfiguration(EnvironmentVariables.NetStoneApiClientId);
+        var authScopes = configuration.GetRequiredConfiguration(EnvironmentVariables.NetStoneApiScopes);
         var authScopesArray = authScopes.Split(" ",
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var certDir = configuration.GetGuardedConfiguration(EnvironmentVariables.NetStoneApiClientSignedJwtCert);
+        var certDir = configuration.GetRequiredConfiguration(EnvironmentVariables.NetStoneApiClientSignedJwtCert);
         var certPath = $"{certDir}.pem";
         var keyPath = $"{certDir}.key";
 

@@ -48,7 +48,7 @@ public static class DependencyInjection
             // Generic handlers are registered in Alyx.Discord.Api.Extensions.ConfigureHostBuilderExtension
         });
 
-        var token = configuration.GetGuardedConfiguration(EnvironmentVariables.BotToken);
+        var token = configuration.GetRequiredConfiguration(EnvironmentVariables.BotToken);
         services.AddDiscordClient(token, DiscordIntents.None).Configure<DiscordConfiguration>(x =>
         {
             x.LogUnknownAuditlogs = false;
