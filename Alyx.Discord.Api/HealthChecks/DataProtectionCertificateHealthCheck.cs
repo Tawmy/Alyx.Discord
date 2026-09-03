@@ -9,7 +9,7 @@ public class DataProtectionCertificateHealthCheck(IConfiguration configuration) 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)
     {
-        var certificatePath = configuration.GetGuardedConfiguration(EnvironmentVariables.DataProtectionCertificate);
+        var certificatePath = configuration.GetRequiredConfiguration(EnvironmentVariables.DataProtectionCertificate);
         var certificate = X509Certificate2.CreateFromPemFile($"{certificatePath}.pem", $"{certificatePath}.key");
 
         if (certificate.NotBefore > DateTime.Now)
