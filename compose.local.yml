@@ -14,7 +14,7 @@ services:
       NETSTONE_API_ROOT_URI: https://api.netstone.local
       NETSTONE_API_AUTHORITY: https://id.ffxiv.local/realms/eorzea-dev
     volumes:
-      - /Users/tawmy/Desktop/asp-keys/alyx-discord:/mnt/cert
+      - ./certificates/:/mnt/cert
     labels:
       - dev.orbstack.domains=alyx.discord.local
 

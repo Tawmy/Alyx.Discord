@@ -126,8 +126,9 @@ internal class CharacterSheetService
     {
         var circle = new EllipsePolygon(CharacterSheetCoordinates.Other.ActiveJobLevelBackground,
             CharacterSheetValues.ActiveJobLevelRadius);
-        _image.Mutate(x => x.Draw(new Color(CharacterSheetValues.ActiveJobLevelBackground),
-            CharacterSheetValues.ActiveJobLevelThickness, circle));
+        _image.Mutate(x => x.Paint(y => y.Draw(
+            Pens.Solid(Color.FromPixel(CharacterSheetValues.ActiveJobLevelBackground),
+                CharacterSheetValues.ActiveJobLevelThickness), circle)));
 
         var family = _externalResourceService.GetFontFamily(CharacterSheetFont.Antonio);
         var font = family.CreateFont(CharacterSheetValues.ActiveJobLevelFontSize, FontStyle.Regular);
@@ -140,7 +141,7 @@ internal class CharacterSheetService
             Origin = CharacterSheetCoordinates.Other.ActiveJobLevelText
         };
 
-        _image.Mutate(x => x.DrawText(textOptions, text, Color.White));
+        _image.Mutate(x => x.Paint(y => y.DrawText(textOptions, text, Brushes.Solid(Color.White), null)));
     }
 
     private void AddCharacterName(CharacterDto character)
@@ -158,7 +159,7 @@ internal class CharacterSheetService
         };
 
         // print character name
-        _image.Mutate(x => x.DrawText(optionsName, character.Name, Color.Black));
+        _image.Mutate(x => x.Paint(y => y.DrawText(optionsName, character.Name, Brushes.Solid(Color.Black), null)));
 
         if (nameProperties.Title is null)
         {
@@ -176,7 +177,7 @@ internal class CharacterSheetService
         };
 
         // print character title
-        _image.Mutate(x => x.DrawText(optionsTitle, character.Title!, Color.Black));
+        _image.Mutate(x => x.Paint(y => y.DrawText(optionsTitle, character.Title!, Brushes.Solid(Color.Black), null)));
     }
 
     private void AddHomeWorld(CharacterDto character)
@@ -191,7 +192,7 @@ internal class CharacterSheetService
             Origin = CharacterSheetCoordinates.Other.HomeWorld
         };
 
-        _image.Mutate(x => x.DrawText(options, character.Server, Color.White));
+        _image.Mutate(x => x.Paint(y => y.DrawText(options, character.Server, Brushes.Solid(Color.White), null)));
     }
 
     private void AddILvlMinionsMounts(CharacterDto character, CollectionDto<CharacterMinionDto>? minions,
@@ -208,7 +209,8 @@ internal class CharacterSheetService
         };
 
         var avgItemLevel = character.Gear.GetAvarageItemLevel();
-        _image.Mutate(x => x.DrawText(optionsLvl, avgItemLevel.ToString(), Color.White));
+        _image.Mutate(x => x.Paint(canvas =>
+            canvas.DrawText(optionsLvl, avgItemLevel.ToString(), Brushes.Solid(Color.White), null)));
 
         var optionsMo = new RichTextOptions(optionsLvl)
         {
@@ -217,7 +219,8 @@ internal class CharacterSheetService
         };
 
         var mountsPercentage = Math.Round(mounts?.CollectedPercentage ?? 0);
-        _image.Mutate(x => x.DrawText(optionsMo, $"{mountsPercentage}%", Color.White));
+        _image.Mutate(x =>
+            x.Paint(y => y.DrawText(optionsMo, $"{mountsPercentage}%", Brushes.Solid(Color.White), null)));
 
         var optionsMi = new RichTextOptions(optionsMo)
         {
@@ -225,7 +228,8 @@ internal class CharacterSheetService
         };
 
         var minionsPercentage = Math.Round(minions?.CollectedPercentage ?? 0);
-        _image.Mutate(x => x.DrawText(optionsMi, $"{minionsPercentage}%", Color.White));
+        _image.Mutate(x =>
+            x.Paint(y => y.DrawText(optionsMi, $"{minionsPercentage}%", Brushes.Solid(Color.White), null)));
     }
 
     private void AddJobLevels(CharacterClassJobOuterDto classJobs)
@@ -254,7 +258,7 @@ internal class CharacterSheetService
                 Origin = CharacterSheetCoordinates.Jobs.Get(job)
             };
 
-            _image.Mutate(x => x.DrawText(options, levelString, Color.White));
+            _image.Mutate(x => x.Paint(y => y.DrawText(options, levelString, Brushes.Solid(Color.White), null)));
         }
     }
 
@@ -299,7 +303,7 @@ internal class CharacterSheetService
             Origin = new Vector2(coords.X, coords.Y - 2) // arbitrarily move text up 2px, looks better
         };
 
-        _image.Mutate(x => x.DrawText(textOptions, text, Color.White));
+        _image.Mutate(x => x.Paint(y => y.DrawText(textOptions, text, Brushes.Solid(Color.White), null)));
 
         if (crest is null)
         {
@@ -307,7 +311,7 @@ internal class CharacterSheetService
         }
 
         // get text width and calculate position of crest
-        var textWidth = TextMeasurer.MeasureSize(text, textOptions);
+        var textWidth = TextMeasurer.MeasureAdvance(text, textOptions);
         coords.X -= (int)decimal.Divide((int)textWidth.Width, 2) +
                     CharacterSheetValues.DimensionsGcFcCrest + CharacterSheetValues.GcCrestPadding;
         coords.Y -= (int)decimal.Divide(CharacterSheetValues.DimensionsGcFcCrest, 2);
@@ -357,7 +361,7 @@ internal class CharacterSheetService
 
         var text = string.Join(CharacterSheetValues.AttributeGapBig, result);
 
-        _image.Mutate(x => x.DrawText(options, text, Color.White));
+        _image.Mutate(x => x.Paint(y => y.DrawText(options, text, Brushes.Solid(Color.White), null)));
     }
 
     private static string GetAttributeName(CharacterAttribute a, bool showFullName)

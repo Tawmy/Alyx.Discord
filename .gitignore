@@ -6,3 +6,7 @@ riderModule.iml
 .DS_Store
 .idea
 Alyx.Discord.sln.DotSettings.user
+
+/certificates/
+.env
+Alyx.Discord.Core/sixlabors.lic
